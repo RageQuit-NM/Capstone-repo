@@ -6,7 +6,7 @@ def main():
     # response = requests.get('https://REGION_HERE.api.riotgames.com/lol/summoner/v4/summoners/by-name/SUMMONER_NAME_HERE?api_key=YOUR_API_KEY_HERE')
 
     # Gets player(aka summoner) information using player name
-    api = RiotAPI('YOUR API KEY HERE')
+    api = RiotAPI('YOUR_KEY_HERE')
     
     #print('10 masters gives: ', api.get_x_masters_names(10, 'solo_duo','summoner_na'))
     # puuid = api.get_puuid_by_name('Biscuit Crusader','summoner_na')
@@ -34,7 +34,7 @@ def main():
     
     #TRAINING
     
-    # get 100 master players
+    # get x master players
     players = api.get_x_masters_names(10, 'solo_duo', 'summoner_na')
     print('player names added')
     
@@ -56,27 +56,80 @@ def main():
             'matchIds': api.get_x_matches_by_puuid(5, playerIds[x], 'match_na')
         })
     print('Finished adding game ids.')
-        
+    
+    # get the puuid and all games data stored in a [list] of {dictionaries}
+    playerAndGameData=[]
+    for x in range(len(playerIds)):
+        matchDataList=[]
+        for y in range(len(playerAndGameIds[x]['matchIds'])):
+            matchDataList.append(api.get_specific_players_match_data(playerAndGameIds[x]['matchIds'][y], playerAndGameIds[x]['puuid'], 'match_na'))
+        playerAndGameData.append({
+            'puuid': playerIds[x],
+            'matchData': matchDataList
+            })
+        print('done getting data for player: ', x)
+         
+    print('Finished adding game data.')   
+    print(playerAndGameData)
+     
     # learn from the players data
     # Use K-D ratio to determine 
-    policy = 0    
+    policy = .5    
     
-    for x in playerAndGameIds:
-        print('player is ', x['puuid'])
+    for x in range(len(playerAndGameIds)):
+        print('player is ', playerAndGameData[x]['puuid'])
         losses = 0
         wins = 0
         gameStats = {}
-        for y in range(len(x['matchIds'])):
-            gameStats = api.get_specific_players_match_data(x['matchIds'][y], x['puuid'], 'match_na')
+        for y in range(len(playerAndGameData[x]['matchData'])-1):
+            gameStats = playerAndGameData[x]['matchData'][y]
             if gameStats['win'] == True:
                 wins+=1
                 print('win')
             else:
                 losses+=1
                 print('loss')
+        finalGameStats = playerAndGameData[x]['matchData'][-1]
+        if losses > 0:# Policy generation is poor atm
+            wlRatio = wins/losses
+        else:
+            wlRatio = wins
         
+        if wlRatio > 0:
+            policy = policy * 0.85 + 0.15 * wlRatio    
         
+            
+        
+        print('Final policy is: ', policy)
 
+    # Make a guess
+    correctGuesses = 0
+    for x in range(len(playerAndGameIds)):
+        print('player is ', playerAndGameIds[x]['puuid'])
+        gameStats = {}
+        for y in range(len(playerAndGameIds[x]['matchIds'])-1):
+            gameStats = playerAndGameData[x]['matchData'][y]
+            if gameStats['win'] == True:
+                wins+=1
+                print('G_win')
+            else:
+                losses+=1
+                print('G_loss')
+        if losses > 0:
+            wlRatio = wins/losses
+        else:
+            wlRatio = wins
+        
+        if wlRatio <= policy:
+            guess = True
+        else:
+            guess = False
+        finalGameStats = playerAndGameData[x]['matchData'][-1]
+        if guess == finalGameStats['win']:
+            correctGuesses += 1
+        print('Number of correct guesses: ', correctGuesses, ' out of: ', len(playerAndGameIds))
+        print('Guess was: ', guess, ' and result was: ', gameStats['win'], ' the wlRatio is: ', wlRatio)    
+    
     
 if __name__ == "__main__":
     main()

@@ -83,6 +83,8 @@ class RiotAPI(object):
         # Get a summoners player ID (puuid) by their summoner name
         self.update_region(region)
         response = self.get_summoner_by_name(name)
+        
+        #make a loop until correct response achieved
         if 'puuid' in response:
             return response['puuid']
         else:
