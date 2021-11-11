@@ -49,7 +49,7 @@ module.exports = env => ({
             chunks: ['in_game']
         }),
         new HtmlWebpackPlugin({
-            template: './src/in_game/MainWindow.html',
+            template: './src/MainWindow/MainWindow.html',
             filename: path.resolve(__dirname, './dist/MainWindow.html'),
             chunks: ['in_game']
         }),

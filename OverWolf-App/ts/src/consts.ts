@@ -29,8 +29,7 @@ export const kGameClassIds = Array.from(kGamesFeatures.keys());
 
 export const kWindowNames = {
   inGame: 'in_game',
-  desktop: 'desktop',
-  MainWindow: 'MainWindow',
+  desktop: 'desktop'
 };
 
 export const kHotkeys = {
