@@ -24,6 +24,7 @@ class BackgroundController {
     // Populating the background controller's window dictionary
     this._windows[kWindowNames.desktop] = new OWWindow(kWindowNames.desktop);
     this._windows[kWindowNames.inGame] = new OWWindow(kWindowNames.inGame);
+    this._windows[kWindowNames.MainWindow] = new OWWindow(kWindowNames.MainWindow);
 
     // When a a supported game game is started or is ended, toggle the app's windows
     this._gameListener = new OWGameListener({
@@ -63,7 +64,8 @@ class BackgroundController {
     if (!e || e.origin.includes('gamelaunchevent')) {
       return;
     }
-
+    
+    this._windows[kWindowNames.MainWindow].restore()  //Always have the main window open
     if (await this.isSupportedGameRunning()) {
       this._windows[kWindowNames.desktop].close();
       this._windows[kWindowNames.inGame].restore();
