@@ -98,13 +98,14 @@ def main():
         if wlRatio > 0:
             policy = policy * 0.85 + 0.15 * wlRatio    
         
-        print('Policy is: ', policy, ' win/loss is: ', wlRatio)
+            
+        
+        print('Final policy is: ', policy)
 
     # Make a guess
     correctGuesses = 0
     for x in range(len(playerAndGameIds)):
-        wins = 0
-        losses = 0
+        print('player is ', playerAndGameIds[x]['puuid'])
         gameStats = {}
         for y in range(len(playerAndGameIds[x]['matchIds'])-1):
             gameStats = playerAndGameData[x]['matchData'][y]
@@ -126,10 +127,8 @@ def main():
         finalGameStats = playerAndGameData[x]['matchData'][-1]
         if guess == finalGameStats['win']:
             correctGuesses += 1
-            #print('Guess: ', guess, ' Actual: ', finalGameStats['win'])
-        print('player is ', playerAndGameIds[x]['puuid'])
         print('Number of correct guesses: ', correctGuesses, ' out of: ', len(playerAndGameIds))
-        print('Guess was: ', guess, ' and result was: ', finalGameStats['win'], ' the wlRatio is: ', wlRatio, ' the policy is: ', policy)    
+        print('Guess was: ', guess, ' and result was: ', gameStats['win'], ' the wlRatio is: ', wlRatio)    
     
     
 if __name__ == "__main__":
