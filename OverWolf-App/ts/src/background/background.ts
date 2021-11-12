@@ -19,8 +19,12 @@ class BackgroundController {
   private static _instance: BackgroundController;
   private _windows: Record<string, OWWindow> = {};
   private _gameListener: OWGameListener;
+  private htmlObject: Window;
+  private desktop_message: string;
+  private send_message: string;
 
   private constructor() {
+    //console.log("contrsuct")
     // Populating the background controller's window dictionary
     this._windows[kWindowNames.desktop] = new OWWindow(kWindowNames.desktop);
     this._windows[kWindowNames.inGame] = new OWWindow(kWindowNames.inGame);
@@ -48,13 +52,19 @@ class BackgroundController {
   // When running the app, start listening to games' status and decide which window should
   // be launched first, based on whether a supported game is currently running
   public async run() {
+    //console.log("run")
     this._gameListener.start();
 
     const currWindowName = (await this.isSupportedGameRunning())
       ? kWindowNames.inGame
       : kWindowNames.desktop;
-
     this._windows[currWindowName].restore();
+
+    this.htmlObject = overwolf.windows.getMainWindow()
+    this.desktop_message = this.htmlObject.document.getElementById("desktop_message").innerHTML; //colect a message from desktop
+
+    this.send_message = "sent to desktop from background";
+    this.htmlObject.document.getElementById("background_message").innerHTML = this.send_message;  //send a message
   }
 
   private async onAppLaunchTriggered(e: AppLaunchTriggeredEvent) {
@@ -63,7 +73,7 @@ class BackgroundController {
     if (!e || e.origin.includes('gamelaunchevent')) {
       return;
     }
-
+    
     if (await this.isSupportedGameRunning()) {
       this._windows[kWindowNames.desktop].close();
       this._windows[kWindowNames.inGame].restore();

@@ -19,6 +19,8 @@ class InGame extends AppWindow {
   private _gameEventsListener: OWGamesEvents;
   private _eventsLog: HTMLElement;
   private _infoLog: HTMLElement;
+  private htmlObject: Window;
+  private send_message: string;
 
   private constructor() {
     super(kWindowNames.inGame);
@@ -64,20 +66,29 @@ class InGame extends AppWindow {
   private onNewEvents(e) {
     const shouldHighlight = e.events.some(event => {
       switch (event.name) {
-        case 'kill':
-        case 'death':
-        case 'assist':
-        case 'level':
+        // case 'kill':
+        // case 'death':
+        // case 'assist':
+        // case 'level':
         case 'matchStart':
         case 'match_start':
         case 'matchEnd':
         case 'match_end':
-          return true;
+        return true;
       }
-
-      return false
+      return false;
     });
     this.logLine(this._eventsLog, e, shouldHighlight);
+
+    if(e.events[0]["name"] == 'match_clock'){
+      this.send_message = e.events[0]["data"];
+      document.getElementById("clock_bool").innerHTML = "true"; //To prove that we are sendng this message
+      document.getElementById("time_message").innerHTML = this.send_message;
+
+      //send the match clock to main window
+      this.htmlObject = overwolf.windows.getMainWindow();
+      this.htmlObject.document.getElementById("in_game_message").innerHTML = this.send_message;
+    }
   }
 
   // Displays the toggle minimize/restore hotkey in the window header
@@ -93,7 +104,7 @@ class InGame extends AppWindow {
     const toggleInGameWindow = async (
       hotkeyResult: overwolf.settings.hotkeys.OnPressedEvent
     ): Promise<void> => {
-      console.log(`pressed hotkey for ${hotkeyResult.name}`);
+      //console.log(`pressed hotkey for ${hotkeyResult.name}`);
       const inGameState = await this.getWindowState();
 
       if (inGameState.window_state === WindowState.NORMAL ||
