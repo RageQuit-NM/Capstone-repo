@@ -20,15 +20,14 @@ class BackgroundController {
   private _windows: Record<string, OWWindow> = {};
   private _gameListener: OWGameListener;
   private htmlObject: Window;
-  private background_message: string;
+  private desktop_message: string;
   private send_message: string;
 
   private constructor() {
-    console.log("contrsuct")
+    //console.log("contrsuct")
     // Populating the background controller's window dictionary
     this._windows[kWindowNames.desktop] = new OWWindow(kWindowNames.desktop);
     this._windows[kWindowNames.inGame] = new OWWindow(kWindowNames.inGame);
-    //this._windows[kWindowNames.MainWindow] = new OWWindow(kWindowNames.MainWindow);
 
     // When a a supported game game is started or is ended, toggle the app's windows
     this._gameListener = new OWGameListener({
@@ -53,34 +52,20 @@ class BackgroundController {
   // When running the app, start listening to games' status and decide which window should
   // be launched first, based on whether a supported game is currently running
   public async run() {
-    console.log("run")
+    //console.log("run")
     this._gameListener.start();
 
     const currWindowName = (await this.isSupportedGameRunning())
       ? kWindowNames.inGame
       : kWindowNames.desktop;
-
     this._windows[currWindowName].restore();
-    //this._windows[kWindowNames.MainWindow].restore();
-
 
     this.htmlObject = overwolf.windows.getMainWindow()
-    this.background_message = this.htmlObject.document.getElementById("background_message").innerHTML;
-    console.log(this.background_message);
+    this.desktop_message = this.htmlObject.document.getElementById("desktop_message").innerHTML; //colect a message from desktop
 
     this.send_message = "sent to desktop from background";
-    this.htmlObject.document.getElementById("desktop_message").innerHTML = this.send_message;
-    console.log(this.background_message + "frist console log in backgeound");
-    
+    this.htmlObject.document.getElementById("background_message").innerHTML = this.send_message;  //send a message
   }
-
-  // public async sendMessage(){
-  //   console.log("messaganger")
-  //   this.htmlObject = overwolf.windows.getMainWindow()
-  //   let str: string = this.cleanStringify(this.htmlObject)
-  //   console.log(str);
-  //   alert(str);
-  // }
 
   private async onAppLaunchTriggered(e: AppLaunchTriggeredEvent) {
     console.log('onAppLaunchTriggered():', e);
@@ -89,7 +74,6 @@ class BackgroundController {
       return;
     }
     
-    //this._windows[kWindowNames.MainWindow].restore()  //Always have the main window open
     if (await this.isSupportedGameRunning()) {
       this._windows[kWindowNames.desktop].close();
       this._windows[kWindowNames.inGame].restore();

@@ -12,7 +12,7 @@ class Desktop extends AppWindow {
     private htmlObject: Window;
     private background_message: HTMLElement;
     private desktop_message: HTMLElement;
-    private message: string
+    private message: string;
   
     private constructor() {
       super(kWindowNames.desktop);
@@ -32,10 +32,14 @@ class Desktop extends AppWindow {
     }
   
     public async run() {
-        this.htmlObject = overwolf.windows.getMainWindow()
-        this.message = this.htmlObject.document.getElementById("desktop_message").innerHTML
-        console.log(this.background_message + " found message");
-        document.getElementById("update").innerHTML = this.message
+        this.htmlObject = overwolf.windows.getMainWindow();
+        //update from background
+        this.message = this.htmlObject.document.getElementById("background_message").innerHTML;
+        document.getElementById("update").innerHTML = this.message;
+
+        //update from in_game
+        this.message = this.htmlObject.document.getElementById("in_game_message").innerHTML;
+        document.getElementById("time_played").innerHTML = this.message;
     }
 }  
 Desktop.instance().run();
