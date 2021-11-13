@@ -1,4 +1,5 @@
-# This application is adapted from the Overwolf sample app under the ISC License
+# This application is adapted from the basic Overwolf sample app under the ISC License, 
+#The orginal code can be found here: https://github.com/overwolf/sample-app/
 
 # The following is original to the Overwolf sample app README.md
 # Overwolf sample app
