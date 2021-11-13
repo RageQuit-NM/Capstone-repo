@@ -1,3 +1,10 @@
+This app is based off the official OverWolf sample app which can be found here: https://github.com/overwolf/sample-app/
+Use of this code is under the ISC license.
+
+
+
+The rest of this README is original to the sample app.
+
 # Sample - TS
 Example-ts is an example app, meant to be used as a reference for developers who are new to Overwolf.
 The app is meant to demonstrate some basic points and flows that are relevant when developing Overwolf apps:
