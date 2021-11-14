@@ -12,7 +12,7 @@ export class AppWindow {
     this.currWindow = new OWWindow(windowName);
 
     const closeButton = document.getElementById('closeButton');
-    const maximizeButton = document.getElementById('maximizeButton');
+    //const maximizeButton = document.getElementById('maximizeButton');
     const minimizeButton = document.getElementById('minimizeButton');
 
     const header = document.getElementById('header');
@@ -27,15 +27,15 @@ export class AppWindow {
       this.currWindow.minimize();
     });
 
-    maximizeButton.addEventListener('click', () => {
-      if (!this.maximized) {
-        this.currWindow.maximize();
-      } else {
-        this.currWindow.restore();
-      }
+    // maximizeButton.addEventListener('click', () => {
+    //   if (!this.maximized) {
+    //     this.currWindow.maximize();
+    //   } else {
+    //     this.currWindow.restore();
+    //   }
 
-      this.maximized = !this.maximized;
-    });
+    //   this.maximized = !this.maximized;
+    // });
   }
 
   public async getWindowState() {

@@ -32,14 +32,18 @@ class Desktop extends AppWindow {
     }
   
     public async run() {
-        this.htmlObject = overwolf.windows.getMainWindow();
-        //update from background
-        this.message = this.htmlObject.document.getElementById("background_message").innerHTML;
-        document.getElementById("update").innerHTML = this.message;
+      this.htmlObject = overwolf.windows.getMainWindow();
 
-        //update from in_game
-        this.message = this.htmlObject.document.getElementById("in_game_message").innerHTML;
-        document.getElementById("time_played").innerHTML = this.message;
+      //update from in_game
+      this.message = this.htmlObject.document.getElementById("in_game_message").innerHTML;
+      console.log(this.message)
+      document.getElementById("game_time").innerHTML = this.message;
+
+      if(Number(this.message) > 10){
+        console.log(">10s")
+        document.getElementById("detailed_message").innerHTML = "You have played for over 10s!"
+      }
     }
+
 }  
 Desktop.instance().run();

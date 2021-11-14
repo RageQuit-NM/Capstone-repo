@@ -22,6 +22,7 @@ class BackgroundController {
   private _gameListener: OWGameListener;
   private htmlObject: Window;
   private desktop_message: string;
+  private in_game_message: string;
   private send_message: string;
 
   private constructor() {
@@ -65,6 +66,9 @@ class BackgroundController {
 
     this.send_message = "sent to desktop from background";
     this.htmlObject.document.getElementById("background_message").innerHTML = this.send_message;  //send a message
+
+    this.in_game_message = this.htmlObject.document.getElementById("in_game_message").innerHTML;
+
   }
 
   private async onAppLaunchTriggered(e: AppLaunchTriggeredEvent) {

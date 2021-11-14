@@ -82,12 +82,12 @@ class InGame extends AppWindow {
 
     if(e.events[0]["name"] == 'match_clock'){
       this.send_message = e.events[0]["data"];
-      document.getElementById("clock_bool").innerHTML = "true"; //To prove that we are sendng this message
       document.getElementById("time_message").innerHTML = this.send_message;
 
       //send the match clock to main window
       this.htmlObject = overwolf.windows.getMainWindow();
       this.htmlObject.document.getElementById("in_game_message").innerHTML = this.send_message;
+      
     }
   }
 
