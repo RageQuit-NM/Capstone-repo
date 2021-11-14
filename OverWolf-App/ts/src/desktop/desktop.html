@@ -7,65 +7,39 @@
   <link rel="stylesheet" href="../../css/header.css" />
   <link rel="stylesheet" href="../../css/desktop.css" />
   <link rel="stylesheet" href="../../css/modal.css" />
-  <title>Overwolf Sample App - Desktop page</title>
-</head>
+  <title>RageQuit.NM</title>
+  <script defer src="js/desktop.js"></script>
+<script defer src="js/desktop.js"></script></head>
 
 <body class="desktop">
   <!-- -------------------------------- Header ------------------------------- -->
 
   <header id="header" class="app-header">
-    <h1>Sample App / desktop window</h1>
+    <h1>RageQuit.NM</h1>
     <div class="window-controls-group">
       <button id="minimizeButton" class="window-control window-control-minimize" />
-      <button id="maximizeButton" class="window-control window-control-maximize" />
       <button id="closeButton" class="window-control window-control-close" />
     </div>
   </header>
 
   <!-- --------------------------------- Main -------------------------------- -->
   <main>
+    
     <div class="desktopTop">
-      <h1>Overwolf Sample App</h1>
-      <!-- Messages from the background and in game windows -->
-      <div id="update">
-        Welcome to the Overwolf tutorial app for developers.<br />
-        Learn how to build an app by using one!
-      </div>
-      <div>Time played:
-        <div id="time_played">
-        time played
-        </div>
-      </div>
-      <div id="version"></div>
+        <h1>Hi There!</h1>
+        <p id="game_time">You have been playing for XXX</p>
     </div>
+
     <div class="desktopBottom">
-      <!-- Launch a game! -->
       <div id="left">
-        <h1>
-          Launch a game and the In-Game window will pop-up automatically!
-        </h1>
       </div>
-      <!-- Launch a game! -->
       <div id="middle">
-        What can you learn with this sample app?
-        <br /><br />
-        1. How to listen to real-time game events and how to identify specific
-        events like match start/end, kill, and death.
-        <br /><br />
-        2. How to use a transparent background window as a service bus, that
-        acts as the main controller of your app.
-        <br /><br />
-        3. How to use Hotkeys that show/hide your app while you are in-game.
+        Detailed Message
       </div>
-      <!-- picture -->
       <div id="right">
-        <div style="text-align: center">
-          <div style="display: inline-block">
-            <img src="../../img/cool_wolf.png" />
-          </div>
-        </div>
       </div>
     </div>
+
   </main>
 </body>
 
