@@ -10,6 +10,7 @@ import { kWindowNames, kGameClassIds } from "../consts";
 import RunningGameInfo = overwolf.games.RunningGameInfo;
 import AppLaunchTriggeredEvent = overwolf.extensions.AppLaunchTriggeredEvent;
 
+
 // The background controller holds all of the app's background logic - hence its name. it has
 // many possible use cases, for example sharing data between windows, or, in our case,
 // managing which window is currently presented to the user. To that end, it holds a dictionary
@@ -21,14 +22,16 @@ class BackgroundController {
   private _windows: Record<string, OWWindow> = {};
   private _gameListener: OWGameListener;
   private htmlObject: Window;
-  private desktop_message: string;
+  private launcher_message: string;
   private in_game_message: string;
   private send_message: string;
+  private test_message: string;
+  private window_counter: number;
 
   private constructor() {
     //console.log("contrsuct")
     // Populating the background controller's window dictionary
-    this._windows[kWindowNames.desktop] = new OWWindow(kWindowNames.desktop);
+    this._windows[kWindowNames.launcher] = new OWWindow(kWindowNames.launcher);
     this._windows[kWindowNames.inGame] = new OWWindow(kWindowNames.inGame);
 
     // When a a supported game game is started or is ended, toggle the app's windows
@@ -40,6 +43,8 @@ class BackgroundController {
     overwolf.extensions.onAppLaunchTriggered.addListener(
       e => this.onAppLaunchTriggered(e)
     );
+
+    this.window_counter = 0;
   };
 
   // Implementing the Singleton design pattern
@@ -58,18 +63,26 @@ class BackgroundController {
 
     const currWindowName = (await this.isSupportedGameRunning())
       ? kWindowNames.inGame
-      : kWindowNames.desktop;
+      : kWindowNames.launcher;
     this._windows[currWindowName].restore();
 
-    this.htmlObject = overwolf.windows.getMainWindow()
-    this.desktop_message = this.htmlObject.document.getElementById("desktop_message").innerHTML; //colect a message from desktop
+    //setTopmost(windowId, shouldBeTopmost, callback)
 
-    this.send_message = "sent to desktop from background";
+    //bringToFront(grabFocus, callback)
+
+    //displayMessageBox(messageParams, callback)    //Displays a customized popup message prompt.
+
+    this.htmlObject = overwolf.windows.getMainWindow()
+    this.launcher_message = this.htmlObject.document.getElementById("launcher_message").innerHTML; //colect a message from launcher
+
+    this.send_message = "sent to launcher from background";
     this.htmlObject.document.getElementById("background_message").innerHTML = this.send_message;  //send a message
+    this.htmlObject.document.getElementById("test_message").innerHTML = this.test_message;
 
     this.in_game_message = this.htmlObject.document.getElementById("in_game_message").innerHTML;
 
   }
+
 
   private async onAppLaunchTriggered(e: AppLaunchTriggeredEvent) {
     console.log('onAppLaunchTriggered():', e);
@@ -79,10 +92,10 @@ class BackgroundController {
     }
     
     if (await this.isSupportedGameRunning()) {
-      this._windows[kWindowNames.desktop].close();
+      this._windows[kWindowNames.launcher].close();
       this._windows[kWindowNames.inGame].restore();
     } else {
-      this._windows[kWindowNames.desktop].restore();
+      this._windows[kWindowNames.launcher].restore();
       this._windows[kWindowNames.inGame].close();
     }
   }
@@ -93,22 +106,23 @@ class BackgroundController {
     }
 
     if (info.isRunning) {
-      this._windows[kWindowNames.desktop].close();
+      this._windows[kWindowNames.launcher].close();
       this._windows[kWindowNames.inGame].restore();
     } else {
-      this._windows[kWindowNames.desktop].restore();
+      this._windows[kWindowNames.launcher].restore();
       this._windows[kWindowNames.inGame].close();
     }
   }
 
   private async isSupportedGameRunning(): Promise<boolean> {
     const info = await OWGames.getRunningGameInfo();
-
+    
     return info && info.isRunning && this.isSupportedGame(info);
   }
 
   // Identify whether the RunningGameInfo object we have references a supported game
   private isSupportedGame(info: RunningGameInfo) {
+    console.log("check is supported, info: " + info);
     return kGameClassIds.includes(info.classId);
   }
 }
