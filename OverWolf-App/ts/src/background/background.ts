@@ -126,7 +126,7 @@ class BackgroundController {
 
   // Identify whether the RunningGameInfo object we have references a supported game
   private isSupportedGame(info: RunningGameInfo) {
-    console.log("check is supported, info: " + info);
+    //console.log("check is supported, info: " + info);
     return kGameClassIds.includes(info.classId);
   }
 }
