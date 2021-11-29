@@ -13,6 +13,7 @@ class Desktop extends AppWindow {
     private background_message: HTMLElement;
     private desktop_message: HTMLElement;
     private message: string;
+    private winLoss: number; // between 0 and 3 inclusive
   
     private constructor() {
       super(kWindowNames.desktop);
@@ -39,10 +40,22 @@ class Desktop extends AppWindow {
       console.log(this.message)
       document.getElementById("game_time").innerHTML = this.message;
 
-      if(Number(this.message) > 10){
+      if(Number(this.message) > 10 && Number(this.message) < 60){
         console.log(">10s")
         document.getElementById("detailed_message").innerHTML = "You have played for over 10s!"
+        document.getElementById("broad_message").innerHTML = "Get back in the game!"
       }
+      if(Number(this.message) > 60 && Number(this.message) < 3600){
+        console.log(">60s")
+        document.getElementById("detailed_message").innerHTML = "You have played for over 1 minute!"
+        document.getElementById("broad_message").innerHTML = "Get back in the game!"
+      }
+      if(Number(this.message) > 3600){
+        console.log(">3600s")
+        document.getElementById("detailed_message").innerHTML = "You have played for over 1 hour! \n You should get a glass of water!"
+        document.getElementById("broad_message").innerHTML = "Good Game!"
+      }
+
     }
 
 }  
