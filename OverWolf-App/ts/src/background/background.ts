@@ -96,6 +96,8 @@ class BackgroundController {
       this._windows[kWindowNames.inGame].restore();
     } else {
       this._windows[kWindowNames.launcher].restore();
+      //setTimeout(() => this._windows[kWindowNames.launcher].restore(), 10000);
+      setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 3000);
       this._windows[kWindowNames.inGame].close();
     }
   }
@@ -110,6 +112,8 @@ class BackgroundController {
       this._windows[kWindowNames.inGame].restore();
     } else {
       this._windows[kWindowNames.launcher].restore();
+      //setTimeout(() => this._windows[kWindowNames.launcher].restore(), 10000);
+      setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 3000);
       this._windows[kWindowNames.inGame].close();
     }
   }
