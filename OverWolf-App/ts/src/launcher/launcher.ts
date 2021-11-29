@@ -6,20 +6,20 @@ import { kWindowNames } from "../consts";
 // Therefore, only the generic AppWindow class is called.
 //new AppWindow(kWindowNames.desktop);
 
-class Desktop extends AppWindow {
-    private static _instance: Desktop;
+class Launcher extends AppWindow {
+    private static _instance: Launcher;
     //private _gameEventsListener: OWGamesEvents;
     private htmlObject: Window;
     private background_message: HTMLElement;
-    private desktop_message: HTMLElement;
+    private launcher_message: HTMLElement;
     private message: string;
     private winLoss: number; // between 0 and 3 inclusive
   
     private constructor() {
-      super(kWindowNames.desktop);
+      super(kWindowNames.launcher);
   
       this.background_message = document.getElementById('background_message');
-      this.desktop_message = document.getElementById('desktop_message');
+      this.launcher_message = document.getElementById('launcher_message');
   
       //this.setToggleHotkeyBehavior();
       //this.setToggleHotkeyText();
@@ -27,7 +27,7 @@ class Desktop extends AppWindow {
   
     public static instance() {
       if (!this._instance) {
-        this._instance = new Desktop();
+        this._instance = new Launcher();
       }
       return this._instance;
     }
@@ -37,11 +37,19 @@ class Desktop extends AppWindow {
 
       //update from in_game
       this.message = this.htmlObject.document.getElementById("in_game_message").innerHTML;
-      console.log(this.message)
+      //console.log(this.message)
       document.getElementById("game_time").innerHTML = this.message;
 
+<<<<<<< HEAD:OverWolf-App/ts/src/desktop/desktop.ts
       if(Number(this.message) > 10 && Number(this.message) < 60){
         console.log(">10s")
+=======
+      // this.message = this.htmlObject.document.getElementById("test_message").innerHTML;
+      // document.getElementById("test_message").innerHTML = this.message;
+
+      if(Number(this.message) > 10){
+        //console.log(">10s")
+>>>>>>> bryden_launcher:OverWolf-App/ts/src/launcher/launcher.ts
         document.getElementById("detailed_message").innerHTML = "You have played for over 10s!"
         document.getElementById("broad_message").innerHTML = "Get back in the game!"
       }
@@ -59,4 +67,4 @@ class Desktop extends AppWindow {
     }
 
 }  
-Desktop.instance().run();
+Launcher.instance().run();

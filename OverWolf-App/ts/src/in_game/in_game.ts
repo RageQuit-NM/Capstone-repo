@@ -26,7 +26,7 @@ class InGame extends AppWindow {
     super(kWindowNames.inGame);
 
     this._eventsLog = document.getElementById('eventsLog');
-    this._infoLog = document.getElementById('infoLog');
+    //this._infoLog = document.getElementById('infoLog');
 
     this.setToggleHotkeyBehavior();
     this.setToggleHotkeyText();
@@ -59,7 +59,7 @@ class InGame extends AppWindow {
   }
 
   private onInfoUpdates(info) {
-    this.logLine(this._infoLog, info, false);
+    //this.logLine(this._infoLog, info, false);
   }
 
   // Special events will be highlighted in the event log

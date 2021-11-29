@@ -12,7 +12,7 @@
   <!-- -------------------------------- Header ------------------------------- -->
 
   <header id="header" class="app-header">
-    <h1>Sample App / in-game window</h1>
+    <h1>RageQuit.NM</h1>
     <h1 class="hotkey-text">
       Show/Hide Hotkey:
       <kbd id="hotkey"></kbd>
@@ -27,26 +27,18 @@
   <!-- --------------------------------- Main -------------------------------- -->
   <main>
     <div id="logs">
+      <div class="logColumn">
+      </div>
       <div id="events" class="logColumn">
         <h1>Events Log</h1>
         <h1 id ="time_message">time_message</h1>
         <div id="eventsLog" class="dataText">
         </div>
       </div>
-      <div id="infoUpdates" class="logColumn">
+      <!-- <div id="infoUpdates" class="logColumn">
         <h1 id ="time_message2">Info updates</h1>
         <div id="infoLog" class="dataText"></div>
-      </div>
-    </div>
-    <div id="other">
-      <h1>Real-time Game Data</h1>
-      <p id="infoParagraph">
-        The background controller of this app is listening to all the game
-        events and info updates, and sends them to this window, that prints
-        them to the screen. Some specific events (Match Start/End, Kill and
-        Death) are painted in <span style="color: #00DEFA">teal</span> and
-        logged to the developers console.
-      </p>
+      </div> -->
     </div>
   </main>
 </body>
