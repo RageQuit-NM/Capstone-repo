@@ -3,7 +3,7 @@ ENSE400/477 Capstone Project
 
 **Team members:**
 Shane - co-founder
-Bryden -co-founder
+Bryden - co-founder
 
 **Background:**
 
