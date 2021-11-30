@@ -14,6 +14,7 @@ class Launcher extends AppWindow {
     private launcher_message: HTMLElement;
     private message: string;
     private winLoss: number; // between 0 and 3 inclusive
+    private lastThreeGames: overwolf.games.GetGameInfoResult; 
   
     private constructor() {
       super(kWindowNames.launcher);
@@ -33,7 +34,24 @@ class Launcher extends AppWindow {
     }
   
     public async run() {
-      this.htmlObject = overwolf.windows.getMainWindow();
+      this.htmlObject = overwolf.windows.getMainWindow(); //Gets the HTML Object of the main window for messaging
+
+
+      //Its probably possible for some of the games being returned not to be league games
+      overwolf.games.getRecentlyPlayedGames(3, (Result) => {
+        this.lastThreeGames = Result;
+        console.log("callback: " + JSON.stringify(this.lastThreeGames));
+        this.message = "Game information: " + JSON.stringify(this.lastThreeGames);
+        document.getElementById("threeGame_message").innerHTML = this.message;
+      });
+      
+      
+      
+      
+      
+      
+      
+      
 
       //update from in_game
       this.message = this.htmlObject.document.getElementById("in_game_message").innerHTML;

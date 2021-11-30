@@ -76,8 +76,8 @@ class BackgroundController {
     this.launcher_message = this.htmlObject.document.getElementById("launcher_message").innerHTML; //colect a message from launcher
 
     this.send_message = "sent to launcher from background";
-    this.htmlObject.document.getElementById("background_message").innerHTML = this.send_message;  //send a message
-    this.htmlObject.document.getElementById("test_message").innerHTML = this.test_message;
+    //this.htmlObject.document.getElementById("background_message").innerHTML = this.send_message;  //send a message
+    //this.htmlObject.document.getElementById("test_message").innerHTML = this.test_message;
 
     this.in_game_message = this.htmlObject.document.getElementById("in_game_message").innerHTML;
 
