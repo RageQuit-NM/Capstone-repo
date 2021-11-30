@@ -40,16 +40,11 @@ class Launcher extends AppWindow {
       //console.log(this.message)
       document.getElementById("game_time").innerHTML = this.message;
 
-<<<<<<< HEAD:OverWolf-App/ts/src/desktop/desktop.ts
-      if(Number(this.message) > 10 && Number(this.message) < 60){
-        console.log(">10s")
-=======
       // this.message = this.htmlObject.document.getElementById("test_message").innerHTML;
       // document.getElementById("test_message").innerHTML = this.message;
 
       if(Number(this.message) > 10){
         //console.log(">10s")
->>>>>>> bryden_launcher:OverWolf-App/ts/src/launcher/launcher.ts
         document.getElementById("detailed_message").innerHTML = "You have played for over 10s!"
         document.getElementById("broad_message").innerHTML = "Get back in the game!"
       }
