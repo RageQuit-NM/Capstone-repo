@@ -6,6 +6,7 @@ Shane - co-founder
 Bryden - co-founder
 
 **Vlogs:**
+
 Vlog 1 - https://www.youtube.com/watch?v=XvAk2sP1oqM
 
 Vlog 2 - https://www.youtube.com/watch?v=9GwwqNuP7M8
