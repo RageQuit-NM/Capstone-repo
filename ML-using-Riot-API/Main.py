@@ -1,4 +1,7 @@
 from RiotAPI import RiotAPI
+from random import randrange
+import json
+import time
 
 def main():    
     # Simple example of accessing the Riot Games API, 
@@ -6,130 +9,125 @@ def main():
     # response = requests.get('https://REGION_HERE.api.riotgames.com/lol/summoner/v4/summoners/by-name/SUMMONER_NAME_HERE?api_key=YOUR_API_KEY_HERE')
 
     # Gets player(aka summoner) information using player name
-    api = RiotAPI('YOUR_KEY_HERE')
+    api = RiotAPI('your api key here')
     
-    #print('10 masters gives: ', api.get_x_masters_names(10, 'solo_duo','summoner_na'))
-    # puuid = api.get_puuid_by_name('Biscuit Crusader','summoner_na')
-    # matchList = api.get_x_matches_by_puuid(10, puuid, 'match_na')
-    # print(api.get_specific_players_match_data(matchList[0], puuid, 'match_na'))
-    #print(api.get_participant_data_for_x_matches(matchList, 'match_na'))
-    #print(api.get_participant_data_by_match_id(matchList[0], 'match_na'))
-    
-    # summonerData = api.get_summoner_by_name('SUMMONER NAME HERE')
-    # print('summoner by name gives: ', summonerData)
-    
-    # api.update_region('match_na')
-    # matchIDs = api.get_match_ids_by_player_id(summonerData.get('puuid'))
-    # print('match ids by puuid gives: ', matchIDs)
-    
-    # response3 = api.get_match_data_by_match_id(matchIDs[0])
-    # print('match data gives: ', response3)
-    
-    # response = api.get_master_rank_players('solo_duo')
-    # print(type(response))
-    # print(response.keys())
-    # print(response.get('name'))
-    # print(response.get('entries')[0])
-    
-    
-    #TRAINING
-    
-    # get x master players
-    players = api.get_x_masters_names(10, 'solo_duo', 'summoner_na')
-    print('player names added')
-    
-    # get the player ids for the 100 master players
-    playerIds=[]
-    for x in range(len(players)):
-        print('player_ID added: ', x)
-        playerIds.append(
-            api.get_puuid_by_name(players[x], 'summoner_na')
-            )
-    print('Finished adding player ids.')
-    
-    # get the game ids for the 100 master players    
-    playerAndGameIds=[]
-    for x in range(len(playerIds)):
-        print('Game ids added ', x)
-        playerAndGameIds.append({
-            'puuid': playerIds[x],
-            'matchIds': api.get_x_matches_by_puuid(5, playerIds[x], 'match_na')
-        })
-    print('Finished adding game ids.')
-    
-    # get the puuid and all games data stored in a [list] of {dictionaries}
-    playerAndGameData=[]
-    for x in range(len(playerIds)):
-        matchDataList=[]
-        for y in range(len(playerAndGameIds[x]['matchIds'])):
-            matchDataList.append(api.get_specific_players_match_data(playerAndGameIds[x]['matchIds'][y], playerAndGameIds[x]['puuid'], 'match_na'))
-        playerAndGameData.append({
-            'puuid': playerIds[x],
-            'matchData': matchDataList
+    infinite = 0
+    while infinite == 0:
+        print('STARTING')
+        # Get 4 game IDs for 10 puuids from the same game to use for the episode
+        # This will increase diversity of in game roles.
+        # 4 QUERIES
+        firstPlayerName = api.get_x_masters_names(99, 'solo_duo', 'summoner_na')
+        masterIndex = randrange(99)
+        firstPlayerName[0] = firstPlayerName[masterIndex]
+        print('Masters name is: ', firstPlayerName[0])
+        firstPlayerID = api.get_puuid_by_name(firstPlayerName[0], 'summoner_na')
+        print('Masters ID is: ', firstPlayerID[0])
+        firstMatchID = api.get_x_matches_by_puuid(1, firstPlayerID, 'match_na')
+        allPlayerIDs = api.get_all_puuids_from_match_id(firstMatchID[0], 'match_na')
+        print('All players are added', allPlayerIDs)   
+        playersAndGameIds=[]
+        for x in range(len(allPlayerIDs)):
+            print('Game ids added ', x)
+            playersAndGameIds.append({
+                'puuid': allPlayerIDs[x],
+                'matchIds': api.get_x_matches_by_puuid(4, allPlayerIDs[x], 'match_na')
             })
-        print('done getting data for player: ', x)
-         
-    print('Finished adding game data.')   
-    print(playerAndGameData)
-     
-    # learn from the players data
-    # Use K-D ratio to determine 
-    policy = .5    
+        print('All games are added', playersAndGameIds)
+        
+        # file = open("memory.txt", "r")
+        # memoryContent = file.read()
+        
+        with open('memory.txt') as inFile:
+            winLossNumber = json.load(inFile)
+        print(winLossNumber)
+        
+        # winLossNumber = {'0': {'win': 0, 'loss': 0}, '1': {'win': 0, 'loss': 0}, '2': {'win': 0, 'loss': 0}, '3': {'win': 0, 'loss': 0}}
+        
+        
+        
+        
+        
+        
     
-    for x in range(len(playerAndGameIds)):
-        print('player is ', playerAndGameData[x]['puuid'])
-        losses = 0
-        wins = 0
-        gameStats = {}
-        for y in range(len(playerAndGameData[x]['matchData'])-1):
-            gameStats = playerAndGameData[x]['matchData'][y]
-            if gameStats['win'] == True:
-                wins+=1
-                print('win')
-            else:
-                losses+=1
-                print('loss')
-        finalGameStats = playerAndGameData[x]['matchData'][-1]
-        if losses > 0:# Policy generation is poor atm
-            wlRatio = wins/losses
-        else:
-            wlRatio = wins
-        
-        if wlRatio > 0:
-            policy = policy * 0.85 + 0.15 * wlRatio    
-        
-            
-        
-        print('Final policy is: ', policy)
+        goodGoldScore = 12000
+        goodKDR = 1.5
+        policy = 0
+        success_tally = 0
+        wl_tally = 0
+        for player in playersAndGameIds:
+            print('player is ', player['puuid'])
+            perfRating = []
+            winList = []
+            wins = 0
+            for ID in player['matchIds']:
+                gameStats = api.get_specific_players_match_data(ID, player['puuid'], 'match_na')
+                
+                kills = gameStats["kills"]
+                deaths = gameStats["deaths"]
+                assists = gameStats["assists"]
+                goldEarned = gameStats["goldEarned"]
+                win = gameStats["win"]
+                matchRating = 0
+                
+                # Kill death rating
+                if deaths <= 0:
+                    deaths = 1
+                kdr = (kills + assists * 0.05) / deaths
+                # kdr = kdr * (kdr/goodKDR)
 
-    # Make a guess
-    correctGuesses = 0
-    for x in range(len(playerAndGameIds)):
-        print('player is ', playerAndGameIds[x]['puuid'])
-        gameStats = {}
-        for y in range(len(playerAndGameIds[x]['matchIds'])-1):
-            gameStats = playerAndGameData[x]['matchData'][y]
-            if gameStats['win'] == True:
-                wins+=1
-                print('G_win')
+                # Gold rating
+                goldRating = goldEarned/12000
+                #goldRating = goldRating * (goldRating/goodGoldScore)
+                
+                # Calculate a performance rating for this match and attach it to the list
+                # if goldRating > kdr:
+                #     matchRating = goldRating
+                # else:
+                #     matchRating = kdr
+                matchRating = kdr
+                if matchRating > 2:
+                    matchRating = 2
+                perfRating.append(matchRating)
+                winList.append(win)
+                
+                if win == True and len(winList) < 4:
+                    wins += 1
+                
+                # if win == True:
+                #     goodGoldScore = goodGoldScore*0.85 + goldEarned*0.15
+                
+                print(gameStats)
+                print(matchRating)
+            
+
+            
+            if winLossNumber[str(wins)]['win'] >= winLossNumber[str(wins)]['loss']:
+                wlPredict = True
             else:
-                losses+=1
-                print('G_loss')
-        if losses > 0:
-            wlRatio = wins/losses
-        else:
-            wlRatio = wins
+                wlPredict = False
+            if wlPredict == winList[-1]:
+                wl_tally += 1
+            print('wl_tally is: ', wl_tally)            
+            
+            print('goodGoldScore is: ', goodGoldScore, ' goodKDR is: ', goodKDR)
+            averageRating = perfRating[0]*0.3 + perfRating[1]*0.4 + perfRating[2]*0.3
+            averageRating = averageRating - 0.1*averageRating
         
-        if wlRatio <= policy:
-            guess = True
-        else:
-            guess = False
-        finalGameStats = playerAndGameData[x]['matchData'][-1]
-        if guess == finalGameStats['win']:
-            correctGuesses += 1
-        print('Number of correct guesses: ', correctGuesses, ' out of: ', len(playerAndGameIds))
-        print('Guess was: ', guess, ' and result was: ', gameStats['win'], ' the wlRatio is: ', wlRatio)    
-    
+            if (1 - perfRating[-1]/averageRating) < 0.35 and (1 - perfRating[-1]/averageRating) > -0.35:
+                success_tally += 1
+            print('Policy is: ', policy, ' Last game rating is: ', perfRating[-1], ' Average rating is: ', averageRating, ' Last game win is: ', winList[-1], " Success tally: ", success_tally) 
+            print('\n')
+            
+            if winList[-1]==True:    
+                winLossNumber[str(wins)]['win'] += 1
+            else:
+                winLossNumber[str(wins)]['loss'] += 1 
+        
+        with open('memory.txt', 'w') as outfile:
+            json.dump(winLossNumber, outfile)
+
+        time.sleep(120)
     
 if __name__ == "__main__":
     main()
