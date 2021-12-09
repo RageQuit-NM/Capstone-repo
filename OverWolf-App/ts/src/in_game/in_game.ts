@@ -19,8 +19,7 @@ class InGame extends AppWindow {
   private _gameEventsListener: OWGamesEvents;
   private _eventsLog: HTMLElement;
   private _infoLog: HTMLElement;
-  private htmlObject: Window;
-  private send_message: string;
+  private mainWindowObject: Window;
 
   private constructor() {
     super(kWindowNames.inGame);
@@ -36,7 +35,6 @@ class InGame extends AppWindow {
     if (!this._instance) {
       this._instance = new InGame();
     }
-
     return this._instance;
   }
 
@@ -79,15 +77,15 @@ class InGame extends AppWindow {
       return false;
     });
     this.logLine(this._eventsLog, e, shouldHighlight);
+    let time_message: string;
 
     if(e.events[0]["name"] == 'match_clock'){
-      this.send_message = e.events[0]["data"];
-      document.getElementById("time_message").innerHTML = this.send_message;
+      time_message = e.events[0]["data"];
+      document.getElementById("time_message").innerHTML = time_message; //for testing purposes
 
       //send the match clock to main window
-      this.htmlObject = overwolf.windows.getMainWindow();
-      this.htmlObject.document.getElementById("in_game_message").innerHTML = this.send_message;
-      
+      this.mainWindowObject = overwolf.windows.getMainWindow();
+      this.mainWindowObject.document.getElementById("time_message").innerHTML = time_message;
     }
   }
 
