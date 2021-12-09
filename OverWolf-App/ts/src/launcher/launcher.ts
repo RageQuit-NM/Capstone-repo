@@ -61,21 +61,21 @@ class Launcher extends AppWindow {
       // this.message = this.htmlObject.document.getElementById("test_message").innerHTML;
       // document.getElementById("test_message").innerHTML = this.message;
 
-      if(Number(this.message) > 10){
-        //console.log(">10s")
-        document.getElementById("detailed_message").innerHTML = "You have played for over 10s!"
-        document.getElementById("broad_message").innerHTML = "Get back in the game!"
-      }
-      if(Number(this.message) > 60 && Number(this.message) < 3600){
-        console.log(">60s")
-        document.getElementById("detailed_message").innerHTML = "You have played for over 1 minute!"
-        document.getElementById("broad_message").innerHTML = "Get back in the game!"
-      }
-      if(Number(this.message) > 3600){
-        console.log(">3600s")
-        document.getElementById("detailed_message").innerHTML = "You have played for over 1 hour! \n You should get a glass of water!"
-        document.getElementById("broad_message").innerHTML = "Good Game!"
-      }
+      // if(Number(this.message) > 10){
+      //   //console.log(">10s")
+      //   document.getElementById("detailed_message").innerHTML = "You have played for over 10s!"
+      //   document.getElementById("broad_message").innerHTML = "Get back in the game!"
+      // }
+      // if(Number(this.message) > 60 && Number(this.message) < 3600){
+      //   console.log(">60s")
+      //   document.getElementById("detailed_message").innerHTML = "You have played for over 1 minute!"
+      //   document.getElementById("broad_message").innerHTML = "Get back in the game!"
+      // }
+      // if(Number(this.message) > 3600){
+      //   console.log(">3600s")
+      //   document.getElementById("detailed_message").innerHTML = "You have played for over 1 hour! \n You should get a glass of water!"
+      //   document.getElementById("broad_message").innerHTML = "Good Game!"
+      // }
 
     }
 

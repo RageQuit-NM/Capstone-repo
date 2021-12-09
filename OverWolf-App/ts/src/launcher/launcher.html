@@ -6,49 +6,45 @@
   <link rel="stylesheet" href="../../css/general.css" />
   <link rel="stylesheet" href="../../css/header.css" />
   <link rel="stylesheet" href="../../css/desktop.css" />
-  <link rel="stylesheet" href="../../css/modal.css" />
   <title>RageQuit.NM</title>
   <script defer src="js/launcher.js"></script>
-<script defer src="js/launcher.js"></script></head>
+  <script defer src="js/launcher.js"></script>
+</head>
 
-<body class="desktop">
+<body class="launcher">
   <!-- -------------------------------- Header ------------------------------- -->
-
   <header id="header" class="app-header">
     <h1>RageQuit.NM</h1>
-    <div class="window-controls-group">
-      <button id="minimizeButton" class="window-control window-control-minimize" />
-      <button id="closeButton" class="window-control window-control-close" />
-    </div>
   </header>
 
   <!-- --------------------------------- Main -------------------------------- -->
   <main>
-    
-    <div class="desktopTop">
+    <div class="title">
         <h1 id="broad_message">Welcome Back!</h1>
-        <p>You have been playing for <span id="game_time">0</span>s</p>
     </div>
 
-    <div class="desktopBottom">
-      <div id="left">
-      </div>
-      <div id="middle">
-        <div id="detailed_message">
-          Have fun!
+    <div class = "bottomSection">
+      
+      <div class="content">
+        <div id="timePlayed">
         </div>
-        <div id="threeGame_message">
-          threeGame_message
-        </div>
-        <!-- <div id="test_message">
-          testing message
-        </div> -->
-      </div>
-      <div id="right">
-      </div>
-    </div>
+      </div> 
 
+      <div id="dismissButtonParent">
+        <div class="spacer">
+        </div>
+        <div id="minimizeButton" class="dismissButton">
+          Dismiss
+        </div>
+        <div class="spacer">
+        </div>
+      </div> 
+
+    </div>
   </main>
 </body>
+
+
+
 
 </html>

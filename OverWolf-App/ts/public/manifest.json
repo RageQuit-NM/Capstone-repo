@@ -49,7 +49,7 @@
         "file": "launcher.html",
         "desktop_only": true,
         "native_window": true,
-        "resizable": false,
+        "resizable": true,
         "transparent": true,
         "override_on_update": true,
         "grab_focus_on_desktop": true,
