@@ -11,17 +11,17 @@ export class AppWindow {
     this.mainWindow = new OWWindow('background');
     this.currWindow = new OWWindow(windowName);
 
-    const closeButton = document.getElementById('closeButton');
-    //const maximizeButton = document.getElementById('maximizeButton');
+    // const closeButton = document.getElementById('closeButton');
+    // const maximizeButton = document.getElementById('maximizeButton');
     const minimizeButton = document.getElementById('minimizeButton');
 
     const header = document.getElementById('header');
 
     this.setDrag(header);
 
-    closeButton.addEventListener('click', () => {
-      this.mainWindow.close();
-    });
+    // closeButton.addEventListener('click', () => {
+    //   this.mainWindow.close();
+    // });
 
     minimizeButton.addEventListener('click', () => {
       this.currWindow.minimize();

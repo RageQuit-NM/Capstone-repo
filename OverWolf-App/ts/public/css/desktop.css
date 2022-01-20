@@ -1,6 +1,4 @@
 body {
-  display: flex;
-  flex-direction: column;
   margin: 0px;
   min-height: 100vh;
   overflow: hidden;
@@ -8,80 +6,49 @@ body {
   background-color: #24343D;
   color: black;
   font-family: sans-serif;
-}
-
-main {
-  flex: auto;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-a {
-  color: inherit;
-}
-
-/*-TOP SECTION********************************************** -*/
-.desktopTop {
-  color: #456475;
-  background-color: #24343D;
-  width: 100%;
-  height: 200px;
-  top: 0;
   text-align: center;
 }
 
-.desktopTop h1 {
+.title {
   font-family: "Roboto Mono", sans-serif;
   font-style: normal;
   font-weight: bold;
   font-size: 52px;
   color: #81BADB;
-  margin-top: 50px;
+  margin-top: 35px;
 }
 
-.desktopTop p {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 20px;
-  color: #456475;
-  line-height: 20px;
-}
+.content {
+  background-color: #456475;
+  margin-top: 35px;
+  margin-right: 3.5%;
+  margin-left: 3.5%;
 
-
-/*-BOTTOM SECTION********************************************** -*/
-.desktopBottom {
-  background-color: #24343D;
-  width: 100%;
-  flex: 1;
-  display: flex;
-  text-align: center;
-  padding-bottom: 3%;
-}
-
-.desktopBottom > #left {
-  flex: 1 1 4%;
-}
-
-.desktopBottom > #left > h1 {
-  font-family: "Roboto Mono", sans-serif;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 18px;
-  margin: 0px 57px;
-  color: #d5d5d5;
-}
-
-.desktopBottom > #middle {
   font-style: normal;
   font-weight: normal;
   font-size: 28px;
   color: #24343D;
-  background-color: #456475;
-  flex: 1 1 92%;
-  padding: 67px 0px;
+  text-align: center;
 }
 
-.desktopBottom > #right {
-  flex: 1 1 4%;
+.dismissButtonParent {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  text-align: center;
+}
+
+.spacer {
+  flex: 1 1 40%;
+}
+
+.dismissButton {
+  font-family: "Roboto Mono", sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 22px;
+  color: #81BADB;
+  display: inline-block;
+  flex: 1 1 20%;
+  margin-top: 1.75%;
 }
