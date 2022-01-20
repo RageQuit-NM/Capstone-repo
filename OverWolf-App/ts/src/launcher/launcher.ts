@@ -9,10 +9,9 @@ import { kWindowNames } from "../consts";
 class Launcher extends AppWindow {
     private static _instance: Launcher;
     //private _gameEventsListener: OWGamesEvents;
-    private htmlObject: Window;
+    private mainWindowObject: Window;
     private background_message: HTMLElement;
     private launcher_message: HTMLElement;
-    private message: string;
     private winLoss: number; // between 0 and 3 inclusive
     private lastThreeGames: overwolf.games.GetGameInfoResult; 
   
@@ -34,31 +33,22 @@ class Launcher extends AppWindow {
     }
   
     public async run() {
-      this.htmlObject = overwolf.windows.getMainWindow(); //Gets the HTML Object of the main window for messaging
-
-
-      //Its probably possible for some of the games being returned not to be league games
-      overwolf.games.getRecentlyPlayedGames(3, (Result) => {
-        this.lastThreeGames = Result;
-        console.log("callback: " + JSON.stringify(this.lastThreeGames));
-        this.message = "Game information: " + JSON.stringify(this.lastThreeGames);
-        document.getElementById("threeGame_message").innerHTML = this.message;
-      });
-      
-      
-      
-      
-      
-      
-      
+      this.mainWindowObject = overwolf.windows.getMainWindow(); //Gets the HTML Object of the main window for messaging
+      // //Its probably possible for some of the games being returned not to be league games
+      // overwolf.games.getRecentlyPlayedGames(3, (Result) => {
+      //   this.lastThreeGames = Result;
+      //   console.log("callback: " + JSON.stringify(this.lastThreeGames));
+      //   let game_info_message: string = "Game information: " + JSON.stringify(this.lastThreeGames);
+      //   document.getElementById("threeGame_message").innerHTML = game_info_message;
+      // });
       
 
-      //update from in_game
-      this.message = this.htmlObject.document.getElementById("in_game_message").innerHTML;
-      //console.log(this.message)
-      document.getElementById("game_time").innerHTML = this.message;
+      //collect time message
+      let time_message: string;
+      time_message = this.mainWindowObject.document.getElementById("time_message").innerHTML;
+      document.getElementById("timePlayed").innerHTML = time_message;
 
-      // this.message = this.htmlObject.document.getElementById("test_message").innerHTML;
+      // this.message = this.mainWindowObject.document.getElementById("test_message").innerHTML;
       // document.getElementById("test_message").innerHTML = this.message;
 
       // if(Number(this.message) > 10){

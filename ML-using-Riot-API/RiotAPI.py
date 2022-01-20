@@ -82,9 +82,8 @@ class RiotAPI(object):
     def get_puuid_by_name(self, name, region=Consts.REGIONS['summoner_na']):
         # Get a summoners player ID (puuid) by their summoner name
         self.update_region(region)
+        # print('name is: ', name)
         response = self.get_summoner_by_name(name)
-        
-        #make a loop until correct response achieved
         if 'puuid' in response:
             return response['puuid']
         else:
@@ -111,7 +110,8 @@ class RiotAPI(object):
                 'kills': result[x]['kills'],
                 'deaths': result[x]['deaths'],
                 'assists': result[x]['assists'],
-                'win': result[x]['win']
+                'win': result[x]['win'],
+                'goldEarned': result[x]['goldEarned']
                     })
         return participantData
     
@@ -137,4 +137,16 @@ class RiotAPI(object):
             if matchData[x]['puuid']==puuid:
                 return matchData[x]
         return 'PLAYER_NOT_FOUND'
+    
+    
+    def get_all_puuids_from_match_id(self, match_id, region=Consts.REGIONS['match_na']):
+        self.update_region(region)
+        matchData = self.get_match_data_by_match_id(match_id)['info']['participants']
+        puuids = []
+        for x in range(len(matchData)):
+            puuids.append(
+                matchData[x]['puuid']
+            )
+        return puuids
+        
         
