@@ -48,6 +48,11 @@ class Launcher extends AppWindow {
       time_message = this.mainWindowObject.document.getElementById("time_message").innerHTML;
       document.getElementById("timePlayed").innerHTML = time_message;
 
+      let test_message: string;
+      test_message = this.mainWindowObject.document.getElementById("test_message").innerHTML;
+      document.getElementById("testMessage").innerHTML = test_message;
+
+
       // this.message = this.mainWindowObject.document.getElementById("test_message").innerHTML;
       // document.getElementById("test_message").innerHTML = this.message;
 

@@ -21,15 +21,13 @@ class BackgroundController {
   private static _instance: BackgroundController;
   private _windows: Record<string, OWWindow> = {};
   private _gameListener: OWGameListener;
-  private htmlObject: Window;
+  private mainWindowObject: Window;
   private launcher_message: string;
   private in_game_message: string;
   private send_message: string;
   private test_message: string;
-  private window_counter: number;
 
   private constructor() {
-    //console.log("contrsuct")
     // Populating the background controller's window dictionary
     this._windows[kWindowNames.launcher] = new OWWindow(kWindowNames.launcher);
     this._windows[kWindowNames.inGame] = new OWWindow(kWindowNames.inGame);
@@ -44,7 +42,6 @@ class BackgroundController {
       e => this.onAppLaunchTriggered(e)
     );
 
-    this.window_counter = 0;
   };
 
   // Implementing the Singleton design pattern
@@ -66,18 +63,36 @@ class BackgroundController {
       : kWindowNames.launcher;
     this._windows[currWindowName].restore();
 
-    //setTopmost(windowId, shouldBeTopmost, callback)
-
-    //bringToFront(grabFocus, callback)
-
     //displayMessageBox(messageParams, callback)    //Displays a customized popup message prompt.
 
-    this.htmlObject = overwolf.windows.getMainWindow()
-    this.launcher_message = this.htmlObject.document.getElementById("launcher_message").innerHTML; //colect a message from launcher
+    this.mainWindowObject = overwolf.windows.getMainWindow()
+    this.launcher_message = this.mainWindowObject.document.getElementById("launcher_message").innerHTML; //colect a message from launcher
 
     this.send_message = "sent to launcher from background";
-    //this.htmlObject.document.getElementById("background_message").innerHTML = this.send_message;  //send a message
-    //this.htmlObject.document.getElementById("test_message").innerHTML = this.test_message;
+
+    //this.mainWindowObject.document.getElementById("background_message").innerHTML = this.send_message;  //send a message
+
+
+    //collect contents of Messages.txt
+    const FILE_PATH = `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`;
+    const result = await new Promise(resolve => {
+      overwolf.io.readFileContents(
+        FILE_PATH,
+        overwolf.io.enums.eEncoding.UTF8,
+        resolve
+      );
+    }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
+
+    //arrange lines into an array object
+    var messageObject:string[] = new Array();
+    while(result["content"].indexOf(";") != -1){
+      messageObject.push(result["content"].substr(0, result["content"].indexOf(";")));
+      result["content"] = result["content"].substr(result["content"].indexOf(";")+1);
+    }
+
+    this.test_message = messageObject[1];  //Send the second line
+    this.mainWindowObject.document.getElementById("time_message").innerHTML = this.test_message;
+
   }
 
 
@@ -93,7 +108,6 @@ class BackgroundController {
       this._windows[kWindowNames.inGame].restore();
     } else {
       this._windows[kWindowNames.launcher].restore();
-      //setTimeout(() => this._windows[kWindowNames.launcher].restore(), 10000);
       setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 3000);
       this._windows[kWindowNames.inGame].close();
     }
@@ -109,8 +123,7 @@ class BackgroundController {
       this._windows[kWindowNames.inGame].restore();
     } else {
       this._windows[kWindowNames.launcher].restore();
-      //setTimeout(() => this._windows[kWindowNames.launcher].restore(), 10000);
-      setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 1500);
+      setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 1500); //Brings the launcher window infront of the game launcher after 1.5s
       this._windows[kWindowNames.inGame].close();
     }
   }
@@ -127,5 +140,8 @@ class BackgroundController {
     return kGameClassIds.includes(info.classId);
   }
 }
+
+
+
 
 BackgroundController.instance().run();
