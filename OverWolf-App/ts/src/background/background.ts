@@ -26,6 +26,7 @@ class BackgroundController {
   private in_game_message: string;
   private send_message: string;
   private test_message: string;
+  private primary_message: string;
 
   private constructor() {
     // Populating the background controller's window dictionary
@@ -91,8 +92,13 @@ class BackgroundController {
     }
 
     this.test_message = messageObject[1];  //Send the second line
-    this.mainWindowObject.document.getElementById("time_message").innerHTML = this.test_message;
+    this.mainWindowObject.document.getElementById("test_message").innerHTML = this.test_message;  //update test_message
 
+    let someConditionShaneWants:boolean = true;
+    if(someConditionShaneWants){
+      this.primary_message = messageObject[0];
+      this.mainWindowObject.document.getElementById("primary_message").innerHTML = this.primary_message;
+    }
   }
 
 

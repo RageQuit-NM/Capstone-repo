@@ -52,6 +52,10 @@ class Launcher extends AppWindow {
       test_message = this.mainWindowObject.document.getElementById("test_message").innerHTML;
       document.getElementById("testMessage").innerHTML = test_message;
 
+      let primary_message: string;
+      primary_message = this.mainWindowObject.document.getElementById("primary_message").innerHTML;
+      document.getElementById("primaryMessage").innerHTML = primary_message;
+
 
       // this.message = this.mainWindowObject.document.getElementById("test_message").innerHTML;
       // document.getElementById("test_message").innerHTML = this.message;
