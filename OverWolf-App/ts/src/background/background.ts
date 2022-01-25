@@ -75,21 +75,10 @@ class BackgroundController {
 
 
     //collect contents of Messages.txt
-    const FILE_PATH = `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`;
-    const result = await new Promise(resolve => {
-      overwolf.io.readFileContents(
-        FILE_PATH,
-        overwolf.io.enums.eEncoding.UTF8,
-        resolve
-      );
-    }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
+    let result = this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`);
 
     //arrange lines into an array object
-    var messageObject:string[] = new Array();
-    while(result["content"].indexOf(";") != -1){
-      messageObject.push(result["content"].substr(0, result["content"].indexOf(";")));
-      result["content"] = result["content"].substr(result["content"].indexOf(";")+1);
-    }
+    var messageObject:string[] = this.buildMessageObject(result);
 
     this.test_message = messageObject[1];  //Send the second line
     this.mainWindowObject.document.getElementById("test_message").innerHTML = this.test_message;  //update test_message
@@ -101,6 +90,27 @@ class BackgroundController {
     }
   }
 
+  private readFileData(file_path:string){
+    const result = new Promise(resolve => {
+      overwolf.io.readFileContents(
+        file_path,
+        overwolf.io.enums.eEncoding.UTF8,
+        resolve
+      );
+    }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
+    return result;
+  }
+
+    //arrange lines into an array object
+    //All information before a ";" character is stored into an entry in the messageObject
+  private buildMessageObject(originMessage:string){
+    var messageObject:string[] = new Array();
+    while(originMessage["content"].indexOf(";") != -1){
+      messageObject.push(originMessage["content"].substr(0, originMessage["content"].indexOf(";")));
+      originMessage["content"] = originMessage["content"].substr(originMessage["content"].indexOf(";")+1);
+    }
+    return messageObject;
+  }
 
   private async onAppLaunchTriggered(e: AppLaunchTriggeredEvent) {
     console.log('onAppLaunchTriggered():', e);
