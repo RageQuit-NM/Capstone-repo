@@ -60,12 +60,14 @@ class InGame extends AppWindow {
     //this.logLine(this._infoLog, info, false);
   }
 
-  // Special events will be highlighted in the event log
+  //Highlights some events
+  //Sends Matchclock to the html overlay
+  //Sends Kill and Death event data to a outside file
   private onNewEvents(e) {
     const shouldHighlight = e.events.some(event => {
       switch (event.name) {
-        // case 'kill':
-        // case 'death':
+         case 'kill':
+         case 'death':
         // case 'assist':
         // case 'level':
         case 'matchStart':
@@ -77,16 +79,42 @@ class InGame extends AppWindow {
       return false;
     });
     this.logLine(this._eventsLog, e, shouldHighlight);
-    let time_message: string;
 
     if(e.events[0]["name"] == 'match_clock'){
-      time_message = e.events[0]["data"];
+      let time_message:string = e.events[0]["data"];
       document.getElementById("time_message").innerHTML = time_message; //for testing purposes
 
       //send the match clock to main window
       this.mainWindowObject = overwolf.windows.getMainWindow();
       this.mainWindowObject.document.getElementById("time_message").innerHTML = time_message;
     }
+    if(e.events[0]["name"] == 'kill'){
+      let kill_data:string = e.events[0]["data"];
+      document.getElementById("kill_message").innerHTML = e.events[0]["data"];
+
+      this.writeFile(kill_data, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\kill_data.json`);
+    }
+    if(e.events[0]["name"] == 'death'){
+      let death_data:string = e.events[0]["data"];
+      document.getElementById("death_message").innerHTML = e.events[0]["data"];
+
+      this.writeFile(death_data, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\death_data.json`);
+    }
+  }
+
+  //Writes data into a file specified in file_path, returns the result
+  private async writeFile(data:string, file_path:string){
+    let result = await new Promise((resolve, reject) => {
+      overwolf.io.writeFileContents(
+        file_path,
+        data,
+        overwolf.io.enums.eEncoding.UTF8,
+        true,
+        r => r.success ? resolve(r) : reject(r)
+      );
+    });
+    //console.log('writeFile()', result);
+    return result;
   }
 
   // Displays the toggle minimize/restore hotkey in the window header

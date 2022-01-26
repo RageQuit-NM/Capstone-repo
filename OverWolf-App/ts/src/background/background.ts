@@ -41,7 +41,6 @@ class BackgroundController {
   }
 
   //displayMessageBox(messageParams, callback)    //Displays a customized popup message prompt.
-  //var resultString:string = result["content"] as string;  //Typecasting
 
   // When running the app, start listening to games' status and decide which window should
   // be launched first, based on whether a supported game is currently running
@@ -57,6 +56,7 @@ class BackgroundController {
     this.mainWindowObject = overwolf.windows.getMainWindow()
 
     this.sendMessageToLauncher();
+    this.updateSecondaryMessage();
   }
 
   //Reads the data in file specified in file_path and returns it
@@ -93,6 +93,13 @@ class BackgroundController {
 
     this.mainWindowObject = overwolf.windows.getMainWindow()
     this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[randNum];
+  }
+
+  private async updateSecondaryMessage(){
+    let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\kill_data.json`);
+    let kill_data:string = result["content"] as string;  //Typecasting
+    
+
   }
 
   private pickRandomNumWithinObjectSize(myObject:Array<string>){
