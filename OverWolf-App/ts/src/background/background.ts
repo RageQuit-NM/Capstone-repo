@@ -69,8 +69,7 @@ class BackgroundController {
         resolve
       );
     }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
-
-    console.log("readFileData()", result["success"] + ", " + result["content"] + ", " +  result["error"]);
+    //console.log("readFileData()", result["success"] + ", " + result["content"] + ", " +  result["error"]);
     return result;
   }
 
@@ -91,36 +90,53 @@ class BackgroundController {
     let messageObject:string[] = this.buildMessageObject(result);
     let randNum:number = this.pickRandomNumWithinObjectSize(messageObject);
 
-    this.mainWindowObject = overwolf.windows.getMainWindow()
+    this.mainWindowObject = overwolf.windows.getMainWindow()                            //Dont actually need to get this for the background window, but good practice
     this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[randNum];
   }
 
+  //Collects data from kill_data.json and death_data.json, trims the data to just the number and updates the secondary message.
   private async updateSecondaryMessage(){
+    let kills:string = "0";
+    let deaths:string = "0";
     let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\kill_data.json`);
     let result_string:string = result["content"] as string;  //Typecasting
-    console.log("My error: " + result["error"]);
 
     if(result["error"] == undefined){
       if(!(result_string.indexOf("count") == -1)){                                      //check if there is a message and that it is formatted as expected
         var sub1:string = result_string.substr(result_string.indexOf("count\": \"")+9); //Erase all characters before the kill count
-        var kills:string = sub1.substr(0, sub1.indexOf("\","));                         //Make a substring that is only until the next "
-        this.mainWindowObject.document.getElementById("secondary_message").innerHTML = "You got " + kills + " kills!";
+        kills = sub1.substr(0, sub1.indexOf("\","));                         //Make a substring that is only until the next "
+        //document.getElementById("secondary_message").innerHTML = "You got " + kills + " kills!";
       }
     }
 
     result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\death_data.json`);
     result_string = result["content"] as string;  //Typecasting
-    console.log("result_string = " + result_string);
     if(result["error"] == undefined){
       if(!(result_string.indexOf("count") == -1)){
         var sub2:string = result_string.substr(result_string.indexOf("count\": \"")+9);
-        var deaths:string = sub2.substr(0, sub2.indexOf("\""));
-        document.getElementById("secondary_message").innerHTML = "You've died " + deaths + " times";
+        deaths = sub2.substr(0, sub2.indexOf("\""));
+        //document.getElementById("secondary_message").innerHTML = "You've died " + deaths + " times";
+      }
+    }
+    let kills_num:number = +kills; //unary + operator to convert string to number
+    let deaths_num:number = +deaths; 
+    if (kills_num > deaths_num){
+      document.getElementById("secondary_message").innerHTML = "Well done! You have more kills than deaths";
+      return;
+    }
+    if (deaths_num > kills_num){
+      document.getElementById("secondary_message").innerHTML = "That game was tough :( Take some time to shake it off!";
+      return;
+    }
+    if (kills_num == 0){
+      if (deaths_num == 0){
+      document.getElementById("secondary_message").innerHTML = "No info on K/D yet.";
       }
     }
 
   }
 
+  //Takes an array object and returns a number between 0 and length
   private pickRandomNumWithinObjectSize(myObject:Array<string>){
     let min:number = 0;
     let max:any = myObject.length;
@@ -129,7 +145,7 @@ class BackgroundController {
   }
 
   private async onAppLaunchTriggered(e: AppLaunchTriggeredEvent) {
-    console.log('onAppLaunchTriggered():', e);
+    //console.log('onAppLaunchTriggered():', e);
 
     if (!e || e.origin.includes('gamelaunchevent')) {
       return;
