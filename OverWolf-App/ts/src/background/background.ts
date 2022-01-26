@@ -56,15 +56,7 @@ class BackgroundController {
     //To send a message to the bus which is background.html, first we must get the windowObject
     this.mainWindowObject = overwolf.windows.getMainWindow()
 
-    //collect contents of Messages.txt
-    let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`);
-
-    //arrange lines into an array object
-    var messageObject:string[] = this.buildMessageObject(result);
-
-    this.test_message = messageObject[1];  //Send the second line
-    this.mainWindowObject.document.getElementById("primary_message").innerHTML = this.test_message;  //update test_message
-
+    this.sendMessageToLauncher();
   }
 
   //Reads the data in file specified in file_path and returns it
@@ -78,11 +70,11 @@ class BackgroundController {
       );
     }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
 
-    console.log("readFileData()", result + "  " + result["success"] + ", " + result["content"] + ", " +  result["error"]);
+    //console.log("readFileData()", result + "  " + result["success"] + ", " + result["content"] + ", " +  result["error"]);
     return result;
   }
 
-  //arrange lines into an array object
+  //Arrange lines into an array object
   //All information before a ";" character is stored into an entry in the messageObject
   private buildMessageObject(originMessage:Object){
     var messageObject:string[] = new Array();
@@ -93,17 +85,21 @@ class BackgroundController {
     return messageObject;
   }
 
+  //Sends a random message in Messages.txt to the primary_message bus
   private async sendMessageToLauncher(){
     let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`);
     let messageObject:string[] = this.buildMessageObject(result);
+    let randNum:number = this.pickRandomNumWithinObjectSize(messageObject);
 
-    
     this.mainWindowObject = overwolf.windows.getMainWindow()
-
+    this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[randNum];
   }
 
-  private pickRandomNumWithinObjectSize(myObject:object){
-    
+  private pickRandomNumWithinObjectSize(myObject:Array<string>){
+    let min:number = 0;
+    let max:any = myObject.length;
+    let randomNum:number =  Math.floor(Math.random() * max ) + min;
+    return randomNum;
   }
 
   private async onAppLaunchTriggered(e: AppLaunchTriggeredEvent) {
