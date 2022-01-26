@@ -172,6 +172,7 @@ class BackgroundController {
       this._windows[kWindowNames.inGame].restore();
     } else {
       this.sendMessageToLauncher();
+      this.updateSecondaryMessage();
       this._windows[kWindowNames.launcher].restore();
       setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 1500); //Brings the launcher window infront of the game launcher after 1.5s
       this._windows[kWindowNames.inGame].close();
