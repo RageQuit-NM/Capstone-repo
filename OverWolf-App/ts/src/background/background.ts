@@ -53,7 +53,7 @@ class BackgroundController {
     this._windows[currWindowName].restore();
 
     //To send a message to the bus which is background.html, first we must get the windowObject
-    this.mainWindowObject = overwolf.windows.getMainWindow()
+    this.mainWindowObject = overwolf.windows.getMainWindow();
 
     this.sendMessageToLauncher();
     this.updateSecondaryMessage();
@@ -70,7 +70,7 @@ class BackgroundController {
       );
     }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
 
-    //console.log("readFileData()", result + "  " + result["success"] + ", " + result["content"] + ", " +  result["error"]);
+    console.log("readFileData()", result["success"] + ", " + result["content"] + ", " +  result["error"]);
     return result;
   }
 
@@ -97,8 +97,27 @@ class BackgroundController {
 
   private async updateSecondaryMessage(){
     let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\kill_data.json`);
-    let kill_data:string = result["content"] as string;  //Typecasting
-    
+    let result_string:string = result["content"] as string;  //Typecasting
+    console.log("My error: " + result["error"]);
+
+    if(result["error"] == undefined){
+      if(!(result_string.indexOf("count") == -1)){                                      //check if there is a message and that it is formatted as expected
+        var sub1:string = result_string.substr(result_string.indexOf("count\": \"")+9); //Erase all characters before the kill count
+        var kills:string = sub1.substr(0, sub1.indexOf("\","));                         //Make a substring that is only until the next "
+        this.mainWindowObject.document.getElementById("secondary_message").innerHTML = "You got " + kills + " kills!";
+      }
+    }
+
+    result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\death_data.json`);
+    result_string = result["content"] as string;  //Typecasting
+    console.log("result_string = " + result_string);
+    if(result["error"] == undefined){
+      if(!(result_string.indexOf("count") == -1)){
+        var sub2:string = result_string.substr(result_string.indexOf("count\": \"")+9);
+        var deaths:string = sub2.substr(0, sub2.indexOf("\""));
+        document.getElementById("secondary_message").innerHTML = "You've died " + deaths + " times";
+      }
+    }
 
   }
 

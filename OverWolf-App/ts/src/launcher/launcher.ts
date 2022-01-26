@@ -26,6 +26,14 @@ class Launcher extends AppWindow {
   
     public async run() {
       this.mainWindowObject = overwolf.windows.getMainWindow(); //Gets the HTML Object of the main window for messaging
+
+      let primary_message: string;
+      primary_message = this.mainWindowObject.document.getElementById("primary_message").innerHTML;
+      document.getElementById("primary_message").innerHTML = primary_message;
+
+      let secondary_message: string;
+      secondary_message = this.mainWindowObject.document.getElementById("secondary_message").innerHTML;
+      document.getElementById("secondary_message").innerHTML = secondary_message;
       
       //collect time message
       let time_message: string;
@@ -36,9 +44,6 @@ class Launcher extends AppWindow {
       test_message = this.mainWindowObject.document.getElementById("test_message").innerHTML;
       document.getElementById("test_message").innerHTML = test_message;
 
-      let primary_message: string;
-      primary_message = this.mainWindowObject.document.getElementById("primary_message").innerHTML;
-      document.getElementById("primary_message").innerHTML = primary_message;
     }
 
 }  
