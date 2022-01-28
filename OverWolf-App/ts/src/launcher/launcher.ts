@@ -10,12 +10,16 @@ class Launcher extends AppWindow {
       super(kWindowNames.launcher);
       //this.setToggleHotkeyBehavior();
       //this.setToggleHotkeyText();
-      let aButton = document.getElementById("aButton");
+      let smiley = document.getElementById("smiley");
 
-      //Had an issue with contrudctor urnning 3 times, make it so only 1 listener is set
-      if (aButton.getAttribute('listener') != 'true') {
-        aButton.setAttribute('listener', 'true');
-        aButton.addEventListener("click", this.clickSexyButton);
+      //Had an issue with contrudctor running 3 times, make it so only 1 listener is set on the elements
+      if (smiley.getAttribute('listener') != 'true') {
+        smiley.setAttribute('listener', 'true');
+        smiley.addEventListener("click", this.clickSmiley);
+
+        //i added these in a check on the smiley, should prob check each one before applying
+        document.getElementById("straight").addEventListener("click", this.clickSmiley);
+        document.getElementById("sad").addEventListener("click", this.clickSmiley);
       }
    }
   
@@ -28,6 +32,15 @@ class Launcher extends AppWindow {
     
     //collect all messages from bus to be shown on the launcher page
     public async run() {
+      this.setContent();
+
+      //Hide messages within content (so only smileys are showing)
+      document.getElementById("content").style.display = "none";
+      document.getElementById("broad_message").style.display = "none";
+    }
+
+    //Sets all message content from the bus
+    private setContent(){
       this.mainWindowObject = overwolf.windows.getMainWindow(); //Gets the HTML Object of the main window for messaging
 
       let primary_message: string = this.mainWindowObject.document.getElementById("primary_message").innerHTML; // collect the primary_message
@@ -43,54 +56,14 @@ class Launcher extends AppWindow {
       document.getElementById("test_message").innerHTML = test_message;
     }
 
-    private clickSexyButton(){
-      const bottomSection = document.getElementById("bottomSection");
-      //bottomSection.remove();
-      bottomSection.style.display = "none";
+    private clickSmiley(){
+      //console.log("clicked a pic");
+      document.getElementById("smilies").style.display = "none";
+      document.getElementById("smiley_title").style.display = "none";
 
-      let size:number = 100;
-
-      let image1 = document.createElement("img");
-      image1.src="img/smiley.jpg";
-      image1.width=size;
-      image1.height=size;
-      image1.addEventListener("click", this.clickReturn);
-
-      let image2 = document.createElement("img");
-      image2.src="img/straightFace.png";
-      image2.width=size;
-      image2.height=size;
-
-      let image3 = document.createElement("img");
-      image3.src="img/sadFace.png";
-      image3.width=size;
-      image3.height=size;
-
-      let main = document.getElementById("main");
-      let picDiv = document.createElement("div");
-      //picDiv.addEventListener("click", this.clickReturn);
-      picDiv.setAttribute("id", "picDiv");
-      main.appendChild(picDiv);
-
-      picDiv.appendChild(image1);
-      picDiv.appendChild(image2);
-      picDiv.appendChild(image3);
-
-      document.getElementById("broad_message").addEventListener("click", this.colour);
-      console.log("heere2");
-    }
-
-    private clickReturn(){
-      console.log("clicked a pic");
-      let picDiv = document.getElementById("picDiv");
-      picDiv.style.display = "none";
-
-      const bottomSection = document.getElementById("bottomSection");
-      bottomSection.style.display = "block";
-    }
-
-    private colour(){
-      document.getElementById("broad_message").style.color = "red";
+      document.getElementById("content").style.display = "inherit";
+      document.getElementById("broad_message").style.display = "inherit";
+      this.setContent();
     }
 }  
 Launcher.instance().run();
