@@ -12,9 +12,6 @@ class BackgroundController {
   private _windows: Record<string, OWWindow> = {};
   private _gameListener: OWGameListener;
   private mainWindowObject: Window;
-  private send_message: string;
-  private test_message: string;
-  private primary_message: string;
 
   private constructor() {
     // Populating the background controller's window dictionary
@@ -131,9 +128,10 @@ class BackgroundController {
     if (kills_num == 0){
       if (deaths_num == 0){
       document.getElementById("secondary_message").innerHTML = "No info on K/D yet.";
+      return;
       }
     }
-
+    return;
   }
 
   //Takes an array object and returns a number between 0 and length
