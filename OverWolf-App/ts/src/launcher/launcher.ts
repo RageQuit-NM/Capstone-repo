@@ -21,6 +21,10 @@ class Launcher extends AppWindow {
         document.getElementById("straight").addEventListener("click", this.clickSmiley);
         document.getElementById("sad").addEventListener("click", this.clickSmiley);
       }
+
+      //Hide messages within content (so only smileys are showing)
+      document.getElementById("content").style.display = "none";
+      document.getElementById("broad_message").style.display = "none";
    }
   
     public static instance() {
@@ -32,15 +36,20 @@ class Launcher extends AppWindow {
     
     //collect all messages from bus to be shown on the launcher page
     public async run() {
-      this.setContent();
+      //this.setContent(); 
+    }
 
-      //Hide messages within content (so only smileys are showing)
-      document.getElementById("content").style.display = "none";
-      document.getElementById("broad_message").style.display = "none";
+    private async clickSmiley(){
+      document.getElementById("smilies").style.display = "none";
+      document.getElementById("smiley_title").style.display = "none";
+
+      document.getElementById("content").style.display = "inherit";
+      document.getElementById("broad_message").style.display = "inherit";
+      Launcher.instance().setContent();     //?? idk it should be this.setContent() but that doesnt work so we access it from the Launcher class
     }
 
     //Sets all message content from the bus
-    private setContent(){
+    public setContent(){
       this.mainWindowObject = overwolf.windows.getMainWindow(); //Gets the HTML Object of the main window for messaging
 
       let primary_message: string = this.mainWindowObject.document.getElementById("primary_message").innerHTML; // collect the primary_message
@@ -54,16 +63,6 @@ class Launcher extends AppWindow {
 
       let test_message: string = this.mainWindowObject.document.getElementById("test_message").innerHTML;
       document.getElementById("test_message").innerHTML = test_message;
-    }
-
-    private clickSmiley(){
-      //console.log("clicked a pic");
-      document.getElementById("smilies").style.display = "none";
-      document.getElementById("smiley_title").style.display = "none";
-
-      document.getElementById("content").style.display = "inherit";
-      document.getElementById("broad_message").style.display = "inherit";
-      this.setContent();
     }
 }  
 Launcher.instance().run();
