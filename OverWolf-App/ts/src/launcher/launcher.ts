@@ -14,12 +14,14 @@ class Launcher extends AppWindow {
 
       //Had an issue with contrudctor running 3 times, make it so only 1 listener is set on the elements
       if (smiley.getAttribute('listener') != 'true') {
-        smiley.setAttribute('listener', 'true');
+        smiley.setAttribute('listener', 'true');  //Update the attribute so this isnt triggered again
         smiley.addEventListener("click", this.clickSmiley);
 
         //i added these in a check on the smiley, should prob check each one before applying
         document.getElementById("straight").addEventListener("click", this.clickSmiley);
         document.getElementById("sad").addEventListener("click", this.clickSmiley);
+
+        document.getElementById("message_send").addEventListener("click", this.twilio);
       }
 
       //Hide messages within content (so only smileys are showing)
@@ -37,6 +39,24 @@ class Launcher extends AppWindow {
     //collect all messages from bus to be shown on the launcher page
     public async run() {
       //this.setContent(); 
+    }
+
+    private twilio(){
+    let serverAction = "test-sms";  //test-sms for twilio message, leave blank for deafualt action
+    let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+    let response = httpGet(remoteServer);
+
+    function httpGet(theUrl) {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open( "GET", theUrl, true ); // false for synchronous request
+      xmlHttp.send( null );
+
+      console.log(xmlHttp.response);
+      console.log(xmlHttp.responseText);
+      return xmlHttp.responseText;
+    }
+
+    document.getElementById("test_message").innerHTML = "reponse = " + response;
     }
 
     private async clickSmiley(){

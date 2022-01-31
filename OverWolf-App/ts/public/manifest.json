@@ -34,9 +34,8 @@
       "matches": [
         "http://*.overwolf.com",
         "https://*.overwolf.com",
-        "https://*.google-analytics.com",
-        "http://*.google-analytics.com",
-        "https://www.googleapis.com"
+        "https://www.googleapis.com",
+        "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com"
       ]
     },
     "force_browser": "user",
