@@ -54,6 +54,23 @@ class BackgroundController {
 
     this.sendMessageToLauncher();
     this.updateSecondaryMessage();
+
+    //http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/test-sms
+    let theUrl = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/";
+    let response = await httpGet(theUrl);
+
+    function httpGet(theUrl) {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open( "GET", theUrl, true ); // false for synchronous request
+      xmlHttp.send( null );
+
+      console.log(xmlHttp.response);
+      console.log(xmlHttp.responseText);
+      return xmlHttp.responseText;
+    }
+  console.log(response);
+
+  document.getElementById("test_message").innerHTML = "reponse = " + response;
   }
 
   //Reads the data in file specified in file_path and returns it
