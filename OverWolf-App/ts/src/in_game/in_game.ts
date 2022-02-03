@@ -29,6 +29,13 @@ class InGame extends AppWindow {
 
     this.setToggleHotkeyBehavior();
     this.setToggleHotkeyText();
+
+    let inital_json = {
+      "kills": 0,
+      "deaths": 0
+    }
+    let stringJson = JSON.stringify(inital_json);
+    this.writeFile(stringJson, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
   }
 
   public static instance() {
@@ -82,25 +89,63 @@ class InGame extends AppWindow {
 
     if(e.events[0]["name"] == 'match_clock'){
       let time_message:string = e.events[0]["data"];
-      document.getElementById("time_message").innerHTML = time_message; //for testing purposes
+      //document.getElementById("time_message").innerHTML = time_message; //for testing purposes
 
       //send the match clock to main window
-      this.mainWindowObject = overwolf.windows.getMainWindow();
-      this.mainWindowObject.document.getElementById("time_message").innerHTML = time_message;
+      //this.mainWindowObject = overwolf.windows.getMainWindow();
+      //this.mainWindowObject.document.getElementById("time_message").innerHTML = time_message;
     }
     if(e.events[0]["name"] == 'kill'){
       let kill_data:string = e.events[0]["data"];
-      document.getElementById("kill_message").innerHTML = e.events[0]["data"];
+      //document.getElementById("kill_message").innerHTML = e.events[0]["data"];
 
-      this.writeFile(kill_data, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\kill_data.json`);
+      this.updateData("kills");
     }
     if(e.events[0]["name"] == 'death'){
-      let death_data:string = e.events[0]["data"];
-      document.getElementById("death_message").innerHTML = e.events[0]["data"];
+      // let death_data:string = e.events[0]["data"];
+      // //document.getElementById("death_message").innerHTML = death_data;
 
-      this.writeFile(death_data, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\death_data.json`);
+      // death_data = death_data.replace("count", "deaths");
+
+      this.updateData("deaths");
     }
   }
+
+
+  private async updateData(dataField:string){
+    let fileData1 = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    let fileData = fileData1["content"];
+    document.getElementById("kill_message").innerHTML = fileData;
+    
+    let jsonData = JSON.parse(fileData);
+    if(dataField == "kills"){
+      jsonData["kills"]++;
+    }
+    if(dataField == "deaths"){
+      jsonData["deaths"]++;
+    }
+
+    let stringified = JSON.stringify(jsonData);
+
+    this.writeFile(stringified, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    document.getElementById("death_message").innerHTML = jsonData["deaths"];
+  }
+
+
+  //Reads the data in file specified in file_path and returns it
+  //Sample file_path = `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`
+  private async readFileData(file_path:string){
+    const result = await new Promise(resolve => {
+      overwolf.io.readFileContents(
+        file_path,
+        overwolf.io.enums.eEncoding.UTF8,
+        resolve
+      );
+    }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
+    //console.log("readFileData()", result["success"] + ", " + result["content"] + ", " +  result["error"]);
+    return result;
+  }
+
 
   //Writes data into a file specified in file_path, returns the result
   private async writeFile(data:string, file_path:string){

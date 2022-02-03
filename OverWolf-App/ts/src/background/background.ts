@@ -12,6 +12,7 @@ class BackgroundController {
   private _windows: Record<string, OWWindow> = {};
   private _gameListener: OWGameListener;
   private mainWindowObject: Window;
+  private hasGameRun:boolean;
 
   private constructor() {
     // Populating the background controller's window dictionary
@@ -27,6 +28,8 @@ class BackgroundController {
     overwolf.extensions.onAppLaunchTriggered.addListener(
       e => this.onAppLaunchTriggered(e)
     );
+
+    this.hasGameRun = false;
   };
 
   // Implementing the Singleton design pattern
@@ -53,9 +56,8 @@ class BackgroundController {
     this.mainWindowObject = overwolf.windows.getMainWindow();
 
     this.sendMessageToLauncher();
-    this.updateSecondaryMessage();
   }
-
+  
   //Reads the data in file specified in file_path and returns it
   //Sample file_path = `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`
   private async readFileData(file_path:string){
@@ -88,59 +90,24 @@ class BackgroundController {
     let randNum:number = this.pickRandomNumWithinObjectSize(messageObject);
 
     this.mainWindowObject = overwolf.windows.getMainWindow()                            //Dont actually need to get this for the background window, but good practice
-    this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[randNum];
+    
+    
+    //if game has run send a message from Messages.txt else just a welcome message
+    if(this.hasGameRun){
+      this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[randNum];
+    } else{
+      this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
+    }
   }
 
-  //Collects data from kill_data.json and death_data.json, trims the data to just the number and updates the secondary message.
-  private async updateSecondaryMessage(){
-    let kills:string = "0";
-    let deaths:string = "0";
-    let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\kill_data.json`);
-    let result_string:string = result["content"] as string;  //Typecasting
-
-    if(result["error"] == undefined){
-      if(!(result_string.indexOf("count") == -1)){                                      //check if there is a message and that it is formatted as expected
-        var sub1:string = result_string.substr(result_string.indexOf("count\": \"")+9); //Erase all characters before the kill count
-        kills = sub1.substr(0, sub1.indexOf("\","));                         //Make a substring that is only until the next "
-        //document.getElementById("secondary_message").innerHTML = "You got " + kills + " kills!";
-      }
+    //Takes an array object and returns a number between 0 and length
+    private pickRandomNumWithinObjectSize(myObject:Array<string>){
+      let min:number = 0;
+      let max:any = myObject.length;
+      let randomNum:number =  Math.floor(Math.random() * max ) + min;
+      return randomNum;
     }
 
-    result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\death_data.json`);
-    result_string = result["content"] as string;  //Typecasting
-    if(result["error"] == undefined){
-      if(!(result_string.indexOf("count") == -1)){
-        var sub2:string = result_string.substr(result_string.indexOf("count\": \"")+9);
-        deaths = sub2.substr(0, sub2.indexOf("\""));
-        //document.getElementById("secondary_message").innerHTML = "You've died " + deaths + " times";
-      }
-    }
-    let kills_num:number = +kills; //unary + operator to convert string to number
-    let deaths_num:number = +deaths; 
-    if (kills_num > deaths_num){
-      document.getElementById("secondary_message").innerHTML = "Well done! You have more kills than deaths";
-      return;
-    }
-    if (deaths_num > kills_num){
-      document.getElementById("secondary_message").innerHTML = "That game was tough :( Take some time to shake it off!";
-      return;
-    }
-    if (kills_num == 0){
-      if (deaths_num == 0){
-      document.getElementById("secondary_message").innerHTML = "No info on K/D yet.";
-      return;
-      }
-    }
-    return;
-  }
-
-  //Takes an array object and returns a number between 0 and length
-  private pickRandomNumWithinObjectSize(myObject:Array<string>){
-    let min:number = 0;
-    let max:any = myObject.length;
-    let randomNum:number =  Math.floor(Math.random() * max ) + min;
-    return randomNum;
-  }
 
   private async onAppLaunchTriggered(e: AppLaunchTriggeredEvent) {
     //console.log('onAppLaunchTriggered():', e);
@@ -168,9 +135,9 @@ class BackgroundController {
     if (info.isRunning) {
       this._windows[kWindowNames.launcher].close();
       this._windows[kWindowNames.inGame].restore();
+      this.hasGameRun = true;
     } else {
       this.sendMessageToLauncher();
-      this.updateSecondaryMessage();
       this._windows[kWindowNames.launcher].restore();
       setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 1500); //Brings the launcher window infront of the game launcher after 1.5s
       this._windows[kWindowNames.inGame].close();
