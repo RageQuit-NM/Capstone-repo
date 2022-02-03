@@ -8,25 +8,20 @@ class Launcher extends AppWindow {
   
     private constructor() {
       super(kWindowNames.launcher);
-      //this.setToggleHotkeyBehavior();
-      //this.setToggleHotkeyText();
-      let smiley = document.getElementById("smiley");
+      //Constructor inexplicably runs 3 times, make it so only 1 listener is set for each element
+      if (document.getElementById("smiley").getAttribute('listener') != 'true') {
+        document.getElementById("smiley").setAttribute('listener', 'true');
 
-      //Had an issue with contrudctor running 3 times, make it so only 1 listener is set on the elements
-      if (smiley.getAttribute('listener') != 'true') {
-        smiley.setAttribute('listener', 'true');  //Update the attribute so this isnt triggered again
-        smiley.addEventListener("click", this.clickSmiley);
-
-        //i added these in a check on the smiley, should prob check each one before applying
-        document.getElementById("straight").addEventListener("click", this.clickSmiley);
-        document.getElementById("sad").addEventListener("click", this.clickSmiley);
-
+        //Adds event listeners
+        // document.getElementById("smiley").addEventListener("click", this.clickSmiley);
+        // document.getElementById("straight").addEventListener("click", this.clickSmiley);
+        // document.getElementById("sad").addEventListener("click", this.clickSmiley);
         document.getElementById("message_send").addEventListener("click", this.twilio);
       }
 
-      //Hide messages within content (so only smileys are showing)
-      document.getElementById("content").style.display = "none";
-      document.getElementById("broad_message").style.display = "none";
+      //Hide these
+      document.getElementById("smilies").style.display = "none";
+      document.getElementById("smiley_title").style.display = "none";
    }
   
     public static instance() {
@@ -38,7 +33,7 @@ class Launcher extends AppWindow {
     
     //collect all messages from bus to be shown on the launcher page
     public async run() {
-      //this.setContent(); 
+      this.setContent(); 
     }
 
     private twilio(){
@@ -59,24 +54,12 @@ class Launcher extends AppWindow {
     document.getElementById("test_message").innerHTML = "reponse = " + response;
     }
 
-    private async clickSmiley(){
-      document.getElementById("smilies").style.display = "none";
-      document.getElementById("smiley_title").style.display = "none";
-
-      document.getElementById("content").style.display = "inherit";
-      document.getElementById("broad_message").style.display = "inherit";
-      Launcher.instance().setContent();     //?? idk it should be this.setContent() but that doesnt work so we access it from the Launcher class
-    }
-
     //Sets all message content from the bus
     public setContent(){
       this.mainWindowObject = overwolf.windows.getMainWindow(); //Gets the HTML Object of the main window for messaging
 
-      let primary_message: string = this.mainWindowObject.document.getElementById("primary_message").innerHTML; // collect the primary_message
+      let primary_message: string = this.mainWindowObject.document.getElementById("primary_message").innerHTML; //collect the primary_message
       document.getElementById("primary_message").innerHTML = primary_message;                                   //Update HTML document
-
-      let secondary_message: string = this.mainWindowObject.document.getElementById("secondary_message").innerHTML;
-      document.getElementById("secondary_message").innerHTML = secondary_message;
       
       let time_message: string = this.mainWindowObject.document.getElementById("time_message").innerHTML;
       document.getElementById("time_played").innerHTML = time_message;
@@ -84,5 +67,14 @@ class Launcher extends AppWindow {
       let test_message: string = this.mainWindowObject.document.getElementById("test_message").innerHTML;
       document.getElementById("test_message").innerHTML = test_message;
     }
+
+
+    // private async clickSmiley(){
+    //   document.getElementById("smilies").style.display = "none";
+    //   document.getElementById("smiley_title").style.display = "none";
+    //   document.getElementById("content").style.display = "inherit";
+    //   document.getElementById("broad_message").style.display = "inherit";
+    //   Launcher.instance().setContent();     //?? idk it should be this.setContent() but that doesnt work so we access it from the Launcher class
+    // }
 }  
 Launcher.instance().run();
