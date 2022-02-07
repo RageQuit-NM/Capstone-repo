@@ -52,12 +52,61 @@ class BackgroundController {
       : kWindowNames.launcher;
     this._windows[currWindowName].restore();
 
-    //To send a message to the bus which is background.html, first we must get the windowObject
-    this.mainWindowObject = overwolf.windows.getMainWindow();
-
     this.sendMessageToLauncher();
   }
-  
+
+  //Arrange lines into an array object
+  //All information before a ";" character is stored into an entry in the messageObject
+  private buildMessageObject(originMessage:string){
+    var messageObject:string[] = new Array();
+    while(originMessage.indexOf(";") != -1){
+      messageObject.push(originMessage.substr(0, originMessage.indexOf(";")));
+      originMessage = originMessage.substr(originMessage.indexOf(";")+1);
+    }
+    return messageObject;
+  }
+
+  //Sends a random message in Messages.txt to the primary_message bus
+  private async sendMessageToLauncher(){
+    let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`);
+    let messageObject:string[] = this.buildMessageObject(result);
+    let randNum:number = this._pickRandomNumWithinObjectSize(messageObject);
+
+    this.mainWindowObject = overwolf.windows.getMainWindow();
+    //if game has run send a message from Messages.txt else just a welcome message
+    if(this.hasGameRun){
+      this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[randNum];
+    } else{
+      this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
+    }
+  }
+
+  private async sendGameInfoToRemote(){
+    let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    document.getElementById("kill_message").innerHTML = fileData;  //for debugging
+
+    let serverAction = "game_end";  //
+    let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("POST", remoteServer, true);
+    xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    xmlHttp.send(JSON.stringify({
+      value: fileData
+    }));
+    let response = xmlHttp.responseText;
+
+    document.getElementById("test_message").innerHTML = "reponse from /game_end = " + response;
+  }
+
+  //Takes an array object and returns a number between 0 and length
+  private _pickRandomNumWithinObjectSize(myObject:Array<string>){
+    let min:number = 0;
+    let max:any = myObject.length;
+    let randomNum:number =  Math.floor(Math.random() * max ) + min;
+    return randomNum;
+  }
+
   //Reads the data in file specified in file_path and returns it
   //Sample file_path = `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`
   private async readFileData(file_path:string){
@@ -69,49 +118,12 @@ class BackgroundController {
       );
     }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
     //console.log("readFileData()", result["success"] + ", " + result["content"] + ", " +  result["error"]);
-    return result;
+    return result["content"];
   }
-
-  //Arrange lines into an array object
-  //All information before a ";" character is stored into an entry in the messageObject
-  private buildMessageObject(originMessage:Object){
-    var messageObject:string[] = new Array();
-    while(originMessage["content"].indexOf(";") != -1){
-      messageObject.push(originMessage["content"].substr(0, originMessage["content"].indexOf(";")));
-      originMessage["content"] = originMessage["content"].substr(originMessage["content"].indexOf(";")+1);
-    }
-    return messageObject;
-  }
-
-  //Sends a random message in Messages.txt to the primary_message bus
-  private async sendMessageToLauncher(){
-    let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`);
-    let messageObject:string[] = this.buildMessageObject(result);
-    let randNum:number = this.pickRandomNumWithinObjectSize(messageObject);
-
-    this.mainWindowObject = overwolf.windows.getMainWindow()                            //Dont actually need to get this for the background window, but good practice
-    
-    
-    //if game has run send a message from Messages.txt else just a welcome message
-    if(this.hasGameRun){
-      this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[randNum];
-    } else{
-      this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
-    }
-  }
-
-    //Takes an array object and returns a number between 0 and length
-    private pickRandomNumWithinObjectSize(myObject:Array<string>){
-      let min:number = 0;
-      let max:any = myObject.length;
-      let randomNum:number =  Math.floor(Math.random() * max ) + min;
-      return randomNum;
-    }
 
 
   private async onAppLaunchTriggered(e: AppLaunchTriggeredEvent) {
     //console.log('onAppLaunchTriggered():', e);
-
     if (!e || e.origin.includes('gamelaunchevent')) {
       return;
     }
@@ -137,6 +149,7 @@ class BackgroundController {
       this._windows[kWindowNames.inGame].restore();
       this.hasGameRun = true;
     } else {
+      this.sendGameInfoToRemote();
       this.sendMessageToLauncher();
       this._windows[kWindowNames.launcher].restore();
       setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 1500); //Brings the launcher window infront of the game launcher after 1.5s
@@ -156,8 +169,5 @@ class BackgroundController {
     return kGameClassIds.includes(info.classId);
   }
 }
-
-
-
 
 BackgroundController.instance().run();

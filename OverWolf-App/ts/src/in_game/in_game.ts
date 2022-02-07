@@ -19,7 +19,6 @@ class InGame extends AppWindow {
   private _gameEventsListener: OWGamesEvents;
   private _eventsLog: HTMLElement;
   private _infoLog: HTMLElement;
-  private mainWindowObject: Window;
 
   private constructor() {
     super(kWindowNames.inGame);
@@ -30,6 +29,7 @@ class InGame extends AppWindow {
     this.setToggleHotkeyBehavior();
     this.setToggleHotkeyText();
 
+    //intializes the game_data.txt file to be used in dataUpdate()
     let inital_json = {
       "kills": 0,
       "deaths": 0
@@ -69,7 +69,7 @@ class InGame extends AppWindow {
 
   //Highlights some events
   //Sends Matchclock to the html overlay
-  //Sends Kill and Death event data to a outside file
+  //Performs updateData() on Kill and Death events
   private onNewEvents(e) {
     const shouldHighlight = e.events.some(event => {
       switch (event.name) {
@@ -97,25 +97,18 @@ class InGame extends AppWindow {
     }
     if(e.events[0]["name"] == 'kill'){
       let kill_data:string = e.events[0]["data"];
-      //document.getElementById("kill_message").innerHTML = e.events[0]["data"];
-
       this.updateData("kills");
     }
     if(e.events[0]["name"] == 'death'){
-      // let death_data:string = e.events[0]["data"];
-      // //document.getElementById("death_message").innerHTML = death_data;
-
-      // death_data = death_data.replace("count", "deaths");
-
       this.updateData("deaths");
     }
   }
 
 
+  //Collects the information written in game_data.txt, builds a javascript object from the data, increments the dataField specified, stringifies the object and writes it back
   private async updateData(dataField:string){
-    let fileData1 = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
-    let fileData = fileData1["content"];
-    document.getElementById("kill_message").innerHTML = fileData;
+    let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    document.getElementById("kill_message").innerHTML = fileData;  //for debugging
     
     let jsonData = JSON.parse(fileData);
     if(dataField == "kills"){
@@ -126,9 +119,8 @@ class InGame extends AppWindow {
     }
 
     let stringified = JSON.stringify(jsonData);
-
     this.writeFile(stringified, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
-    document.getElementById("death_message").innerHTML = jsonData["deaths"];
+    document.getElementById("death_message").innerHTML = jsonData["deaths"]; //For debugging
   }
 
 
@@ -143,7 +135,7 @@ class InGame extends AppWindow {
       );
     }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
     //console.log("readFileData()", result["success"] + ", " + result["content"] + ", " +  result["error"]);
-    return result;
+    return result["content"];
   }
 
 
@@ -186,7 +178,6 @@ class InGame extends AppWindow {
         this.currWindow.restore();
       }
     }
-
     OWHotkeys.onHotkeyDown(kHotkeys.toggle, toggleInGameWindow);
   }
 
@@ -194,17 +185,14 @@ class InGame extends AppWindow {
   private logLine(log: HTMLElement, data, highlight) {
     const line = document.createElement('pre');
     line.textContent = JSON.stringify(data);
-
     if (highlight) {
       line.className = 'highlight';
     }
-
     // Check if scroll is near bottom
     const shouldAutoScroll =
       log.scrollTop + log.offsetHeight >= log.scrollHeight - 10;
 
     log.appendChild(line);
-
     if (shouldAutoScroll) {
       log.scrollTop = log.scrollHeight;
     }
@@ -212,7 +200,6 @@ class InGame extends AppWindow {
 
   private async getCurrentGameClassId(): Promise<number | null> {
     const info = await OWGames.getRunningGameInfo();
-
     return (info && info.isRunning && info.classId) ? info.classId : null;
   }
 }
