@@ -54,12 +54,6 @@ class BackgroundController {
     this._windows[currWindowName].restore();
 
     this.sendMessageToLauncher();
-
-    if(this.hasGameRun){
-      if(this.firstGameRunTime == null){
-        this.firstGameRunTime = new Date(); //set the time for first game run time
-      }
-    }
   }
 
   //Arrange lines into an array object
@@ -83,10 +77,48 @@ class BackgroundController {
     //if game has run send a message from Messages.txt else just a welcome message
     if(this.hasGameRun){
       this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[randNum];
-      this.mainWindowObject.document.getElementById("time_message").innerHTML = this.firstGameRunTime.toLocaleTimeString();
+
+      let endTime = new Date()
+      let seconds = (endTime.getTime() - this.firstGameRunTime.getTime()) / 1000;
+      //this.mainWindowObject.document.getElementById("time_message").innerHTML = seconds as unknown as string; //to send the time played if wanted
+      
+      this.sendMessageInfoToRemote(randNum, seconds);
+      //this.mainWindowObject.document.getElementById("time_message").innerHTML = this.firstGameRunTime.toLocaleTimeString() + "End time = " + endTime.toLocaleTimeString() + " seconds: " + seconds;
     } else{
       this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
     }
+  }
+  
+  //sends two messages, one to /message one to /time_played
+  private sendMessageInfoToRemote(randNum: number, seconds: number){
+    let serverAction = "message";  //
+    let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("POST", remoteServer, true);
+    xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    xmlHttp.send(JSON.stringify({
+      messageNum: randNum
+    }));
+
+
+    serverAction = "time_played";  //
+    remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+    xmlHttp.open("POST", remoteServer, true);
+    xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    xmlHttp.send(JSON.stringify({
+      secondsPlayed: seconds
+    }));
+
+    xmlHttp.onreadystatechange = function () {
+      if (this.readyState != 4) return;
+      if (this.status == 200) {
+        var response = (this.responseText); // we get the returned data
+        document.getElementById("test_message").innerHTML = "reponse from /message or /time_played = " + response;
+      }
+      // end of state change: it can be after some time (async)
+    };
+
   }
 
   private async sendGameInfoToRemote(){
@@ -104,7 +136,7 @@ class BackgroundController {
       value: objectData
     }));
 
-    xmlHttp.onreadystatechange = function () {
+    xmlHttp.onreadystatechange = await function () {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var response = (this.responseText); // we get the returned data
@@ -163,6 +195,9 @@ class BackgroundController {
       this._windows[kWindowNames.launcher].close();
       this._windows[kWindowNames.inGame].restore();
       this.hasGameRun = true;
+      if(this.firstGameRunTime == null){
+        this.firstGameRunTime = new Date(); //set the time for first game run time
+      }
     } else {
       //A game has just ended
       this.sendGameInfoToRemote();
