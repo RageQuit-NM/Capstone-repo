@@ -36,22 +36,31 @@ class Launcher extends AppWindow {
       this.setContent(); 
     }
 
-    private twilio(){
-    let serverAction = "test-sms";  //test-sms for twilio message, leave blank for deafualt action
-    let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
-    let response = httpGet(remoteServer);
-
-    function httpGet(theUrl) {
+    private async twilio(){
+      let objectData = "My message to shane from /game_end";
+  
+      let serverAction = "game_end";  //test-sms
+      let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+  
       var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open( "GET", theUrl, true ); // false for synchronous request
-      xmlHttp.send( null );
+      xmlHttp.open("POST", remoteServer, true);
+      xmlHttp.setRequestHeader('Content-Type', 'application/json');
+      xmlHttp.send(JSON.stringify({
+        value: objectData
+      }));
 
-      console.log(xmlHttp.response);
-      console.log(xmlHttp.responseText);
-      return xmlHttp.responseText;
-    }
+      // var xmlHttp = new XMLHttpRequest();
+      // xmlHttp.open( "GET", remoteServer, true ); // false for synchronous request
+      // xmlHttp.send( null );
 
-    document.getElementById("test_message").innerHTML = "reponse = " + response;
+      xmlHttp.onreadystatechange = function () {
+        if (this.readyState != 4) return;
+        if (this.status == 200) {
+          var response = (this.responseText); // we get the returned data
+          document.getElementById("test_message").innerHTML = "reponse = " + response;
+        }
+        // end of state change: it can be after some time (async)
+      };
     }
 
     //Sets all message content from the bus

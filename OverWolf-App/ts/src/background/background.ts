@@ -13,6 +13,7 @@ class BackgroundController {
   private _gameListener: OWGameListener;
   private mainWindowObject: Window;
   private hasGameRun:boolean;
+  private firstGameRunTime: Date = null;
 
   private constructor() {
     // Populating the background controller's window dictionary
@@ -53,6 +54,12 @@ class BackgroundController {
     this._windows[currWindowName].restore();
 
     this.sendMessageToLauncher();
+
+    if(this.hasGameRun){
+      if(this.firstGameRunTime == null){
+        this.firstGameRunTime = new Date(); //set the time for first game run time
+      }
+    }
   }
 
   //Arrange lines into an array object
@@ -76,6 +83,7 @@ class BackgroundController {
     //if game has run send a message from Messages.txt else just a welcome message
     if(this.hasGameRun){
       this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[randNum];
+      this.mainWindowObject.document.getElementById("time_message").innerHTML = this.firstGameRunTime.toLocaleTimeString();
     } else{
       this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
     }
@@ -83,6 +91,7 @@ class BackgroundController {
 
   private async sendGameInfoToRemote(){
     let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    let objectData = JSON.parse(fileData);
     document.getElementById("kill_message").innerHTML = fileData;  //for debugging
 
     let serverAction = "game_end";  //
@@ -92,11 +101,17 @@ class BackgroundController {
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send(JSON.stringify({
-      value: fileData
+      value: objectData
     }));
-    let response = xmlHttp.responseText;
 
-    document.getElementById("test_message").innerHTML = "reponse from /game_end = " + response;
+    xmlHttp.onreadystatechange = function () {
+      if (this.readyState != 4) return;
+      if (this.status == 200) {
+        var response = (this.responseText); // we get the returned data
+        document.getElementById("test_message").innerHTML = "reponse from /game_end = " + response;
+      }
+      // end of state change: it can be after some time (async)
+    };
   }
 
   //Takes an array object and returns a number between 0 and length
@@ -133,7 +148,7 @@ class BackgroundController {
       this._windows[kWindowNames.inGame].restore();
     } else {
       this._windows[kWindowNames.launcher].restore();
-      setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 3000);
+      //setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 3000); //Dont need to set a timeout for when the app launches
       this._windows[kWindowNames.inGame].close();
     }
   }
@@ -149,6 +164,7 @@ class BackgroundController {
       this._windows[kWindowNames.inGame].restore();
       this.hasGameRun = true;
     } else {
+      //A game has just ended
       this.sendGameInfoToRemote();
       this.sendMessageToLauncher();
       this._windows[kWindowNames.launcher].restore();
