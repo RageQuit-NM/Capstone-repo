@@ -69,6 +69,18 @@ class BackgroundController {
 
   //Sends a random message in Messages.txt to the primary_message bus
   private async sendMessageToLauncher(){
+    let negativeKD:boolean = false;
+    let positiveKD:boolean = false;
+    let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    let killDeath = JSON.parse(fileData);
+
+    if(killDeath["kills"] > killDeath["deaths"]){
+      positiveKD = true;
+    }
+    if(killDeath["deaths"] > killDeath["kills"]){
+      negativeKD = true;
+    }
+
     let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`);
     let messageObject:string[] = this.buildMessageObject(result);
     let randNum:number = this._pickRandomNumWithinObjectSize(messageObject);
@@ -76,15 +88,30 @@ class BackgroundController {
     this.mainWindowObject = overwolf.windows.getMainWindow();
     //if game has run send a message from Messages.txt else just a welcome message
     if(this.hasGameRun){
-      this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[randNum];
+      this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[1];  //Should be randNum
 
       let endTime = new Date()
       let seconds = (endTime.getTime() - this.firstGameRunTime.getTime()) / 1000;
       //this.mainWindowObject.document.getElementById("time_message").innerHTML = seconds as unknown as string; //to send the time played if wanted
+
+      if(positiveKD){
+        this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[3];
+        randNum = 3;
+      }
+      if(negativeKD){
+        this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[6];
+        randNum = 6;
+
+        let serverAction = "test-sms";  //
+        let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", remoteServer, true ); // false for synchronous request
+        xmlHttp.send( null );
+      }
       
-      this.sendMessageInfoToRemote(randNum, seconds);
+      //this.sendMessageInfoToRemote(randNum, seconds);
       //this.mainWindowObject.document.getElementById("time_message").innerHTML = this.firstGameRunTime.toLocaleTimeString() + "End time = " + endTime.toLocaleTimeString() + " seconds: " + seconds;
-    } else{
+    } else {
       this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
     }
   }
@@ -114,7 +141,7 @@ class BackgroundController {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var response = (this.responseText); // we get the returned data
-        document.getElementById("test_message").innerHTML = "reponse from /message or /time_played = " + response;
+        // document.getElementById("test_message").innerHTML = "reponse from /message or /time_played = " + response;
       }
       // end of state change: it can be after some time (async)
     };
