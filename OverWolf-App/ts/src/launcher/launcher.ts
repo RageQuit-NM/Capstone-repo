@@ -83,12 +83,12 @@ class Launcher extends AppWindow {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public parentPortalOpen(){
-      document.getElementById("myDropdown").classList.toggle("show");
+      document.getElementById("parentPortalItems").classList.toggle("show");
     }
 
     public parentPortalClose(){
       window.onclick = function(event) {
-        if (!event.target.matches('.parentPortalButton')) {
+        if (!event.target.matches('.parentdd')) {
           var elements = document.getElementsByClassName("parentPortalItems");
           var i;
           for (i = 0; i < elements.length; i++) {
