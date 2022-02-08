@@ -16,6 +16,7 @@ class Launcher extends AppWindow {
         // document.getElementById("smiley").addEventListener("click", this.clickSmiley);
         // document.getElementById("straight").addEventListener("click", this.clickSmiley);
         // document.getElementById("sad").addEventListener("click", this.clickSmiley);
+        document.getElementById("parentPortalButton").addEventListener("click", this.parentPortalOpen); 
         document.getElementById("message_send").addEventListener("click", this.twilio);
       }
 
@@ -33,7 +34,10 @@ class Launcher extends AppWindow {
     
     //collect all messages from bus to be shown on the launcher page
     public async run() {
-      this.setContent(); 
+      this.setContent();
+      
+      //this.parentPortalOpen();
+      this.parentPortalClose();
     }
 
     private async twilio(){
@@ -77,6 +81,26 @@ class Launcher extends AppWindow {
       document.getElementById("test_message").innerHTML = test_message;
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public parentPortalOpen(){
+      document.getElementById("myDropdown").classList.toggle("show");
+    }
+
+    public parentPortalClose(){
+      window.onclick = function(event) {
+        if (!event.target.matches('.parentPortalButton')) {
+          var elements = document.getElementsByClassName("parentPortalItems");
+          var i;
+          for (i = 0; i < elements.length; i++) {
+            var openDropdown = elements[i];
+            if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+            }
+          }
+        }
+      }
+    }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // private async clickSmiley(){
     //   document.getElementById("smilies").style.display = "none";

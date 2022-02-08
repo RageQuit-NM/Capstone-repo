@@ -6,8 +6,8 @@
   <link rel="stylesheet" href="../../css/general.css" />
   <link rel="stylesheet" href="../../css/header.css" />
   <link rel="stylesheet" href="../../css/desktop.css" />
+  <link rel="stylesheet" href="../../css/dropdown.css" />
   <title>RageQuit.NM</title>
-  <script defer src="js/launcher.js"></script>
   <script defer src="js/launcher.js"></script>
 </head>
 
@@ -19,6 +19,24 @@
 
   <!-- --------------------------------- Main -------------------------------- -->
   <main id = "main">
+    
+    <div class="parentPortalDropdown">
+      <button id="parentPortalButton" class="parentPortalButton">Parent Portal</button>
+      <div id="myDropdown" class="parentPortalItems">
+        <form>
+          <input type="checkbox" id="overTimeToggle" name="overTimeToggle">
+          <label for="overTimeToggle">Notify if over alloted time.</label><br>
+          <p>Send me digests: </p>
+          <input type="checkbox" id="dailyDigestToggle" name="dailyDigestToggle">
+          <label for="dailyDigestToggle">Daily</label><br>
+          <input type="checkbox" id="weeklyDigestToggle" name="weeklyDigestToggle">
+          <label for="weeklyDigestToggle">Weekly</label><br>
+          <input type="checkbox" id="monthyDigestToggle" name="monthlyDigestToggle">
+          <label for="monthlyDigestToggle">monthly</label><br>
+        </form>
+      </div>
+    </div>
+
     <div class="title">
         <h1 id="primary_message"></h1>
         <h1 id="smiley_title">How are you feeling?</h1>

@@ -1,0 +1,32 @@
+.parentPortalButton {
+    color: #81BADB;
+    background-color: #24343D;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .parentPortalButton:hover, .parentPortalButton:focus {
+    color: #456475;
+  }
+  
+  .parentPortalDropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .parentPortalItems {
+    display: none;
+    position: absolute;
+    background-color: #456475;
+    min-width: 200px;
+    overflow: auto;
+    z-index: 1;
+  }
+
+  .parentPortalItems form {
+    color: #81BADB;
+  }
+  
+  .show {display: block;}
