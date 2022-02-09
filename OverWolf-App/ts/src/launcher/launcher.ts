@@ -8,7 +8,7 @@ class Launcher extends AppWindow {
   
     private constructor() {
       super(kWindowNames.launcher);
-      //Constructor inexplicably runs 3 times, make it so only 1 listener is set for each element
+      //Constructor inexplicably runs 3 times, make it so only 1 listener is set for each element. This seems to run when the dismiss button is hit too
       if (document.getElementById("smiley").getAttribute('listener') != 'true') {
         document.getElementById("smiley").setAttribute('listener', 'true');
 
@@ -18,8 +18,9 @@ class Launcher extends AppWindow {
         // document.getElementById("sad").addEventListener("click", this.clickSmiley);
         document.getElementById("parentPortalButton").addEventListener("click", this.parentPortalOpen); 
         document.getElementById("message_send").addEventListener("click", this.twilio);
-      }
 
+        this.buildPreferences();
+      }
       //Hide these
       document.getElementById("smilies").style.display = "none";
       document.getElementById("smiley_title").style.display = "none";
@@ -39,6 +40,7 @@ class Launcher extends AppWindow {
       //this.parentPortalOpen();
       this.parentPortalClose();
     }
+ 
 
     private async twilio(){
       let objectData = "My message to shane from /game_end";
@@ -87,7 +89,7 @@ class Launcher extends AppWindow {
     }
 
     public parentPortalClose(){
-      window.onclick = function(event) {
+      window.onclick = async function(event) {
         if (!event.target.matches('.parentdd')) {
           var elements = document.getElementsByClassName("parentPortalItems");
           var i;
@@ -98,9 +100,54 @@ class Launcher extends AppWindow {
             }
           }
         }
+        let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
+        let preferences = JSON.parse(preferencesData);
+        if ((document.getElementById("overTimeToggle") as HTMLFormElement).checked) {
+          preferences["overTimeToggle"] = true;
+        } else {
+          preferences["overTimeToggle"] = false;
+        }
+        Launcher.instance().writeFile(JSON.stringify(preferences), `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
+      }
+    }
+
+    private async buildPreferences(){
+      let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
+      let preferences = JSON.parse(preferencesData);
+      if (preferences["overTimeToggle"]) {
+        (document.getElementById("overTimeToggle") as HTMLFormElement).checked = true;
+      } else {
+        (document.getElementById("overTimeToggle") as HTMLFormElement).checked = false;
       }
     }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  private async readFileData(file_path:string){
+    const result = await new Promise(resolve => {
+      overwolf.io.readFileContents(
+        file_path,
+        overwolf.io.enums.eEncoding.UTF8,
+        resolve
+      );
+    }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
+    //console.log("readFileData()", result["success"] + ", " + result["content"] + ", " +  result["error"]);
+    return result["content"];
+  }
+
+    //Writes data into a file specified in file_path, returns the result
+    private async writeFile(data:string, file_path:string){
+      let result = await new Promise((resolve, reject) => {
+        overwolf.io.writeFileContents(
+          file_path,
+          data,
+          overwolf.io.enums.eEncoding.UTF8,
+          true,
+          r => r.success ? resolve(r) : reject(r)
+        );
+      });
+      //console.log('writeFile()', result);
+      return result;
+    }
 
     // private async clickSmiley(){
     //   document.getElementById("smilies").style.display = "none";

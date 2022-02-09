@@ -29,7 +29,7 @@ class BackgroundController {
     overwolf.extensions.onAppLaunchTriggered.addListener(
       e => this.onAppLaunchTriggered(e)
     );
-
+    
     this.hasGameRun = false;
   };
 
