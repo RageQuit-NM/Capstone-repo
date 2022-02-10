@@ -32,7 +32,8 @@ class InGame extends AppWindow {
     //intializes the game_data.txt file to be used in dataUpdate()
     let inital_json = {
       "kills": 0,
-      "deaths": 0
+      "deaths": 0,
+      "game_time": 0
     }
     let stringJson = JSON.stringify(inital_json);
     this.writeFile(stringJson, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
@@ -89,24 +90,20 @@ class InGame extends AppWindow {
 
     if(e.events[0]["name"] == 'match_clock'){
       let time_message:string = e.events[0]["data"];
-      //document.getElementById("time_message").innerHTML = time_message; //for testing purposes
-
-      //send the match clock to main window
-      //this.mainWindowObject = overwolf.windows.getMainWindow();
-      //this.mainWindowObject.document.getElementById("time_message").innerHTML = time_message;
+      this.updateData("time", parseInt(time_message, 10));
     }
     if(e.events[0]["name"] == 'kill'){
-      let kill_data:string = e.events[0]["data"];
-      this.updateData("kills");
+      //let kill_data:string = e.events[0]["data"];
+      this.updateData("kills", null);
     }
     if(e.events[0]["name"] == 'death'){
-      this.updateData("deaths");
+      this.updateData("deaths", null);
     }
   }
 
 
   //Collects the information written in game_data.txt, builds a javascript object from the data, increments the dataField specified, stringifies the object and writes it back
-  private async updateData(dataField:string){
+  private async updateData(dataField:string, time:number){
     let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
     document.getElementById("kill_message").innerHTML = fileData;  //for debugging
     
@@ -116,6 +113,9 @@ class InGame extends AppWindow {
     }
     if(dataField == "deaths"){
       jsonData["deaths"]++;
+    }
+    if(dataField == "time"){
+      jsonData["game_time"] = time;
     }
 
     let stringified = JSON.stringify(jsonData);

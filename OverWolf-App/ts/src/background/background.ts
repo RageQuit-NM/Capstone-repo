@@ -29,7 +29,7 @@ class BackgroundController {
     overwolf.extensions.onAppLaunchTriggered.addListener(
       e => this.onAppLaunchTriggered(e)
     );
-    
+
     this.hasGameRun = false;
   };
 
@@ -151,7 +151,7 @@ class BackgroundController {
   private async sendGameInfoToRemote(){
     let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
     let objectData = JSON.parse(fileData);
-    document.getElementById("kill_message").innerHTML = fileData;  //for debugging
+    //document.getElementById("kill_message").innerHTML = fileData;  //for debugging
 
     let serverAction = "game_end";  //
     let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
@@ -167,7 +167,7 @@ class BackgroundController {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var response = (this.responseText); // we get the returned data
-        document.getElementById("test_message").innerHTML = "reponse from /game_end = " + response;
+        //document.getElementById("test_message").innerHTML = "reponse from /game_end = " + response;
       }
       // end of state change: it can be after some time (async)
     };
