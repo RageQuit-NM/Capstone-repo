@@ -1,7 +1,10 @@
-Shane smells;
-Message 2;
-Message 3;
-Message 4;
-Message 5;
-Message 6;
-Message 7;
+You won X games and lost X games today.;
+Do you have some homework you should do first?;
+Wow, you won X games last time! Let’s do it again!;
+You’re doing great!;
+You have time for 1 more game!;
+X more games until bedtime.;
+Taking a break after a tough game helps you play better.;
+It’s late! Game time is over.;
+Watch this video about (the game they’re playing);
+Get a parent to take you to the park!;

@@ -6,8 +6,8 @@
   <link rel="stylesheet" href="../../css/general.css" />
   <link rel="stylesheet" href="../../css/header.css" />
   <link rel="stylesheet" href="../../css/desktop.css" />
+  <link rel="stylesheet" href="../../css/dropdown.css" />
   <title>RageQuit.NM</title>
-  <script defer src="js/launcher.js"></script>
   <script defer src="js/launcher.js"></script>
 </head>
 
@@ -19,8 +19,26 @@
 
   <!-- --------------------------------- Main -------------------------------- -->
   <main id = "main">
+    
+    <div class="parentPortalDropdown">
+      <button id="parentPortalButton" class="parentPortalButton parentdd">Parent Portal</button>
+      <div id="parentPortalItems" class="parentPortalItems parentdd">
+        <form id="parentPortalForm" class="parentPortalForm parentdd">
+          <input type="checkbox" id="overTimeToggle" class="parentdd" name="overTimeToggle">
+          <label for="overTimeToggle" class="parentdd">Notify if over alloted time.</label><br>
+          <p class="parentdd">Send me digests: </p>
+          <input type="checkbox" id="dailyDigestToggle" class="parentdd" name="dailyDigestToggle">
+          <label for="dailyDigestToggle" class="parentdd">Daily</label><br>
+          <input type="checkbox" id="weeklyDigestToggle" class="parentdd" name="weeklyDigestToggle">
+          <label for="weeklyDigestToggle" class="parentdd">Weekly</label><br>
+          <input type="checkbox" id="monthyDigestToggle" class="parentdd" name="monthlyDigestToggle">
+          <label for="monthlyDigestToggle" class="parentdd">monthly</label><br>
+        </form>
+      </div>
+    </div>
+
     <div class="title">
-        <h1 id="broad_message">Welcome Back!</h1>
+        <h1 id="primary_message"></h1>
         <h1 id="smiley_title">How are you feeling?</h1>
     </div>
 
@@ -29,8 +47,6 @@
       <div class="content" id="content">
         <div id="time_played"></div>
         <div id="test_message"></div>
-        <div id="primary_message"></div>
-        <div id="secondary_message"></div>
       </div> 
 
       <div id="smilies">

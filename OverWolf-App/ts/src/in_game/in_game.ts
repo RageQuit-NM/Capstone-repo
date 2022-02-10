@@ -19,7 +19,6 @@ class InGame extends AppWindow {
   private _gameEventsListener: OWGamesEvents;
   private _eventsLog: HTMLElement;
   private _infoLog: HTMLElement;
-  private mainWindowObject: Window;
 
   private constructor() {
     super(kWindowNames.inGame);
@@ -29,6 +28,15 @@ class InGame extends AppWindow {
 
     this.setToggleHotkeyBehavior();
     this.setToggleHotkeyText();
+
+    //intializes the game_data.txt file to be used in dataUpdate()
+    let inital_json = {
+      "kills": 0,
+      "deaths": 0,
+      "game_time": 0
+    }
+    let stringJson = JSON.stringify(inital_json);
+    this.writeFile(stringJson, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
   }
 
   public static instance() {
@@ -62,7 +70,7 @@ class InGame extends AppWindow {
 
   //Highlights some events
   //Sends Matchclock to the html overlay
-  //Sends Kill and Death event data to a outside file
+  //Performs updateData() on Kill and Death events
   private onNewEvents(e) {
     const shouldHighlight = e.events.some(event => {
       switch (event.name) {
@@ -82,25 +90,54 @@ class InGame extends AppWindow {
 
     if(e.events[0]["name"] == 'match_clock'){
       let time_message:string = e.events[0]["data"];
-      document.getElementById("time_message").innerHTML = time_message; //for testing purposes
-
-      //send the match clock to main window
-      this.mainWindowObject = overwolf.windows.getMainWindow();
-      this.mainWindowObject.document.getElementById("time_message").innerHTML = time_message;
+      this.updateData("time", parseInt(time_message, 10));
     }
     if(e.events[0]["name"] == 'kill'){
-      let kill_data:string = e.events[0]["data"];
-      document.getElementById("kill_message").innerHTML = e.events[0]["data"];
-
-      this.writeFile(kill_data, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\kill_data.json`);
+      //let kill_data:string = e.events[0]["data"];
+      this.updateData("kills", null);
     }
     if(e.events[0]["name"] == 'death'){
-      let death_data:string = e.events[0]["data"];
-      document.getElementById("death_message").innerHTML = e.events[0]["data"];
-
-      this.writeFile(death_data, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\death_data.json`);
+      this.updateData("deaths", null);
     }
   }
+
+
+  //Collects the information written in game_data.txt, builds a javascript object from the data, increments the dataField specified, stringifies the object and writes it back
+  private async updateData(dataField:string, time:number){
+    let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    document.getElementById("kill_message").innerHTML = fileData;  //for debugging
+    
+    let jsonData = JSON.parse(fileData);
+    if(dataField == "kills"){
+      jsonData["kills"]++;
+    }
+    if(dataField == "deaths"){
+      jsonData["deaths"]++;
+    }
+    if(dataField == "time"){
+      jsonData["game_time"] = time;
+    }
+
+    let stringified = JSON.stringify(jsonData);
+    this.writeFile(stringified, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    document.getElementById("death_message").innerHTML = jsonData["deaths"]; //For debugging
+  }
+
+
+  //Reads the data in file specified in file_path and returns it
+  //Sample file_path = `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`
+  private async readFileData(file_path:string){
+    const result = await new Promise(resolve => {
+      overwolf.io.readFileContents(
+        file_path,
+        overwolf.io.enums.eEncoding.UTF8,
+        resolve
+      );
+    }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
+    //console.log("readFileData()", result["success"] + ", " + result["content"] + ", " +  result["error"]);
+    return result["content"];
+  }
+
 
   //Writes data into a file specified in file_path, returns the result
   private async writeFile(data:string, file_path:string){
@@ -141,7 +178,6 @@ class InGame extends AppWindow {
         this.currWindow.restore();
       }
     }
-
     OWHotkeys.onHotkeyDown(kHotkeys.toggle, toggleInGameWindow);
   }
 
@@ -149,17 +185,14 @@ class InGame extends AppWindow {
   private logLine(log: HTMLElement, data, highlight) {
     const line = document.createElement('pre');
     line.textContent = JSON.stringify(data);
-
     if (highlight) {
       line.className = 'highlight';
     }
-
     // Check if scroll is near bottom
     const shouldAutoScroll =
       log.scrollTop + log.offsetHeight >= log.scrollHeight - 10;
 
     log.appendChild(line);
-
     if (shouldAutoScroll) {
       log.scrollTop = log.scrollHeight;
     }
@@ -167,7 +200,6 @@ class InGame extends AppWindow {
 
   private async getCurrentGameClassId(): Promise<number | null> {
     const info = await OWGames.getRunningGameInfo();
-
     return (info && info.isRunning && info.classId) ? info.classId : null;
   }
 }

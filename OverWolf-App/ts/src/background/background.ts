@@ -12,6 +12,8 @@ class BackgroundController {
   private _windows: Record<string, OWWindow> = {};
   private _gameListener: OWGameListener;
   private mainWindowObject: Window;
+  private hasGameRun:boolean;
+  private firstGameRunTime: Date = null;
 
   private constructor() {
     // Populating the background controller's window dictionary
@@ -27,6 +29,8 @@ class BackgroundController {
     overwolf.extensions.onAppLaunchTriggered.addListener(
       e => this.onAppLaunchTriggered(e)
     );
+
+    this.hasGameRun = false;
   };
 
   // Implementing the Singleton design pattern
@@ -49,11 +53,132 @@ class BackgroundController {
       : kWindowNames.launcher;
     this._windows[currWindowName].restore();
 
-    //To send a message to the bus which is background.html, first we must get the windowObject
-    this.mainWindowObject = overwolf.windows.getMainWindow();
-
     this.sendMessageToLauncher();
-    this.updateSecondaryMessage();
+  }
+
+  //Arrange lines into an array object
+  //All information before a ";" character is stored into an entry in the messageObject
+  private buildMessageObject(originMessage:string){
+    var messageObject:string[] = new Array();
+    while(originMessage.indexOf(";") != -1){
+      messageObject.push(originMessage.substr(0, originMessage.indexOf(";")));
+      originMessage = originMessage.substr(originMessage.indexOf(";")+1);
+    }
+    return messageObject;
+  }
+
+  //Sends a random message in Messages.txt to the primary_message bus
+  private async sendMessageToLauncher(){
+    let negativeKD:boolean = false;
+    let positiveKD:boolean = false;
+    let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    let killDeath = JSON.parse(fileData);
+
+    if(killDeath["kills"] > killDeath["deaths"]){
+      positiveKD = true;
+    }
+    if(killDeath["deaths"] > killDeath["kills"]){
+      negativeKD = true;
+    }
+
+    let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`);
+    let messageObject:string[] = this.buildMessageObject(result);
+    let randNum:number = this._pickRandomNumWithinObjectSize(messageObject);
+
+    this.mainWindowObject = overwolf.windows.getMainWindow();
+    //if game has run send a message from Messages.txt else just a welcome message
+    if(this.hasGameRun){
+      this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[1];  //Should be randNum
+
+      let endTime = new Date()
+      let seconds = (endTime.getTime() - this.firstGameRunTime.getTime()) / 1000;
+      //this.mainWindowObject.document.getElementById("time_message").innerHTML = seconds as unknown as string; //to send the time played if wanted
+
+      if(positiveKD){
+        this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[3];
+        randNum = 3;
+      }
+      if(negativeKD){
+        this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[6];
+        randNum = 6;
+
+        let serverAction = "test-sms";  //
+        let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", remoteServer, true ); // false for synchronous request
+        xmlHttp.send( null );
+      }
+      
+      //this.sendMessageInfoToRemote(randNum, seconds);
+      //this.mainWindowObject.document.getElementById("time_message").innerHTML = this.firstGameRunTime.toLocaleTimeString() + "End time = " + endTime.toLocaleTimeString() + " seconds: " + seconds;
+    } else {
+      this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
+    }
+  }
+  
+  //sends two messages, one to /message one to /time_played
+  private sendMessageInfoToRemote(randNum: number, seconds: number){
+    let serverAction = "message";  //
+    let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("POST", remoteServer, true);
+    xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    xmlHttp.send(JSON.stringify({
+      messageNum: randNum
+    }));
+
+
+    serverAction = "time_played";  //
+    remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+    xmlHttp.open("POST", remoteServer, true);
+    xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    xmlHttp.send(JSON.stringify({
+      secondsPlayed: seconds
+    }));
+
+    xmlHttp.onreadystatechange = function () {
+      if (this.readyState != 4) return;
+      if (this.status == 200) {
+        var response = (this.responseText); // we get the returned data
+        // document.getElementById("test_message").innerHTML = "reponse from /message or /time_played = " + response;
+      }
+      // end of state change: it can be after some time (async)
+    };
+
+  }
+
+  private async sendGameInfoToRemote(){
+    let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    let objectData = JSON.parse(fileData);
+    //document.getElementById("kill_message").innerHTML = fileData;  //for debugging
+
+    let serverAction = "game_end";  //
+    let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("POST", remoteServer, true);
+    xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    xmlHttp.send(JSON.stringify({
+      value: objectData
+    }));
+
+    xmlHttp.onreadystatechange = await function () {
+      if (this.readyState != 4) return;
+      if (this.status == 200) {
+        var response = (this.responseText); // we get the returned data
+        //document.getElementById("test_message").innerHTML = "reponse from /game_end = " + response;
+      }
+      // end of state change: it can be after some time (async)
+    };
+  }
+
+  //Takes an array object and returns a number between 0 and length
+  private _pickRandomNumWithinObjectSize(myObject:Array<string>){
+    let min:number = 0;
+    let max:any = myObject.length;
+    let randomNum:number =  Math.floor(Math.random() * max ) + min;
+    return randomNum;
   }
 
   //Reads the data in file specified in file_path and returns it
@@ -67,84 +192,12 @@ class BackgroundController {
       );
     }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
     //console.log("readFileData()", result["success"] + ", " + result["content"] + ", " +  result["error"]);
-    return result;
+    return result["content"];
   }
 
-  //Arrange lines into an array object
-  //All information before a ";" character is stored into an entry in the messageObject
-  private buildMessageObject(originMessage:Object){
-    var messageObject:string[] = new Array();
-    while(originMessage["content"].indexOf(";") != -1){
-      messageObject.push(originMessage["content"].substr(0, originMessage["content"].indexOf(";")));
-      originMessage["content"] = originMessage["content"].substr(originMessage["content"].indexOf(";")+1);
-    }
-    return messageObject;
-  }
-
-  //Sends a random message in Messages.txt to the primary_message bus
-  private async sendMessageToLauncher(){
-    let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`);
-    let messageObject:string[] = this.buildMessageObject(result);
-    let randNum:number = this.pickRandomNumWithinObjectSize(messageObject);
-
-    this.mainWindowObject = overwolf.windows.getMainWindow()                            //Dont actually need to get this for the background window, but good practice
-    this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[randNum];
-  }
-
-  //Collects data from kill_data.json and death_data.json, trims the data to just the number and updates the secondary message.
-  private async updateSecondaryMessage(){
-    let kills:string = "0";
-    let deaths:string = "0";
-    let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\kill_data.json`);
-    let result_string:string = result["content"] as string;  //Typecasting
-
-    if(result["error"] == undefined){
-      if(!(result_string.indexOf("count") == -1)){                                      //check if there is a message and that it is formatted as expected
-        var sub1:string = result_string.substr(result_string.indexOf("count\": \"")+9); //Erase all characters before the kill count
-        kills = sub1.substr(0, sub1.indexOf("\","));                         //Make a substring that is only until the next "
-        //document.getElementById("secondary_message").innerHTML = "You got " + kills + " kills!";
-      }
-    }
-
-    result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\death_data.json`);
-    result_string = result["content"] as string;  //Typecasting
-    if(result["error"] == undefined){
-      if(!(result_string.indexOf("count") == -1)){
-        var sub2:string = result_string.substr(result_string.indexOf("count\": \"")+9);
-        deaths = sub2.substr(0, sub2.indexOf("\""));
-        //document.getElementById("secondary_message").innerHTML = "You've died " + deaths + " times";
-      }
-    }
-    let kills_num:number = +kills; //unary + operator to convert string to number
-    let deaths_num:number = +deaths; 
-    if (kills_num > deaths_num){
-      document.getElementById("secondary_message").innerHTML = "Well done! You have more kills than deaths";
-      return;
-    }
-    if (deaths_num > kills_num){
-      document.getElementById("secondary_message").innerHTML = "That game was tough :( Take some time to shake it off!";
-      return;
-    }
-    if (kills_num == 0){
-      if (deaths_num == 0){
-      document.getElementById("secondary_message").innerHTML = "No info on K/D yet.";
-      return;
-      }
-    }
-    return;
-  }
-
-  //Takes an array object and returns a number between 0 and length
-  private pickRandomNumWithinObjectSize(myObject:Array<string>){
-    let min:number = 0;
-    let max:any = myObject.length;
-    let randomNum:number =  Math.floor(Math.random() * max ) + min;
-    return randomNum;
-  }
 
   private async onAppLaunchTriggered(e: AppLaunchTriggeredEvent) {
     //console.log('onAppLaunchTriggered():', e);
-
     if (!e || e.origin.includes('gamelaunchevent')) {
       return;
     }
@@ -154,7 +207,7 @@ class BackgroundController {
       this._windows[kWindowNames.inGame].restore();
     } else {
       this._windows[kWindowNames.launcher].restore();
-      setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 3000);
+      //setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 3000); //Dont need to set a timeout for when the app launches
       this._windows[kWindowNames.inGame].close();
     }
   }
@@ -168,9 +221,14 @@ class BackgroundController {
     if (info.isRunning) {
       this._windows[kWindowNames.launcher].close();
       this._windows[kWindowNames.inGame].restore();
+      this.hasGameRun = true;
+      if(this.firstGameRunTime == null){
+        this.firstGameRunTime = new Date(); //set the time for first game run time
+      }
     } else {
+      //A game has just ended
+      this.sendGameInfoToRemote();
       this.sendMessageToLauncher();
-      this.updateSecondaryMessage();
       this._windows[kWindowNames.launcher].restore();
       setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 1500); //Brings the launcher window infront of the game launcher after 1.5s
       this._windows[kWindowNames.inGame].close();
@@ -189,8 +247,5 @@ class BackgroundController {
     return kGameClassIds.includes(info.classId);
   }
 }
-
-
-
 
 BackgroundController.instance().run();
