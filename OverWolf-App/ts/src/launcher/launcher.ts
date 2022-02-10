@@ -43,21 +43,23 @@ class Launcher extends AppWindow {
  
 
     private async twilio(){
-      let objectData = "My message to shane from /game_end";
+      // let objectData = "My message to shane from /game_end";
   
-      let serverAction = "game_end";  //test-sms
-      let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+      // let serverAction = "game_end";  //test-sms
+      // let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
   
-      var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open("POST", remoteServer, true);
-      xmlHttp.setRequestHeader('Content-Type', 'application/json');
-      xmlHttp.send(JSON.stringify({
-        value: objectData
-      }));
-
       // var xmlHttp = new XMLHttpRequest();
-      // xmlHttp.open( "GET", remoteServer, true ); // false for synchronous request
-      // xmlHttp.send( null );
+      // xmlHttp.open("POST", remoteServer, true);
+      // xmlHttp.setRequestHeader('Content-Type', 'application/json');
+      // xmlHttp.send(JSON.stringify({
+      //   value: objectData
+      // }));
+
+      let serverAction = "test-sms";  //test-sms
+      let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open( "GET", remoteServer, true ); // false for synchronous request
+      xmlHttp.send( null );
 
       xmlHttp.onreadystatechange = function () {
         if (this.readyState != 4) return;
@@ -108,6 +110,20 @@ class Launcher extends AppWindow {
           preferences["overTimeToggle"] = false;
         }
         Launcher.instance().writeFile(JSON.stringify(preferences), `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
+
+
+
+        let objectData = {"dailyDigest": true,  "newSetting": "20"};
+  
+        let serverAction = "update-settings";  //test-sms
+        let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+    
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("POST", remoteServer, true);
+        xmlHttp.setRequestHeader('Content-Type', 'application/json');
+        xmlHttp.send(JSON.stringify(objectData));
+
+        document.getElementById("test_message").innerHTML = "Message sent: " + JSON.stringify(objectData);  //For debugging
       }
     }
 
