@@ -90,6 +90,7 @@ class Launcher extends AppWindow {
       document.getElementById("parentPortalItems").classList.toggle("show");
     }
 
+    //Closes the parent portal, updates locally stored settings, updates remote settings
     public parentPortalClose(){
       window.onclick = async function(event) {
         if (!event.target.matches('.parentdd')) {
@@ -101,39 +102,92 @@ class Launcher extends AppWindow {
               openDropdown.classList.remove('show');
             }
           }
-        }
         let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
         let preferences = JSON.parse(preferencesData);
-        if ((document.getElementById("overTimeToggle") as HTMLFormElement).checked) {
-          preferences["overTimeToggle"] = true;
+        preferences["timeLimitRule"] = (document.getElementById("timeLimitRule") as HTMLInputElement).value;
+        preferences["bedTimeRule"] = (document.getElementById("bedTimeRule") as HTMLInputElement).value;
+        preferences["gameLimitRule"] = (document.getElementById("gameLimitRule") as HTMLInputElement).value;
+        if ((document.getElementById("timeLimitToggle") as HTMLFormElement).checked) {
+          preferences["timeLimitToggle"] = true;
         } else {
-          preferences["overTimeToggle"] = false;
+          preferences["timeLimitToggle"] = false;
+        }
+        if ((document.getElementById("bedTimeToggle") as HTMLFormElement).checked) {
+          preferences["bedTimeToggle"] = true;
+        } else {
+          preferences["bedTimeToggle"] = false;
+        }
+        if ((document.getElementById("gameLimitToggle") as HTMLFormElement).checked) {
+          preferences["gameLimitToggle"] = true;
+        } else {
+          preferences["gameLimitToggle"] = false;
+        }
+        if ((document.getElementById("dailyDigestToggle") as HTMLFormElement).checked) {
+          preferences["dailyDigestToggle"] = true;
+        } else {
+          preferences["dailyDigestToggle"] = false;
+        }
+        if ((document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked) {
+          preferences["weeklyDigestToggle"] = true;
+        } else {
+          preferences["weeklyDigestToggle"] = false;
+        }
+        if ((document.getElementById("monthyDigestToggle") as HTMLFormElement).checked) {
+          preferences["monthyDigestToggle"] = true;
+        } else {
+          preferences["monthyDigestToggle"] = false;
         }
         Launcher.instance().writeFile(JSON.stringify(preferences), `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
-
-
-
-        //let objectData = {"dailyDigest": true,  "newSetting": "20"};
-  
+        
+        //Update remote server
         let serverAction = "update-settings";  //test-sms
         let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
-    
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("POST", remoteServer, true);
         xmlHttp.setRequestHeader('Content-Type', 'application/json');
         xmlHttp.send(JSON.stringify(preferences));
 
         document.getElementById("test_message").innerHTML = "Message sent: " + JSON.stringify(preferences);  //For debugging
+        //document.getElementById("test_message").innerHTML = "bedLimitRule: " + JSON.stringify(preferences["bedTimeRule"]);  //For debugging
+        }
       }
     }
 
     private async buildPreferences(){
       let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
-      let preferences = JSON.parse(preferencesData);
-      if (preferences["overTimeToggle"]) {
-        (document.getElementById("overTimeToggle") as HTMLFormElement).checked = true;
+      let preferences = JSON.parse(preferencesData); 
+      (document.getElementById("timeLimitRule") as HTMLInputElement).value = preferences["timeLimitRule"];
+      (document.getElementById("bedTimeRule") as HTMLInputElement).value = preferences["bedTimeRule"];
+      (document.getElementById("gameLimitRule") as HTMLInputElement).value = preferences["gameLimitRule"];
+      if (preferences["timeLimitToggle"]) {
+        (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = true;
       } else {
-        (document.getElementById("overTimeToggle") as HTMLFormElement).checked = false;
+        (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = false;
+      }
+      if (preferences["bedTimeToggle"]) {
+        (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = true;
+      } else {
+        (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = false;
+      }
+      if (preferences["gameLimitToggle"]) {
+        (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = true;
+      } else {
+        (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = false;
+      }
+      if (preferences["dailyDigestToggle"]) {
+        (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = true;
+      } else {
+        (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = false;
+      }
+      if (preferences["weeklyDigestToggle"]) {
+        (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = true;
+      } else {
+        (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = false;
+      }
+      if (preferences["monthyDigestToggle"]) {
+        (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = true;
+      } else {
+        (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = false;
       }
     }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
