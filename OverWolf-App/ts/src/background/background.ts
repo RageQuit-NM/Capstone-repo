@@ -12,6 +12,7 @@ class BackgroundController {
   private _windows: Record<string, OWWindow> = {};
   private _gameListener: OWGameListener;
   private mainWindowObject: Window;
+  private cellNum: number;
   private hasGameRun:boolean;
   private firstGameRunTime: Date = null;
 
@@ -151,9 +152,13 @@ class BackgroundController {
   private async sendGameInfoToRemote(){
     let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
     let gameData = JSON.parse(fileData);
+
+    fileData =  JSON.parse(await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`));
+    this.cellNum = fileData["cellNum"];
+    gameData["cellNum"] = this.cellNum;
     //document.getElementById("kill_message").innerHTML = fileData;  //for debugging
 
-    let serverAction = "game_end";  //
+    let serverAction = "upload-game-data";  //
     let ipv4Address = "ec2-3-96-220-139.ca-central-1.compute.amazonaws.com"
     let remoteServer = "http://" + ipv4Address + ":5000/" + serverAction;
 
@@ -161,6 +166,9 @@ class BackgroundController {
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send(JSON.stringify(gameData));
+
+    //this.mainWindowObject = overwolf.windows.getMainWindow();
+    //this.mainWindowObject.document.getElementById("test_message").innerHTML = "Game end message(/upload-game-data): " + JSON.stringify(gameData);  //For debugging
 
     xmlHttp.onreadystatechange = await function () {
       if (this.readyState != 4) return;

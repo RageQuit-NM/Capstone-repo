@@ -104,6 +104,7 @@ class Launcher extends AppWindow {
           }
         let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
         let preferences = JSON.parse(preferencesData);
+        preferences["cellNum"] = 69;
         preferences["timeLimitRule"] = (document.getElementById("timeLimitRule") as HTMLInputElement).value;
         preferences["bedTimeRule"] = (document.getElementById("bedTimeRule") as HTMLInputElement).value;
         preferences["gameLimitRule"] = (document.getElementById("gameLimitRule") as HTMLInputElement).value;
@@ -148,7 +149,7 @@ class Launcher extends AppWindow {
         xmlHttp.setRequestHeader('Content-Type', 'application/json');
         xmlHttp.send(JSON.stringify(preferences));
 
-        document.getElementById("test_message").innerHTML = "Message sent: " + JSON.stringify(preferences);  //For debugging
+        //document.getElementById("test_message").innerHTML = "Message sent(/update-settings): " + JSON.stringify(preferences);  //For debugging
         //document.getElementById("test_message").innerHTML = "bedLimitRule: " + JSON.stringify(preferences["bedTimeRule"]);  //For debugging
         }
       }
@@ -157,6 +158,7 @@ class Launcher extends AppWindow {
     private async buildPreferences(){
       let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
       let preferences = JSON.parse(preferencesData); 
+      //set the cell number here
       (document.getElementById("timeLimitRule") as HTMLInputElement).value = preferences["timeLimitRule"];
       (document.getElementById("bedTimeRule") as HTMLInputElement).value = preferences["bedTimeRule"];
       (document.getElementById("gameLimitRule") as HTMLInputElement).value = preferences["gameLimitRule"];
