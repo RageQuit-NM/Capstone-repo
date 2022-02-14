@@ -26,50 +26,53 @@
     <div class="parentPortalDropdown">
       <button id="parentPortalButton" class="parentPortalButton parentdd">Parent Portal</button>
       <div id="parentPortalItems" class="parentPortalItems parentdd">
-        <form id="parentPortalForm" class="parentPortalForm parentdd">
-          
-            <p class="formTitle parentdd">Set the rules:</p>
-            <label for="timeLimitRule" class="parentdd">Time Limit</label>
-            <input type="number" id="timeLimitRule" class="parentdd"  min="0" max="600" name="timeLimitRule">
-            <br/><br/>
+          <div id="parentPortalSettings" class="parentdd">
+            <form id="parentPortalForm" class="parentPortalForm parentdd">
+              <p class="formTitle parentdd">Set the rules:</p>
+              <label for="timeLimitRule" class="parentdd">Time Limit</label>
+              <input type="number" id="timeLimitRule" class="parentdd"  min="0" max="600" name="timeLimitRule">
+              <br/><br/>
 
-            <label for="bedTimeRule" class="parentdd">Bed Time</label>
-            <input type="time" id="bedTimeRule" class="parentdd" name="bedTimeRule">
-            <br/><br/>
+              <label for="bedTimeRule" class="parentdd">Bed Time</label>
+              <input type="time" id="bedTimeRule" class="parentdd" name="bedTimeRule">
+              <br/><br/>
 
-            <label for="gameLimitRule" class="parentdd">Game Limit</label>
-            <input type="number" id="gameLimitRule" class="parentdd" min="0" max="100" name="gameLimitRule">
-            <br/><br/>
+              <label for="gameLimitRule" class="parentdd">Game Limit</label>
+              <input type="number" id="gameLimitRule" class="parentdd" min="0" max="100" name="gameLimitRule">
+              <br/><br/>
 
-            <p class="formTitle parentdd">Notify me if exceeded:</p>
-            <label for="timeLimitToggle" class="parentdd">Time Limit</label>
-            <input type="checkbox" id="timeLimitToggle" class="parentdd" name="timeLimitToggle">
-            <br/><br/>
+              <p class="formTitle parentdd">Notify me if exceeded:</p>
+              <label for="timeLimitToggle" class="parentdd">Time Limit</label>
+              <input type="checkbox" id="timeLimitToggle" class="parentdd" name="timeLimitToggle">
+              <br/><br/>
 
-            <label for="bedTimeToggle" class="parentdd">Bed Time</label>
-            <input type="checkbox" id="bedTimeToggle" class="parentdd" name="bedTimeToggle">
-            <br/><br/>
+              <label for="bedTimeToggle" class="parentdd">Bed Time</label>
+              <input type="checkbox" id="bedTimeToggle" class="parentdd" name="bedTimeToggle">
+              <br/><br/>
 
-            <label for="gameLimitToggle" class="parentdd">Game Limit</label>
-            <input type="checkbox" id="gameLimitToggle" class="parentdd" name="gameLimitToggle">
-            <br/><br/>
+              <label for="gameLimitToggle" class="parentdd">Game Limit</label>
+              <input type="checkbox" id="gameLimitToggle" class="parentdd" name="gameLimitToggle">
+              <br/><br/>
 
+              <p class="formTitle parentdd">Send me digests:</p>
+              <label for="dailyDigestToggle" class="parentdd">Daily</label>
+              <input type="checkbox" id="dailyDigestToggle" class="parentdd" name="dailyDigestToggle">
+              <br/><br/>
 
-            <p class="formTitle parentdd">Send me digests:</p>
-            <label for="dailyDigestToggle" class="parentdd">Daily</label>
-            <input type="checkbox" id="dailyDigestToggle" class="parentdd" name="dailyDigestToggle">
-            <br/><br/>
+              <label for="weeklyDigestToggle" class="parentdd">Weekly</label>
+              <input type="checkbox" id="weeklyDigestToggle" class="parentdd" name="weeklyDigestToggle">
+              <br/><br/>
 
-            <label for="weeklyDigestToggle" class="parentdd">Weekly</label>
-            <input type="checkbox" id="weeklyDigestToggle" class="parentdd" name="weeklyDigestToggle">
-            <br/><br/>
+              <label for="monthlyDigestToggle" class="parentdd">Monthly</label>
+              <input type="checkbox" id="monthyDigestToggle" class="parentdd" name="monthlyDigestToggle">
+              <br/><br/>
 
-            <label for="monthlyDigestToggle" class="parentdd">Monthly</label>
-            <input type="checkbox" id="monthyDigestToggle" class="parentdd" name="monthlyDigestToggle">
-            <br/><br/>
-
-            <p class="signifier parentdd">*click off of menu to apply changes*</p> 
-        </form>
+              <p class="signifier parentdd">*click off of menu to apply changes*</p> 
+          </form>
+        </div>
+        <div id="parentPortalStats" class="parentdd">
+              TEST
+        </div>
       </div>
     </div>
     
