@@ -1,7 +1,17 @@
-.parentPortalButton {
+.parentPortalDropdown {
+  position: absolute;
+  width: 15%;
+  padding-top: 3%;
+}
+
+.parentPortalSpacer {
+  position: relative;
+  width: 85%;
+}
+  .parentPortalButton {
     color: #81BADB;
     background-color: #24343D;
-    padding: 16px;
+    padding: 0px;
     font-size: 16px;
     border: none;
     cursor: pointer;
@@ -10,23 +20,49 @@
   .parentPortalButton:hover, .parentPortalButton:focus {
     color: #456475;
   }
-  
-  .parentPortalDropdown {
-    position: relative;
-    display: inline-block;
-  }
 
   .parentPortalItems {
+    margin: auto;
     display: none;
     position: absolute;
     background-color: #456475;
-    min-width: 200px;
+    width: 33vw;
     overflow: auto;
     z-index: 1;
   }
-
-  .parentPortalItems form {
-    color: #81BADB;
+  
+  .formTitle{
+    font-size: 16px;
+    padding-left: 5%;
+    text-align: left;
   }
   
-  .show {display: block;}
+  .parentPortalItems form{
+    color: #81BADB;
+    text-align: right;
+  }
+
+  .parentPortalItems form label {
+    width: 20%;
+    /* Positions the label text beside the input */
+    text-align: right;
+  }
+
+  .parentPortalItems form input {
+    display: inline-block;
+  }
+
+  .parentPortalItems form label+input {
+    width: 30%;
+    margin: 0 30% 0 4%;
+  }
+
+  .show {
+    display: block;
+  }
+
+  .signifier{
+    font-size:12px; 
+    text-align:right; 
+    padding-right:5%;
+  }
