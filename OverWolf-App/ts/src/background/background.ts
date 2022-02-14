@@ -156,9 +156,10 @@ class BackgroundController {
     let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
     let gameData = JSON.parse(fileData);
 
-    fileData =  JSON.parse(await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`));
+    fileData =  JSON.parse(await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`));
     this.cellNum = fileData["cellNum"];
     gameData["cellNum"] = this.cellNum;
+    gameData["timeStamp"] = new Date();
     //document.getElementById("kill_message").innerHTML = fileData;  //for debugging
 
     let serverAction = "upload-game-data";  //
@@ -170,7 +171,7 @@ class BackgroundController {
     xmlHttp.send(JSON.stringify(gameData));
 
     //this.mainWindowObject = overwolf.windows.getMainWindow();
-    //this.mainWindowObject.document.getElementById("test_message").innerHTML = "Game end message(/upload-game-data): " + JSON.stringify(gameData);  //For debugging
+    //this.mainWindowObject.document.getElementById("test_message").innerHTML = "Game end message(/upload-game-data): " + JSON.stringify(gameData) + "cellNum is " + this.cellNum;  //For debugging
 
     xmlHttp.onreadystatechange = await function () {
       if (this.readyState != 4) return;

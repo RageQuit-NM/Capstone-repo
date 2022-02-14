@@ -31,9 +31,11 @@ class InGame extends AppWindow {
 
     //intializes the game_data.txt file to be used in dataUpdate()
     let inital_json = {
+      "cellNum": 0,
       "kills": 0,
       "deaths": 0,
-      "game_time": 0
+      "game_time": 0,
+      "timeStamp":"0000-00-00:00"
     }
     let stringJson = JSON.stringify(inital_json);
     this.writeFile(stringJson, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
