@@ -113,7 +113,7 @@ class Launcher extends AppWindow {
 
 
 
-        let objectData = {"dailyDigest": true,  "newSetting": "20"};
+        //let objectData = {"dailyDigest": true,  "newSetting": "20"};
   
         let serverAction = "update-settings";  //test-sms
         let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
@@ -121,9 +121,9 @@ class Launcher extends AppWindow {
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("POST", remoteServer, true);
         xmlHttp.setRequestHeader('Content-Type', 'application/json');
-        xmlHttp.send(JSON.stringify(objectData));
+        xmlHttp.send(JSON.stringify(preferences));
 
-        document.getElementById("test_message").innerHTML = "Message sent: " + JSON.stringify(objectData);  //For debugging
+        document.getElementById("test_message").innerHTML = "Message sent: " + JSON.stringify(preferences);  //For debugging
       }
     }
 
