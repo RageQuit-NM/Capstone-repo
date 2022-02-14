@@ -22,3 +22,8 @@ yarn-error.log*
 
 # Overwolf packages
 *.opk
+
+
+# Local data storage
+parentPreferences.json
+game_data.txt
