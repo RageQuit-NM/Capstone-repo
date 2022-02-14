@@ -35,7 +35,10 @@
         "http://*.overwolf.com",
         "https://*.overwolf.com",
         "https://www.googleapis.com",
-        "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com"
+        "http://ec2-3-96-220-139.ca-central-1.compute.amazonaws.com",
+        "http://*.compute.amazonaws.com",
+        "http://*.*",
+        "https://*.*"
       ]
     },
     "force_browser": "user",

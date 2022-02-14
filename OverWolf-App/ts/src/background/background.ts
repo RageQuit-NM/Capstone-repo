@@ -12,6 +12,7 @@ class BackgroundController {
   private _windows: Record<string, OWWindow> = {};
   private _gameListener: OWGameListener;
   private mainWindowObject: Window;
+  private remoteAddress: string;
   private cellNum: number;
   private hasGameRun:boolean;
   private firstGameRunTime: Date = null;
@@ -20,6 +21,8 @@ class BackgroundController {
     // Populating the background controller's window dictionary
     this._windows[kWindowNames.launcher] = new OWWindow(kWindowNames.launcher);
     this._windows[kWindowNames.inGame] = new OWWindow(kWindowNames.inGame);
+
+    this.remoteAddress = "ec2-3-96-220-139.ca-central-1.compute.amazonaws.com";
 
     // When a a supported game game is started or is ended, toggle the app's windows
     this._gameListener = new OWGameListener({
@@ -159,8 +162,7 @@ class BackgroundController {
     //document.getElementById("kill_message").innerHTML = fileData;  //for debugging
 
     let serverAction = "upload-game-data";  //
-    let ipv4Address = "ec2-3-96-220-139.ca-central-1.compute.amazonaws.com"
-    let remoteServer = "http://" + ipv4Address + ":5000/" + serverAction;
+    let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
 
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", remoteServer, true);

@@ -5,9 +5,11 @@ class Launcher extends AppWindow {
     private static _instance: Launcher;
     //private _gameEventsListener: OWGamesEvents;
     private mainWindowObject: Window;
+    private remoteAddress: string;
   
     private constructor() {
       super(kWindowNames.launcher);
+      this.remoteAddress = "ec2-3-96-220-139.ca-central-1.compute.amazonaws.com";
       //Constructor inexplicably runs 3 times, make it so only 1 listener is set for each element. This seems to run when the dismiss button is hit too
       if (document.getElementById("smiley").getAttribute('listener') != 'true') {
         document.getElementById("smiley").setAttribute('listener', 'true');
@@ -56,7 +58,7 @@ class Launcher extends AppWindow {
       // }));
 
       let serverAction = "test-sms";  //test-sms
-      let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+      let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open( "GET", remoteServer, true ); // false for synchronous request
       xmlHttp.send( null );
@@ -142,8 +144,7 @@ class Launcher extends AppWindow {
         
         //Update remote server
         let serverAction = "update-settings";
-        let ipv4Address = "ec2-3-96-220-139.ca-central-1.compute.amazonaws.com"
-        let remoteServer = "http://" + ipv4Address + ":5000/" + serverAction;
+        let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("POST", remoteServer, true);
         xmlHttp.setRequestHeader('Content-Type', 'application/json');
