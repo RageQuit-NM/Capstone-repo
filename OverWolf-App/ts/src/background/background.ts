@@ -150,18 +150,17 @@ class BackgroundController {
 
   private async sendGameInfoToRemote(){
     let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
-    let objectData = JSON.parse(fileData);
+    let gameData = JSON.parse(fileData);
     //document.getElementById("kill_message").innerHTML = fileData;  //for debugging
 
     let serverAction = "game_end";  //
-    let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+    let ipv4Address = "ec2-3-96-220-139.ca-central-1.compute.amazonaws.com"
+    let remoteServer = "http://" + ipv4Address + ":5000/" + serverAction;
 
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.send(JSON.stringify({
-      value: objectData
-    }));
+    xmlHttp.send(JSON.stringify(gameData));
 
     xmlHttp.onreadystatechange = await function () {
       if (this.readyState != 4) return;

@@ -140,8 +140,9 @@ class Launcher extends AppWindow {
         Launcher.instance().writeFile(JSON.stringify(preferences), `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
         
         //Update remote server
-        let serverAction = "update-settings";  //test-sms
-        let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+        let serverAction = "update-settings";
+        let ipv4Address = "ec2-3-96-220-139.ca-central-1.compute.amazonaws.com"
+        let remoteServer = "http://" + ipv4Address + ":5000/" + serverAction;
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("POST", remoteServer, true);
         xmlHttp.setRequestHeader('Content-Type', 'application/json');
