@@ -50,25 +50,20 @@ class InGame extends AppWindow {
 
   public async run() {
     const gameClassId = await this.getCurrentGameClassId();
-
     const gameFeatures = kGamesFeatures.get(gameClassId);
 
     if (gameFeatures && gameFeatures.length) {
       this._gameEventsListener = new OWGamesEvents(
         {
-          onInfoUpdates: this.onInfoUpdates.bind(this),
+          onInfoUpdates: null,
           onNewEvents: this.onNewEvents.bind(this)
         },
         gameFeatures
       );
-
       this._gameEventsListener.start();
     }
   }
 
-  private onInfoUpdates(info) {
-    //this.logLine(this._infoLog, info, false);
-  }
 
   //Highlights some events
   //Sends Matchclock to the html overlay
@@ -139,7 +134,6 @@ class InGame extends AppWindow {
     //console.log("readFileData()", result["success"] + ", " + result["content"] + ", " +  result["error"]);
     return result["content"];
   }
-
 
   //Writes data into a file specified in file_path, returns the result
   private async writeFile(data:string, file_path:string){

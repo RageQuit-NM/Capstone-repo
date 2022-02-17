@@ -13,7 +13,6 @@ class BackgroundController {
   private _gameListener: OWGameListener;
   private mainWindowObject: Window;
   private remoteAddress: string;
-  private cellNum: number;
   private hasGameRun:boolean;
   private firstGameRunTime: Date = null;
 
@@ -23,7 +22,7 @@ class BackgroundController {
     this._windows[kWindowNames.inGame] = new OWWindow(kWindowNames.inGame);
 
     this.remoteAddress = "ec2-3-96-220-139.ca-central-1.compute.amazonaws.com";
-
+    this.hasGameRun = false;
     // When a a supported game game is started or is ended, toggle the app's windows
     this._gameListener = new OWGameListener({
       onGameStarted: this.toggleWindows.bind(this),
@@ -33,8 +32,6 @@ class BackgroundController {
     overwolf.extensions.onAppLaunchTriggered.addListener(
       e => this.onAppLaunchTriggered(e)
     );
-
-    this.hasGameRun = false;
   };
 
   // Implementing the Singleton design pattern
@@ -44,8 +41,6 @@ class BackgroundController {
     }
     return BackgroundController._instance;
   }
-
-  //displayMessageBox(messageParams, callback)    //Displays a customized popup message prompt.
 
   // When running the app, start listening to games' status and decide which window should
   // be launched first, based on whether a supported game is currently running
@@ -58,17 +53,6 @@ class BackgroundController {
     this._windows[currWindowName].restore();
 
     this.sendMessageToLauncher();
-  }
-
-  //Arrange lines into an array object
-  //All information before a ";" character is stored into an entry in the messageObject
-  private buildMessageObject(originMessage:string){
-    var messageObject:string[] = new Array();
-    while(originMessage.indexOf(";") != -1){
-      messageObject.push(originMessage.substr(0, originMessage.indexOf(";")));
-      originMessage = originMessage.substr(originMessage.indexOf(";")+1);
-    }
-    return messageObject;
   }
 
   //Sends a random message in Messages.txt to the primary_message bus
@@ -86,7 +70,7 @@ class BackgroundController {
     }
 
     let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`);
-    let messageObject:string[] = this.buildMessageObject(result);
+    let messageObject:string[] = this._buildMessageObject(result);
     let randNum:number = this._pickRandomNumWithinObjectSize(messageObject);
 
     this.mainWindowObject = overwolf.windows.getMainWindow();
@@ -119,52 +103,20 @@ class BackgroundController {
       this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
     }
   }
-  
-  //sends two messages, one to /message one to /time_played
-  private sendMessageInfoToRemote(randNum: number, seconds: number){
-    let serverAction = "message";  //
-    let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
 
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", remoteServer, true);
-    xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.send(JSON.stringify({
-      messageNum: randNum
-    }));
-
-
-    serverAction = "time_played";  //
-    remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
-    xmlHttp.open("POST", remoteServer, true);
-    xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.send(JSON.stringify({
-      secondsPlayed: seconds
-    }));
-
-    xmlHttp.onreadystatechange = function () {
-      if (this.readyState != 4) return;
-      if (this.status == 200) {
-        var response = (this.responseText); // we get the returned data
-        // document.getElementById("test_message").innerHTML = "reponse from /message or /time_played = " + response;
-      }
-      // end of state change: it can be after some time (async)
-    };
-
-  }
-
+  //Called when a games ends. Sends all data in game_data.txt, along with a cellnum and a timeStamp to /upload-game-data
   private async sendGameInfoToRemote(){
     let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
     let gameData = JSON.parse(fileData);
 
     fileData =  JSON.parse(await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`));
-    this.cellNum = fileData["cellNum"];
-    gameData["cellNum"] = this.cellNum;
+    let cellNum = fileData["cellNum"];
+    gameData["cellNum"] = cellNum;
     gameData["timeStamp"] = new Date();
     //document.getElementById("kill_message").innerHTML = fileData;  //for debugging
 
     let serverAction = "upload-game-data";  //
     let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
-
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
@@ -177,18 +129,10 @@ class BackgroundController {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var response = (this.responseText); // we get the returned data
-        //document.getElementById("test_message").innerHTML = "reponse from /game_end = " + response;
+        //document.getElementById("test_message").innerHTML = "reponse from /upload-game-data = " + response;
       }
       // end of state change: it can be after some time (async)
     };
-  }
-
-  //Takes an array object and returns a number between 0 and length
-  private _pickRandomNumWithinObjectSize(myObject:Array<string>){
-    let min:number = 0;
-    let max:any = myObject.length;
-    let randomNum:number =  Math.floor(Math.random() * max ) + min;
-    return randomNum;
   }
 
   //Reads the data in file specified in file_path and returns it
@@ -256,6 +200,26 @@ class BackgroundController {
     //console.log("check is supported, info: " + info);
     return kGameClassIds.includes(info.classId);
   }
+
+  //Arrange lines into an array object
+  //All information before a ";" character is stored into an entry in the messageObject
+  private _buildMessageObject(originMessage:string){
+    var messageObject:string[] = new Array();
+    while(originMessage.indexOf(";") != -1){
+      messageObject.push(originMessage.substr(0, originMessage.indexOf(";")));
+      originMessage = originMessage.substr(originMessage.indexOf(";")+1);
+    }
+    return messageObject;
+  }
+
+    //Takes an array object and returns a number between 0 and length
+    private _pickRandomNumWithinObjectSize(myObject:Array<string>){
+      let min:number = 0;
+      let max:any = myObject.length;
+      let randomNum:number =  Math.floor(Math.random() * max ) + min;
+      return randomNum;
+    }
 }
+
 
 BackgroundController.instance().run();

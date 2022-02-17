@@ -42,36 +42,6 @@ class Launcher extends AppWindow {
       //this.parentPortalOpen();
       this.parentPortalClose();
     }
- 
-
-    private async twilio(){
-      // let objectData = "My message to shane from /game_end";
-  
-      // let serverAction = "game_end";  //test-sms
-      // let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
-  
-      // var xmlHttp = new XMLHttpRequest();
-      // xmlHttp.open("POST", remoteServer, true);
-      // xmlHttp.setRequestHeader('Content-Type', 'application/json');
-      // xmlHttp.send(JSON.stringify({
-      //   value: objectData
-      // }));
-
-      let serverAction = "test-sms";  //test-sms
-      let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
-      var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open( "GET", remoteServer, true ); // false for synchronous request
-      xmlHttp.send( null );
-
-      xmlHttp.onreadystatechange = function () {
-        if (this.readyState != 4) return;
-        if (this.status == 200) {
-          var response = (this.responseText); // we get the returned data
-          document.getElementById("test_message").innerHTML = "reponse = " + response;
-        }
-        // end of state change: it can be after some time (async)
-      };
-    }
 
     //Sets all message content from the bus
     public setContent(){
@@ -79,10 +49,8 @@ class Launcher extends AppWindow {
 
       let primary_message: string = this.mainWindowObject.document.getElementById("primary_message").innerHTML; //collect the primary_message
       document.getElementById("primary_message").innerHTML = primary_message;                                   //Update HTML document
-      
       let time_message: string = this.mainWindowObject.document.getElementById("time_message").innerHTML;
       document.getElementById("time_played").innerHTML = time_message;
-
       let test_message: string = this.mainWindowObject.document.getElementById("test_message").innerHTML;
       document.getElementById("test_message").innerHTML = test_message;
     }
@@ -110,36 +78,12 @@ class Launcher extends AppWindow {
         preferences["timeLimitRule"] = (document.getElementById("timeLimitRule") as HTMLInputElement).value;
         preferences["bedTimeRule"] = (document.getElementById("bedTimeRule") as HTMLInputElement).value;
         preferences["gameLimitRule"] = (document.getElementById("gameLimitRule") as HTMLInputElement).value;
-        if ((document.getElementById("timeLimitToggle") as HTMLFormElement).checked) {
-          preferences["timeLimitToggle"] = true;
-        } else {
-          preferences["timeLimitToggle"] = false;
-        }
-        if ((document.getElementById("bedTimeToggle") as HTMLFormElement).checked) {
-          preferences["bedTimeToggle"] = true;
-        } else {
-          preferences["bedTimeToggle"] = false;
-        }
-        if ((document.getElementById("gameLimitToggle") as HTMLFormElement).checked) {
-          preferences["gameLimitToggle"] = true;
-        } else {
-          preferences["gameLimitToggle"] = false;
-        }
-        if ((document.getElementById("dailyDigestToggle") as HTMLFormElement).checked) {
-          preferences["dailyDigestToggle"] = true;
-        } else {
-          preferences["dailyDigestToggle"] = false;
-        }
-        if ((document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked) {
-          preferences["weeklyDigestToggle"] = true;
-        } else {
-          preferences["weeklyDigestToggle"] = false;
-        }
-        if ((document.getElementById("monthyDigestToggle") as HTMLFormElement).checked) {
-          preferences["monthyDigestToggle"] = true;
-        } else {
-          preferences["monthyDigestToggle"] = false;
-        }
+        (document.getElementById("timeLimitToggle") as HTMLFormElement).checked ? preferences["timeLimitToggle"] = true : preferences["timeLimitToggle"] = false;
+        (document.getElementById("bedTimeToggle") as HTMLFormElement).checked ? preferences["bedTimeToggle"] = true : preferences["bedTimeToggle"] = false;
+        (document.getElementById("gameLimitToggle") as HTMLFormElement).checked ? preferences["gameLimitToggle"] = true : preferences["gameLimitToggle"] = false;
+        (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked ? preferences["dailyDigestToggle"] = true : preferences["dailyDigestToggle"] = false;
+        (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked ? preferences["weeklyDigestToggle"] = true : preferences["weeklyDigestToggle"] = false;
+        (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked ? preferences["monthyDigestToggle"] = true : preferences["monthyDigestToggle"] = false;
         Launcher.instance().writeFile(JSON.stringify(preferences), `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
         
         //Update remote server
@@ -163,38 +107,32 @@ class Launcher extends AppWindow {
       (document.getElementById("timeLimitRule") as HTMLInputElement).value = preferences["timeLimitRule"];
       (document.getElementById("bedTimeRule") as HTMLInputElement).value = preferences["bedTimeRule"];
       (document.getElementById("gameLimitRule") as HTMLInputElement).value = preferences["gameLimitRule"];
-      if (preferences["timeLimitToggle"]) {
-        (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = true;
-      } else {
-        (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = false;
-      }
-      if (preferences["bedTimeToggle"]) {
-        (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = true;
-      } else {
-        (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = false;
-      }
-      if (preferences["gameLimitToggle"]) {
-        (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = true;
-      } else {
-        (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = false;
-      }
-      if (preferences["dailyDigestToggle"]) {
-        (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = true;
-      } else {
-        (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = false;
-      }
-      if (preferences["weeklyDigestToggle"]) {
-        (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = true;
-      } else {
-        (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = false;
-      }
-      if (preferences["monthyDigestToggle"]) {
-        (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = true;
-      } else {
-        (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = false;
-      }
+      preferences["timeLimitToggle"] ? (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = true : (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = false;
+      preferences["bedTimeToggle"] ? (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = true : (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = false;
+      preferences["gameLimitToggle"] ? (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = true : (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = false;
+      preferences["dailyDigestToggle"] ? (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = false;
+      preferences["weeklyDigestToggle"] ? (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = false;
+      preferences["monthyDigestToggle"] ? (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = false;
     }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  //Testing function for remote server connections
+  private async twilio(){
+    let serverAction = "test-sms";  //test-sms
+    let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", remoteServer, true ); // false for synchronous request
+    xmlHttp.send( null );
+
+    xmlHttp.onreadystatechange = function () {
+      if (this.readyState != 4) return;
+      if (this.status == 200) {
+        var response = (this.responseText); // we get the returned data
+        document.getElementById("test_message").innerHTML = "reponse = " + response;
+      }
+      // end of state change: it can be after some time (async)
+    };
+  }
 
   private async readFileData(file_path:string){
     const result = await new Promise(resolve => {
