@@ -71,7 +71,7 @@ class BackgroundController {
 
     let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`);
     let messageObject:string[] = this._buildMessageObject(result);
-    let randNum:number = this._pickRandomNumWithinObjectSize(messageObject);
+    //let randNum:number = this._pickRandomNumWithinObjectSize(messageObject);
 
     this.mainWindowObject = overwolf.windows.getMainWindow();
     //if game has run send a message from Messages.txt else just a welcome message
@@ -80,15 +80,16 @@ class BackgroundController {
 
       let endTime = new Date()
       let seconds = (endTime.getTime() - this.firstGameRunTime.getTime()) / 1000;
-      //this.mainWindowObject.document.getElementById("time_message").innerHTML = seconds as unknown as string; //to send the time played if wanted
+      let minutes = Math.floor(seconds / 60);
+      this.mainWindowObject.document.getElementById("currentGameSessionLength").innerHTML = (minutes as unknown as string) + " minute(s)."; //update the time played
 
       if(positiveKD){
         this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[3];
-        randNum = 3;
+        //randNum = 3;
       }
       if(negativeKD){
         this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[6];
-        randNum = 6;
+        //randNum = 6;
 
         let serverAction = "test-sms";  //
         let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
@@ -101,6 +102,7 @@ class BackgroundController {
       //this.mainWindowObject.document.getElementById("time_message").innerHTML = this.firstGameRunTime.toLocaleTimeString() + "End time = " + endTime.toLocaleTimeString() + " seconds: " + seconds;
     } else {
       this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
+      this.mainWindowObject.document.getElementById("currentGameSessionLength").innerHTML = "Session not started.";
     }
   }
 

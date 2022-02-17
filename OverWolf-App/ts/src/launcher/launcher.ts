@@ -53,6 +53,8 @@ class Launcher extends AppWindow {
       document.getElementById("time_played").innerHTML = time_message;
       let test_message: string = this.mainWindowObject.document.getElementById("test_message").innerHTML;
       document.getElementById("test_message").innerHTML = test_message;
+      let currentGameSessionLength: string = this.mainWindowObject.document.getElementById("currentGameSessionLength").innerHTML;
+      document.getElementById("currentGameSessionLength").innerHTML = currentGameSessionLength;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
