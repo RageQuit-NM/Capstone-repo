@@ -79,9 +79,10 @@ class BackgroundController {
       this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[1];  //Should be randNum
 
       let endTime = new Date()
-      let seconds = (endTime.getTime() - this.firstGameRunTime.getTime()) / 1000;
+      let seconds = Math.floor((endTime.getTime() - this.firstGameRunTime.getTime()) / 1000);
       let minutes = Math.floor(seconds / 60);
-      this.mainWindowObject.document.getElementById("currentGameSessionLength").innerHTML = (minutes as unknown as string) + " minute(s)."; //update the time played
+      //this.mainWindowObject.document.getElementById("currentGameSessionLength").innerHTML = (minutes as unknown as string) + " minute(s)."; //update the time played
+      this.mainWindowObject.document.getElementById("currentGameSessionLength").innerHTML = (seconds as unknown as string) + " seconds."; //update the time played
 
       if(positiveKD){
         this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[3];
