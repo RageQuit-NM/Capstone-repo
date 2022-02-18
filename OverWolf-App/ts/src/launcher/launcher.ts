@@ -9,7 +9,7 @@ class Launcher extends AppWindow {
   
     private constructor() {
       super(kWindowNames.launcher);
-      this.remoteAddress = "ec2-3-96-220-139.ca-central-1.compute.amazonaws.com";
+      this.remoteAddress = "ec2-35-183-10-197.ca-central-1.compute.amazonaws.com";
       //Constructor inexplicably runs 3 times, make it so only 1 listener is set for each element. This seems to run when the dismiss button is hit too
       if (document.getElementById("smiley").getAttribute('listener') != 'true') {
         document.getElementById("smiley").setAttribute('listener', 'true');

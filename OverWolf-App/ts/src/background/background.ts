@@ -21,7 +21,7 @@ class BackgroundController {
     this._windows[kWindowNames.launcher] = new OWWindow(kWindowNames.launcher);
     this._windows[kWindowNames.inGame] = new OWWindow(kWindowNames.inGame);
 
-    this.remoteAddress = "ec2-3-96-220-139.ca-central-1.compute.amazonaws.com";
+    this.remoteAddress = "ec2-35-183-10-197.ca-central-1.compute.amazonaws.com";
     this.hasGameRun = false;
     // When a a supported game game is started or is ended, toggle the app's windows
     this._gameListener = new OWGameListener({
