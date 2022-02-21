@@ -17,12 +17,11 @@ class BackgroundController {
   private firstGameRunTime: Date = null;
 
   private constructor() {
-    this.doMessage1();
     // Populating the background controller's window dictionary
     this._windows[kWindowNames.launcher] = new OWWindow(kWindowNames.launcher);
     this._windows[kWindowNames.inGame] = new OWWindow(kWindowNames.inGame);
 
-    this.remoteAddress = "ec2-35-183-10-197.ca-central-1.compute.amazonaws.com";
+    this.remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
     this.hasGameRun = false;
     // When a a supported game game is started or is ended, toggle the app's windows
     this._gameListener = new OWGameListener({
@@ -54,6 +53,7 @@ class BackgroundController {
     this._windows[currWindowName].restore();
 
     this.sendMessageToLauncher();
+    this.doMessage1();
   }
   private doMessage1(){
     let messageData = {cellNum: 69};
@@ -63,6 +63,17 @@ class BackgroundController {
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send(JSON.stringify(messageData));
+
+    console.log("sent message");
+    xmlHttp.onreadystatechange = function () {
+      if (this.readyState != 4) return;
+      if (this.status == 200) {
+        var response = (this.responseText); // we get the returned data
+        //document.getElementById("test_message").innerHTML = "reponse from /upload-game-data = " + response;
+        console.log("reponse from /send-message1 = " + response);
+      }
+      // end of state change: it can be after some time (async)
+    };
   }
   //Sends a random message in Messages.txt to the primary_message bus
   private async sendMessageToLauncher(){
