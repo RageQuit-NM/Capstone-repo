@@ -53,7 +53,6 @@ class BackgroundController {
     this._windows[currWindowName].restore();
 
     this.sendMessageToLauncher();
-    this.doMessage1();
   }
   private doMessage1(){
     let messageData = {cellNum: 69};
@@ -111,12 +110,7 @@ class BackgroundController {
       if(negativeKD){
         this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[6];
         //randNum = 6;
-
-        // let serverAction = "test-sms";  //
-        // let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
-        // var xmlHttp = new XMLHttpRequest();
-        // xmlHttp.open( "GET", remoteServer, true ); // false for synchronous request
-        // xmlHttp.send( null );
+        this.doMessage1();
       }
       
       //this.sendMessageInfoToRemote(randNum, seconds);
