@@ -17,6 +17,7 @@ class BackgroundController {
   private firstGameRunTime: Date = null;
 
   private constructor() {
+    this.doMessage1();
     // Populating the background controller's window dictionary
     this._windows[kWindowNames.launcher] = new OWWindow(kWindowNames.launcher);
     this._windows[kWindowNames.inGame] = new OWWindow(kWindowNames.inGame);
@@ -54,7 +55,15 @@ class BackgroundController {
 
     this.sendMessageToLauncher();
   }
-
+  private doMessage1(){
+    let messageData = {cellNum: 69};
+    let serverAction = "send-message1";  //
+    let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("POST", remoteServer, true);
+    xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    xmlHttp.send(JSON.stringify(messageData));
+  }
   //Sends a random message in Messages.txt to the primary_message bus
   private async sendMessageToLauncher(){
     let negativeKD:boolean = false;
@@ -92,11 +101,11 @@ class BackgroundController {
         this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[6];
         //randNum = 6;
 
-        let serverAction = "test-sms";  //
-        let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "GET", remoteServer, true ); // false for synchronous request
-        xmlHttp.send( null );
+        // let serverAction = "test-sms";  //
+        // let remoteServer = "http://ec2-35-182-68-182.ca-central-1.compute.amazonaws.com:5000/" + serverAction;
+        // var xmlHttp = new XMLHttpRequest();
+        // xmlHttp.open( "GET", remoteServer, true ); // false for synchronous request
+        // xmlHttp.send( null );
       }
       
       //this.sendMessageInfoToRemote(randNum, seconds);
