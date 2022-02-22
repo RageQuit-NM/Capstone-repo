@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="parentPortal.css" />
+  <title>Growing Gamers</title>
+  <script defer src="parentPortal.js"></script>
+  <!--bootstrap stuff-->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body class="body">
+  <!-- -------------------------------- Header ------------------------------- -->
+  <header id="header" class="app-header">
+    <div class="container-fluid text-center header-container">
+      <p class="display-1">Growing Gamers</p>
+      <p class="h1">Parent Portal</p>
+    </div>
+  </header>
+
+  <!-- --------------------------------- Main -------------------------------- -->
+  <main id="main">
+        <div class="container mt-3">
+            <p class="display-1">Settings</p>
+            <form id="parent_control_form">
+            <p class="h1" data-bs-toggle="tooltip" data-bs-placement="left" title="Set the limits you find appropriate for your child.">Set the Rules: </p>
+            <div class="mb-3 mt-3">
+                <label for="timeLimitRule" class="form-label h4">Daily Time Limit (minutes):</label>
+                <input type="number" class="form-control" id="timeLimitRule" placeholder="120" name="timeLimitRule" data-bs-toggle="tooltip" data-bs-placement="left" title="Set the maximum daily time that should be spent on games. (In minutes)">
+            </div>
+            <div class="mb-3 mt-3">
+                <label for="bedTimeRule" class="form-label h4">Bed Time:</label>
+                <input type="time" class="form-control" id="bedTimeRule" value="20:30" name="bedTimeRule" data-bs-toggle="tooltip" data-bs-placement="left" title="Set the latest time games should be played. (hh:mm-AM/PM)">
+            </div>
+            <div class="mb-3 mt-3">
+                <label for="gameLimitRule" class="form-label h4">Game Limit:</label>
+                <input type="number" class="form-control" id="gameLimitRule" placeholder="4" name="gameLimitRule" data-bs-toggle="tooltip" data-bs-placement="left" title="Set the maximum number of games that should be played in a day.">
+            </div>
+            <br/>
+            <p class="h1" data-bs-toggle="tooltip" data-bs-placement="left" title="Select which rules to be notified of immediately if they are broken. (Via text)">Notify me if Exceeded: </p>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="timeLimitToggle" name="timeLimitToggle" onclick="if(this.checked) { this.value=true; } else {this.value=false}" value="false">
+                <label class="form-check-label h4" name="timeLimitRule" data-bs-toggle="tooltip" data-bs-placement="left" title="If maximum daily time that should be spent on games is exceeded.">Daily Time Limit</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="bedTimeToggle" name="bedTimeToggle" onclick="if(this.checked) { this.value=true; } else {this.value=false}" value="false">
+                <label class="form-check-label h4" data-bs-toggle="tooltip" data-bs-placement="left" title="If games are played past the chosen bedtime.">Bed Time</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="gameLimitToggle" name="gameLimitToggle" onclick="if(this.checked) { this.value=true; } else {this.value=false}" value="false">
+                <label class="form-check-label h4" data-bs-toggle="tooltip" data-bs-placement="left" title="If the maximum number of games that should be played in a day is exceeded.">Game Limit</label>
+            </div>
+            <br/>
+            <p class="h1" data-bs-toggle="tooltip" data-bs-placement="left" title="Digests are a condensed summary of gaming activity. This includes information on rule observation, habits, and performance.">Send me Digests: </p>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="dailyDigest" name="dailyDigest" onclick="if(this.checked) { this.value=true; } else {this.value=false}" value="false">
+                <label class="form-check-label h4">Daily</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="weeklyDigest" name="weeklyDigest" onclick="if(this.checked) { this.value=true; } else {this.value=false}" value="false">
+                <label class="form-check-label h4">Weekly</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="monthlyDigest" name="monthlyDigest" onclick="if(this.checked) { this.value=true; } else {this.value=false}" value="false">
+                <label class="form-check-label h4">Monthly</label>
+            </div>
+            <br/>
+            <div class="mb-3 mt-3">
+                <label for="cellNum" class="form-label h1">Cell Phone Number:</label>
+                <input type="text" class="form-control" id="cellNum" name="cellNum" data-bs-toggle="tooltip" data-bs-placement="left" title="Cell phone number linked to your account, you will receive digests and notifications to this number.">
+            </div>
+            </form>
+            <div class="d-grid">
+                <button type="button" id="parent_control_submit" class="btn btn-block"><p class="display-5">Apply Changes</p></button>
+            </div>
+            <div class="mb-3 mt-3">
+                <p id="test" style="color:white">test</p>
+            </div>
+            <div class="mb-3 mt-3">
+                <p id="test_response" style="color:white">test</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+  
