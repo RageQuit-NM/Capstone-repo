@@ -10,7 +10,10 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 
 if(checkCookie()){
   //generate perferences
-  document.getElementById("test").innerHTML = "cookie SET: " + getCookie("cellNum");
+  //document.getElementById("test").innerHTML = "cookie SET: " + getCookie("cellNum");
+
+  var sendData = {cellNum:0};
+  sendData["cellNum"] = getCookie("cellNum");
 
   let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
   let serverAction = "get-settings";
@@ -18,14 +21,18 @@ if(checkCookie()){
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open("POST", remoteServer, true);
   xmlHttp.setRequestHeader('Content-Type', 'application/json');
-  xmlHttp.send(JSON.stringify(getCookie("cellNum")));
+  xmlHttp.send(JSON.stringify(sendData));
+
+  document.getElementById("test").innerHTML = "sent = " + JSON.stringify(sendData);
 
 
   xmlHttp.onreadystatechange = function () {
     if (this.readyState != 4) return;
     if (this.status == 200) {
       var response = (this.responseText); // we get the returned data
-      document.getElementById("test_response").innerHTML = "reponse = " + response;
+      var parsed = JSON.parse(response);
+      document.getElementById("test_response").innerHTML = "reponse = " + response + "  also dailyDigest is: " + parsed["dailyDigest"];
+      buildPreferences(parsed);
     }
     // end of state change: it can be after some time (async)
   };
@@ -33,6 +40,37 @@ if(checkCookie()){
 
 }else{
   document.getElementById("test").innerHTML = "cookie not set: " + document.cookie;
+}
+
+function buildPreferences(preferences){
+  document.getElementById("cellNum").value = preferences["cellNum"];
+  document.getElementById("timeLimitRule").value = preferences["timeLimitRule"];
+  document.getElementById("bedTimeRule").value = preferences["bedTimeRule"];
+  document.getElementById("gameLimitRule").value = preferences["gameLimitRule"];
+  // preferences["timeLimitToggle"]=="true" ? document.getElementById("timeLimitToggle").checked = true : document.getElementById("timeLimitToggle").checked = false;
+  // preferences["bedTimeToggle"]=="true" ? document.getElementById("bedTimeToggle").checked = true : document.getElementById("bedTimeToggle").checked = false;
+  // preferences["gameLimitToggle"]=="true" ? document.getElementById("gameLimitToggle").checked = true : document.getElementById("gameLimitToggle").checked = false;
+  // //preferences["dailyDigest"] ? document.getElementById("dailyDigest").checked = true : document.getElementById("dailyDigest").checked = false;
+  // preferences["weeklyDigest"]=="true" ? document.getElementById("weeklyDigest").checked = true : document.getElementById("weeklyDigest").checked = false;
+  // preferences["monthlyDigest"]=="true" ? document.getElementById("monthlyDigest").checked = true : document.getElementById("monthlyDigest").checked = false;
+
+  // if(preferences["dailyDigest"] == "true"){
+  //   document.getElementById("dailyDigest").checked = true;
+  //   document.getElementById("dailyDigest").value = true;
+  // }{
+  //   document.getElementById("dailyDigest").checked = false;
+  // }
+  const toggles = ["timeLimitToggle", "bedTimeToggle", "gameLimitToggle", "dailyDigest", "weeklyDigest", "monthlyDigest"];
+  for (let i = 0; i < toggles.length; i++) {
+    document.getElementById("test_response").innerHTML += " checking:" + toggles[i];
+    if(preferences[toggles[i]] == "true"){
+      document.getElementById(toggles[i]).checked = true;
+      document.getElementById(toggles[i]).value = true;
+    }else{
+      document.getElementById(toggles[i]).checked = false;
+      document.getElementById(toggles[i]).value = false;
+    }
+  }
 }
 
 //Collect data from parent preferences and ...
