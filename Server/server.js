@@ -15,14 +15,15 @@ app.get('/parentPortal', function(req, res){
     res.sendFile(__dirname+"/parent-portal/parentPortal.html");
 });
 
+app.get('/get-settings', function(req, res){
+
+  res.send("couldnt get mogod db aettings");
+});
+
 app.post('/send-message1', function(req, res){
     var cellNum = req.body["cellNum"];
     var smsScript = childProcess.fork('./sms-messages/message1.js');
     smsScript.send(cellNum);
-
-    smsScript.on("close", function (code) {
-        console.log("child process exited with code " + code);
-    });
     res.send('message 1 sms sent');
 });
 
