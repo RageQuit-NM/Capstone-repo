@@ -25,7 +25,7 @@ if(checkCookie()){
     if (this.readyState != 4) return;
     if (this.status == 200) {
       var response = (this.responseText); // we get the returned data
-      document.getElementById("test_message").innerHTML = "reponse = " + response;
+      document.getElementById("test_response").innerHTML = "reponse = " + response;
     }
     // end of state change: it can be after some time (async)
   };
@@ -61,7 +61,7 @@ function parentFormHandler(){
 }
 
 function checkCookie(){
-  if(getCookie("username") != ""){
+  if(getCookie("cellNum") != ""){
     return true;
   }
   else{

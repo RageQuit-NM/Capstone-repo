@@ -3,6 +3,9 @@ var childProcess = require('child_process');
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 
+var express = require('express');  
+var app = express();  
+
 app.use(express.json())//So JSON data can be parsed from HTTP URL
 app.use(express.static(__dirname+'/public'));//to know where the website assets live
 
@@ -15,9 +18,26 @@ app.get('/parentPortal', function(req, res){
     res.sendFile(__dirname+"/parent-portal/parentPortal.html");
 });
 
-app.get('/get-settings', function(req, res){
+app.post('/get-settings', function(req, res){
+  var object = req.body;
+  var query = {cellNum: object["cellNum"]};
+  var settingsResult;
+  console.log("query is: " + JSON.stringify(query));
 
-  res.send("couldnt get mogod db aettings");
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var database = db.db("growing_gamers");
+    database.collection("user_data").find(query).toArray(function(err, result) {
+      if (err) throw err;
+      //console.log(result);
+      settingsResult = result;
+      db.close();
+    });
+  });
+  console.log("result: " + settingsResult);
+  console.log("result stringiyed: " + JSON.stringify(settingsResult));
+
+  res.send(JSON.stringify(settingsResult));
 });
 
 app.post('/send-message1', function(req, res){
