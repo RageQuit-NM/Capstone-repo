@@ -47,19 +47,6 @@ function buildPreferences(preferences){
   document.getElementById("timeLimitRule").value = preferences["timeLimitRule"];
   document.getElementById("bedTimeRule").value = preferences["bedTimeRule"];
   document.getElementById("gameLimitRule").value = preferences["gameLimitRule"];
-  // preferences["timeLimitToggle"]=="true" ? document.getElementById("timeLimitToggle").checked = true : document.getElementById("timeLimitToggle").checked = false;
-  // preferences["bedTimeToggle"]=="true" ? document.getElementById("bedTimeToggle").checked = true : document.getElementById("bedTimeToggle").checked = false;
-  // preferences["gameLimitToggle"]=="true" ? document.getElementById("gameLimitToggle").checked = true : document.getElementById("gameLimitToggle").checked = false;
-  // //preferences["dailyDigest"] ? document.getElementById("dailyDigest").checked = true : document.getElementById("dailyDigest").checked = false;
-  // preferences["weeklyDigest"]=="true" ? document.getElementById("weeklyDigest").checked = true : document.getElementById("weeklyDigest").checked = false;
-  // preferences["monthlyDigest"]=="true" ? document.getElementById("monthlyDigest").checked = true : document.getElementById("monthlyDigest").checked = false;
-
-  // if(preferences["dailyDigest"] == "true"){
-  //   document.getElementById("dailyDigest").checked = true;
-  //   document.getElementById("dailyDigest").value = true;
-  // }{
-  //   document.getElementById("dailyDigest").checked = false;
-  // }
   const toggles = ["timeLimitToggle", "bedTimeToggle", "gameLimitToggle", "dailyDigest", "weeklyDigest", "monthlyDigest"];
   for (let i = 0; i < toggles.length; i++) {
     document.getElementById("test_response").innerHTML += " checking:" + toggles[i];
