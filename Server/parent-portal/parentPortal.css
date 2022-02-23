@@ -1,0 +1,42 @@
+.header-container {
+  background-color: #24343D;
+  color: white;
+  padding: 4%;
+}
+
+.body {
+  background-color: #81BADB;
+  color: #24343D;
+}
+
+.progress {
+  height: 16px;
+}
+
+.progress-bar {
+  width: 50%;
+  height: 16px;
+}
+
+.stats-container {
+  background-color: #456475;
+  color: white;
+  padding: 4%;
+}
+
+#parent_control_submit {
+  color: #81BADB;
+  background-color: #24343D;
+  border: #24343D;
+  outline: #24343D;
+}
+
+#parent_control_submit:hover,
+#parent_control_submit:focus {
+  color: #81BADB;
+  background-color: #456475;
+  border: #456475;
+  outline: #456475;
+  box-shadow: none;
+}
+/* #81BADB #456475 #24343D */
