@@ -9,7 +9,7 @@ class Launcher extends AppWindow {
   
     private constructor() {
       super(kWindowNames.launcher);
-      this.remoteAddress = "ec2-35-183-10-197.ca-central-1.compute.amazonaws.com";
+      this.remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
       //Constructor inexplicably runs 3 times, make it so only 1 listener is set for each element. This seems to run when the dismiss button is hit too
       if (document.getElementById("smiley").getAttribute('listener') != 'true') {
         document.getElementById("smiley").setAttribute('listener', 'true');
@@ -89,12 +89,12 @@ class Launcher extends AppWindow {
         Launcher.instance().writeFile(JSON.stringify(preferences), `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
         
         //Update remote server
-        let serverAction = "update-settings";
-        let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("POST", remoteServer, true);
-        xmlHttp.setRequestHeader('Content-Type', 'application/json');
-        xmlHttp.send(JSON.stringify(preferences));
+        // let serverAction = "update-settings";
+        // let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
+        // var xmlHttp = new XMLHttpRequest();
+        // xmlHttp.open("POST", remoteServer, true);
+        // xmlHttp.setRequestHeader('Content-Type', 'application/json');
+        // xmlHttp.send(JSON.stringify(preferences));
 
         //document.getElementById("test_message").innerHTML = "Message sent(/update-settings): " + JSON.stringify(preferences);  //For debugging
         //document.getElementById("test_message").innerHTML = "bedLimitRule: " + JSON.stringify(preferences["bedTimeRule"]);  //For debugging
@@ -103,18 +103,38 @@ class Launcher extends AppWindow {
     }
 
     private async buildPreferences(){
-      let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
-      let preferences = JSON.parse(preferencesData); 
-      //set the cell number here
-      (document.getElementById("timeLimitRule") as HTMLInputElement).value = preferences["timeLimitRule"];
-      (document.getElementById("bedTimeRule") as HTMLInputElement).value = preferences["bedTimeRule"];
-      (document.getElementById("gameLimitRule") as HTMLInputElement).value = preferences["gameLimitRule"];
-      preferences["timeLimitToggle"] ? (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = true : (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = false;
-      preferences["bedTimeToggle"] ? (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = true : (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = false;
-      preferences["gameLimitToggle"] ? (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = true : (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = false;
-      preferences["dailyDigestToggle"] ? (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = false;
-      preferences["weeklyDigestToggle"] ? (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = false;
-      preferences["monthyDigestToggle"] ? (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = false;
+      var sendData = {cellNum:0};
+      sendData["cellNum"] = 69;
+
+      //let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
+      let serverAction = "get-settings";
+      let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("POST", remoteServer, true);
+      xmlHttp.setRequestHeader('Content-Type', 'application/json');
+      xmlHttp.send(JSON.stringify(sendData));
+
+      xmlHttp.onreadystatechange = function () {
+        if (this.readyState != 4) return;
+        if (this.status == 200) {
+          var response = (this.responseText); // we get the returned data
+          var parsed = JSON.parse(response);
+          document.getElementById("test_message").innerHTML = "Your bedtime is: " + parsed["bedTimeRule"];
+        }
+        // end of state change: it can be after some time (async)
+      };
+      // let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
+      // let preferences = JSON.parse(preferencesData); 
+      // //set the cell number here
+      // (document.getElementById("timeLimitRule") as HTMLInputElement).value = preferences["timeLimitRule"];
+      // (document.getElementById("bedTimeRule") as HTMLInputElement).value = preferences["bedTimeRule"];
+      // (document.getElementById("gameLimitRule") as HTMLInputElement).value = preferences["gameLimitRule"];
+      // preferences["timeLimitToggle"] ? (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = true : (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = false;
+      // preferences["bedTimeToggle"] ? (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = true : (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = false;
+      // preferences["gameLimitToggle"] ? (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = true : (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = false;
+      // preferences["dailyDigestToggle"] ? (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = false;
+      // preferences["weeklyDigestToggle"] ? (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = false;
+      // preferences["monthyDigestToggle"] ? (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = false;
     }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
