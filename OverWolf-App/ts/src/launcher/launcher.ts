@@ -42,16 +42,54 @@ class Launcher extends AppWindow {
       
       //this.parentPortalOpen();
       this.parentPortalClose();
-      setInterval(this.checkBedtime, 1000);
+      setInterval(this.checkBedtime, 1000*10);
     }
 
-    public checkBedtime(){
+    public async checkBedtime(){
       if(Launcher.instance().bedTime != null){
         let date = new Date();
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+        let hoursString = (hours as unknown as string), minutesString = (minutes as unknown as string);
+        if(hours < 10){
+          hoursString = "0" + (hours as unknown as string);
+        }
+        if(minutes < 10){
+          minutesString = "0" + (minutes as unknown as string);
+        }
+        let localBedTime = hoursString + ":" + minutesString;
         document.getElementById("test_message").innerHTML = "betime is: " + Launcher.instance().bedTime + "and current time is: " + date.toLocaleTimeString();
+        if(Launcher.instance().bedTime > localBedTime){
+          document.getElementById("test_message3").innerHTML = "It is not your bedtime yet. " + Launcher.instance().bedTime + " > " + localBedTime;
+        }else{
+          document.getElementById("test_message3").innerHTML = "It is bedtime, time to stop playing."  + Launcher.instance().bedTime + " !> " + localBedTime;
+          Launcher.instance().sendBedtimeMessage();
+        }
+        
       }
       //document.getElementById("test_message").innerHTML += "bedtime null";
     }
+
+    private sendBedtimeMessage(){
+      let messageData = {cellNum: "69"};
+      let serverAction = "bedtime-message";  //
+      let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("POST", remoteServer, true);
+      xmlHttp.setRequestHeader('Content-Type', 'application/json');
+      xmlHttp.send(JSON.stringify(messageData));
+  
+      xmlHttp.onreadystatechange = function () {
+        if (this.readyState != 4) return;
+        if (this.status == 200) {
+          var response = (this.responseText); // we get the returned data
+          //document.getElementById("test_message").innerHTML = "reponse from /upload-game-data = " + response;
+          //console.log("reponse from /send-message1 = " + response);
+        }
+        // end of state change: it can be after some time (async)
+      };
+    }
+
 
     //Sets all message content from the bus
     public setContent(){
@@ -135,18 +173,6 @@ class Launcher extends AppWindow {
         }
         // end of state change: it can be after some time (async)
       };
-      // let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
-      // let preferences = JSON.parse(preferencesData); 
-      // //set the cell number here
-      // (document.getElementById("timeLimitRule") as HTMLInputElement).value = preferences["timeLimitRule"];
-      // (document.getElementById("bedTimeRule") as HTMLInputElement).value = preferences["bedTimeRule"];
-      // (document.getElementById("gameLimitRule") as HTMLInputElement).value = preferences["gameLimitRule"];
-      // preferences["timeLimitToggle"] ? (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = true : (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = false;
-      // preferences["bedTimeToggle"] ? (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = true : (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = false;
-      // preferences["gameLimitToggle"] ? (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = true : (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = false;
-      // preferences["dailyDigestToggle"] ? (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = false;
-      // preferences["weeklyDigestToggle"] ? (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = false;
-      // preferences["monthyDigestToggle"] ? (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = false;
     }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

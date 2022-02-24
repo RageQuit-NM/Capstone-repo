@@ -7,12 +7,12 @@ process.on("message", function (message) {
     console.log(`Message from main.js: ${message}`);
 
     client.messages.create({
-     body: 'Message #1. Sent to: ' + message,
+     body: 'Your child is playing past their bedtime. Sent to: ' + message,
      from: '+13069850604',
      to: '+13066202479'
    })
     .then(message => console.log(message.sid));
 
-    console.log('Twilio message #1 done sending.')
+    console.log('Twilio bedtime message done sending.')
 });
-
+//ENd of bedtime-message.js

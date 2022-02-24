@@ -54,25 +54,25 @@ class BackgroundController {
 
     this.sendMessageToLauncher();
   }
-  private doMessage1(){
-    let messageData = {cellNum: 69};
-    let serverAction = "send-message1";  //
-    let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", remoteServer, true);
-    xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.send(JSON.stringify(messageData));
+  // private doMessage1(){
+  //   let messageData = {cellNum: 69};
+  //   let serverAction = "send-message1";  //
+  //   let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+  //   var xmlHttp = new XMLHttpRequest();
+  //   xmlHttp.open("POST", remoteServer, true);
+  //   xmlHttp.setRequestHeader('Content-Type', 'application/json');
+  //   xmlHttp.send(JSON.stringify(messageData));
 
-    xmlHttp.onreadystatechange = function () {
-      if (this.readyState != 4) return;
-      if (this.status == 200) {
-        var response = (this.responseText); // we get the returned data
-        //document.getElementById("test_message").innerHTML = "reponse from /upload-game-data = " + response;
-        //console.log("reponse from /send-message1 = " + response);
-      }
-      // end of state change: it can be after some time (async)
-    };
-  }
+  //   xmlHttp.onreadystatechange = function () {
+  //     if (this.readyState != 4) return;
+  //     if (this.status == 200) {
+  //       var response = (this.responseText); // we get the returned data
+  //       //document.getElementById("test_message").innerHTML = "reponse from /upload-game-data = " + response;
+  //       //console.log("reponse from /send-message1 = " + response);
+  //     }
+  //     // end of state change: it can be after some time (async)
+  //   };
+  // }
   //Sends a random message in Messages.txt to the primary_message bus
   private async sendMessageToLauncher(){
     let negativeKD:boolean = false;
@@ -109,7 +109,6 @@ class BackgroundController {
       if(negativeKD){
         this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[6];
         //randNum = 6;
-        this.doMessage1();
       }
       
       //this.sendMessageInfoToRemote(randNum, seconds);

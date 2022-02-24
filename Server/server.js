@@ -11,17 +11,19 @@ app.use(express.static(__dirname+'/public'));//to know where the website assets 
 
 app.get('/', function(req, res){
     var smsScript = childProcess.fork('./sms-messages/sms-test.js');
+    console.log('test sms sent');
     res.send('test sms sent');
 });
 
 app.get('/parentPortal', function(req, res){
     res.sendFile(__dirname+"/parent-portal/parentPortal.html");
+    console.log('Sent file: parentPortal.html');
 });
 
 app.post('/get-settings', async function(req, res){
   var object = req.body;
   var query = {cellNum: object["cellNum"]};
-  console.log("query is: " + JSON.stringify(query));
+  //console.log("query is: " + JSON.stringify(query));
   var result;
 
   try {
@@ -31,13 +33,12 @@ app.post('/get-settings', async function(req, res){
   catch (error){
     console.log(error);
   }
-  console.log("3rd layer result is "+ JSON.stringify(result));
+  console.log("Returing parentPortal settings: "+ JSON.stringify(result));
   res.send(JSON.stringify(result));
-  //res.send("i tried");
 });
 
 async function findOne(query){
-  console.log("finding one");
+  //console.log("finding one");
   const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
   if (!client) {
     console.log("No client");
@@ -47,8 +48,7 @@ async function findOne(query){
   const db = client.db("growing_gamers");
   let collection = db.collection('user_data');
   let result = await collection.findOne(query);
-  console.log(result);
-  console.log("returning: " + result);
+  //console.log("returning: " + result);
   return result;
   }catch (err) {
     console.log(err);
@@ -59,35 +59,13 @@ async function findOne(query){
   }
 }
 
-// function searchDatabase(query){
-//   console.log("query2 is: " + JSON.stringify(query));
-
-//   var result2 = MongoClient.connect(url, async function(err, db) {
-//     console.log("connecting");
-//     if (err) throw err;
-//     var database = db.db("growing_gamers");
-//     var result1 = database.collection("user_data").find(query).toArray(function(err, result) {
-//       if (err) throw err;
-//       db.close();
-//       console.log("collected: " + JSON.stringify(result));
-//       //res.send(JSON.stringify(result));
-//       return result;
-//     });
-//     console.log("returning " + JSON.stringify(result1));
-//     return result1;
-//   });
-//   console.log("2nd layer result is " + JSON.stringify(result2));
-//   return result2;
-// }
-
-
-app.post('/send-message1', function(req, res){
+app.post('/bedtime-message', function(req, res){
     var cellNum = req.body["cellNum"];
-    var smsScript = childProcess.fork('./sms-messages/message1.js');
+    var smsScript = childProcess.fork('./sms-messages/bedtime-message.js');
     smsScript.send(cellNum);
-    res.send('message 1 sms sent');
+    console.log("bedtime message sent to " + cellNum);
+    res.send('Bedtime sms sent');
 });
-
 
 
 //Update the settings from the parent portal changes
@@ -102,7 +80,7 @@ app.post('/update-settings', function(req, res){
         var database = db.db("growing_gamers");
         database.collection("user_data").updateOne(query, newVals, options, function(err, res) {
           if (err) throw err;
-          console.log("settings updated");
+          console.log("settings updated: " + res);
           db.close();
         });
       });
@@ -120,7 +98,7 @@ app.post('/upload-game-data', function(req, res){
         var database = db.db("growing_gamers");
         database.collection("player_records").insertOne(object, options, function(err, res) {
           if (err) throw err;
-          console.log("player data entered");
+          console.log("player data entered: " + res);
           db.close();
         });
       });
@@ -132,4 +110,4 @@ app.post('/upload-game-data', function(req, res){
   app.listen(5000, function(){
       console.log('Node.js web server at port 5000 is running..')
   }); //listen for requests on port 5000
-  
+  //End of server.js
