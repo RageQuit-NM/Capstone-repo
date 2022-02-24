@@ -5,12 +5,12 @@ class Launcher extends AppWindow {
     private static _instance: Launcher;
     //private _gameEventsListener: OWGamesEvents;
     private mainWindowObject: Window;
-    private remoteAddress: string;
+    private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
     public bedTime: string;
   
     private constructor() {
       super(kWindowNames.launcher);
-      this.remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
+      //this.remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
       //Constructor inexplicably runs 3 times, make it so only 1 listener is set for each element. This seems to run when the dismiss button is hit too
       if (document.getElementById("smiley").getAttribute('listener') != 'true') {
         document.getElementById("smiley").setAttribute('listener', 'true');
@@ -19,10 +19,10 @@ class Launcher extends AppWindow {
         // document.getElementById("smiley").addEventListener("click", this.clickSmiley);
         // document.getElementById("straight").addEventListener("click", this.clickSmiley);
         // document.getElementById("sad").addEventListener("click", this.clickSmiley);
-        document.getElementById("parentPortalButton").addEventListener("click", this.parentPortalOpen); 
+        //document.getElementById("parentPortalButton").addEventListener("click", this.parentPortalOpen); 
         document.getElementById("message_send").addEventListener("click", this.twilio);
 
-        this.buildPreferences();
+        this.collectPreferences();
       }
       //Hide these
       document.getElementById("smilies").style.display = "none";
@@ -41,8 +41,9 @@ class Launcher extends AppWindow {
       this.setContent();
       
       //this.parentPortalOpen();
-      this.parentPortalClose();
+      //this.parentPortalClose();
       setInterval(this.checkBedtime, 1000*10);
+      setInterval(this.collectPreferences, 1000*30);
     }
 
     public async checkBedtime(){
@@ -63,7 +64,7 @@ class Launcher extends AppWindow {
           document.getElementById("test_message3").innerHTML = "It is not your bedtime yet. " + Launcher.instance().bedTime + " > " + localBedTime;
         }else{
           document.getElementById("test_message3").innerHTML = "It is bedtime, time to stop playing."  + Launcher.instance().bedTime + " !> " + localBedTime;
-          Launcher.instance().sendBedtimeMessage();
+          //Launcher.instance().sendBedtimeMessage();
         }
         
       }
@@ -106,57 +107,57 @@ class Launcher extends AppWindow {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public parentPortalOpen(){
-      document.getElementById("parentPortalItems").classList.toggle("show");
-    }
+    // public parentPortalOpen(){
+    //   document.getElementById("parentPortalItems").classList.toggle("show");
+    // }
 
-    //Closes the parent portal, updates locally stored settings, updates remote settings
-    public parentPortalClose(){
-      window.onclick = async function(event) {
-        if (!event.target.matches('.parentdd')) {
-          var elements = document.getElementsByClassName("parentPortalItems");
-          var i;
-          for (i = 0; i < elements.length; i++) {
-            var openDropdown = elements[i];
-            if (openDropdown.classList.contains('show')) {
-              openDropdown.classList.remove('show');
-            }
-          }
-        let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
-        let preferences = JSON.parse(preferencesData);
-        preferences["cellNum"] = 69;
-        preferences["timeLimitRule"] = (document.getElementById("timeLimitRule") as HTMLInputElement).value;
-        preferences["bedTimeRule"] = (document.getElementById("bedTimeRule") as HTMLInputElement).value;
-        preferences["gameLimitRule"] = (document.getElementById("gameLimitRule") as HTMLInputElement).value;
-        (document.getElementById("timeLimitToggle") as HTMLFormElement).checked ? preferences["timeLimitToggle"] = true : preferences["timeLimitToggle"] = false;
-        (document.getElementById("bedTimeToggle") as HTMLFormElement).checked ? preferences["bedTimeToggle"] = true : preferences["bedTimeToggle"] = false;
-        (document.getElementById("gameLimitToggle") as HTMLFormElement).checked ? preferences["gameLimitToggle"] = true : preferences["gameLimitToggle"] = false;
-        (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked ? preferences["dailyDigestToggle"] = true : preferences["dailyDigestToggle"] = false;
-        (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked ? preferences["weeklyDigestToggle"] = true : preferences["weeklyDigestToggle"] = false;
-        (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked ? preferences["monthyDigestToggle"] = true : preferences["monthyDigestToggle"] = false;
-        Launcher.instance().writeFile(JSON.stringify(preferences), `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
+    // //Closes the parent portal, updates locally stored settings, updates remote settings
+    // public parentPortalClose(){
+    //   window.onclick = async function(event) {
+    //     if (!event.target.matches('.parentdd')) {
+    //       var elements = document.getElementsByClassName("parentPortalItems");
+    //       var i;
+    //       for (i = 0; i < elements.length; i++) {
+    //         var openDropdown = elements[i];
+    //         if (openDropdown.classList.contains('show')) {
+    //           openDropdown.classList.remove('show');
+    //         }
+    //       }
+    //     let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
+    //     let preferences = JSON.parse(preferencesData);
+    //     preferences["cellNum"] = 69;
+    //     preferences["timeLimitRule"] = (document.getElementById("timeLimitRule") as HTMLInputElement).value;
+    //     preferences["bedTimeRule"] = (document.getElementById("bedTimeRule") as HTMLInputElement).value;
+    //     preferences["gameLimitRule"] = (document.getElementById("gameLimitRule") as HTMLInputElement).value;
+    //     (document.getElementById("timeLimitToggle") as HTMLFormElement).checked ? preferences["timeLimitToggle"] = true : preferences["timeLimitToggle"] = false;
+    //     (document.getElementById("bedTimeToggle") as HTMLFormElement).checked ? preferences["bedTimeToggle"] = true : preferences["bedTimeToggle"] = false;
+    //     (document.getElementById("gameLimitToggle") as HTMLFormElement).checked ? preferences["gameLimitToggle"] = true : preferences["gameLimitToggle"] = false;
+    //     (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked ? preferences["dailyDigestToggle"] = true : preferences["dailyDigestToggle"] = false;
+    //     (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked ? preferences["weeklyDigestToggle"] = true : preferences["weeklyDigestToggle"] = false;
+    //     (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked ? preferences["monthyDigestToggle"] = true : preferences["monthyDigestToggle"] = false;
+    //     Launcher.instance().writeFile(JSON.stringify(preferences), `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
         
-        //Update remote server
-        // let serverAction = "update-settings";
-        // let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
-        // var xmlHttp = new XMLHttpRequest();
-        // xmlHttp.open("POST", remoteServer, true);
-        // xmlHttp.setRequestHeader('Content-Type', 'application/json');
-        // xmlHttp.send(JSON.stringify(preferences));
+    //     //Update remote server
+    //     // let serverAction = "update-settings";
+    //     // let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
+    //     // var xmlHttp = new XMLHttpRequest();
+    //     // xmlHttp.open("POST", remoteServer, true);
+    //     // xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    //     // xmlHttp.send(JSON.stringify(preferences));
 
-        //document.getElementById("test_message").innerHTML = "Message sent(/update-settings): " + JSON.stringify(preferences);  //For debugging
-        //document.getElementById("test_message").innerHTML = "bedLimitRule: " + JSON.stringify(preferences["bedTimeRule"]);  //For debugging
-        }
-      }
-    }
-
-    private async buildPreferences(){
+    //     //document.getElementById("test_message").innerHTML = "Message sent(/update-settings): " + JSON.stringify(preferences);  //For debugging
+    //     //document.getElementById("test_message").innerHTML = "bedLimitRule: " + JSON.stringify(preferences["bedTimeRule"]);  //For debugging
+    //     }
+    //   }
+    // }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private async collectPreferences(){
       var sendData = {cellNum:"0"};
       sendData["cellNum"] = "69";
 
       //let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
       let serverAction = "get-settings";
-      let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+      let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open("POST", remoteServer, true);
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
@@ -174,7 +175,6 @@ class Launcher extends AppWindow {
         // end of state change: it can be after some time (async)
       };
     }
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   //Testing function for remote server connections
   private async twilio(){
