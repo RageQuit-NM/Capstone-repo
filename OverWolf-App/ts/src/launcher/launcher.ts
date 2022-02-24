@@ -6,6 +6,7 @@ class Launcher extends AppWindow {
     //private _gameEventsListener: OWGamesEvents;
     private mainWindowObject: Window;
     private remoteAddress: string;
+    public bedTime: string;
   
     private constructor() {
       super(kWindowNames.launcher);
@@ -41,6 +42,15 @@ class Launcher extends AppWindow {
       
       //this.parentPortalOpen();
       this.parentPortalClose();
+      setInterval(this.checkBedtime, 1000);
+    }
+
+    public checkBedtime(){
+      if(Launcher.instance().bedTime != null){
+        let date = new Date();
+        document.getElementById("test_message").innerHTML = "betime is: " + Launcher.instance().bedTime + "and current time is: " + date.toLocaleTimeString();
+      }
+      //document.getElementById("test_message").innerHTML += "bedtime null";
     }
 
     //Sets all message content from the bus
@@ -119,7 +129,9 @@ class Launcher extends AppWindow {
         if (this.status == 200) {
           var response = (this.responseText); // we get the returned data
           var parsed = JSON.parse(response);
-          document.getElementById("test_message").innerHTML = "Your bedtime is: " + parsed["bedTimeRule"];
+          document.getElementById("test_message").innerHTML += "Your bedtime is: " + parsed["bedTimeRule"];
+          Launcher.instance().bedTime = parsed["bedTimeRule"];
+          document.getElementById("test_message").innerHTML += "its set to: " + Launcher.instance().bedTime;
         }
         // end of state change: it can be after some time (async)
       };
