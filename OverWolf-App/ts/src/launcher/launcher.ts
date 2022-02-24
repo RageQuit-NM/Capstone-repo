@@ -113,8 +113,8 @@ class Launcher extends AppWindow {
     }
 
     private async buildPreferences(){
-      var sendData = {cellNum:0};
-      sendData["cellNum"] = 69;
+      var sendData = {cellNum:"0"};
+      sendData["cellNum"] = "69";
 
       //let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
       let serverAction = "get-settings";
