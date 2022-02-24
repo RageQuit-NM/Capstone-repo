@@ -95,7 +95,7 @@ function checkCookie(){
 }
 
 function setCookie(paramName, value){
-  document.cookie = paramName + "=" + value + ";path=/;";
+  document.cookie = paramName + "=" + value + ";Expires=Wed, 01 Nov 2023 08:00:00 UTC;path=/;";
 }
 
 function getCookie(paramName) {
