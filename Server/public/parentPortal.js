@@ -45,7 +45,7 @@ function buildPreferences(preferences){
   document.getElementById("gameLimitRule").value = preferences["gameLimitRule"];
   const toggles = ["timeLimitToggle", "bedTimeToggle", "gameLimitToggle", "dailyDigest", "weeklyDigest", "monthlyDigest"];
   for (let i = 0; i < toggles.length; i++) {
-    document.getElementById("test_response").innerHTML += " checking:" + toggles[i];
+    //document.getElementById("test_response").innerHTML += " checking:" + toggles[i];
     if(preferences[toggles[i]] == "true"){
       document.getElementById(toggles[i]).checked = true;
       document.getElementById(toggles[i]).value = true;
