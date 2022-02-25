@@ -11,9 +11,7 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 
 //if the cellNum cookie is set then populate the parent portal with corresponding data from server
 if(checkCookie()){
-  //generate perferences
   //document.getElementById("test").innerHTML = "cookie SET: " + getCookie("cellNum");
-
   var sendData = {cellNum:0};
   sendData["cellNum"] = getCookie("cellNum");
 
@@ -114,7 +112,15 @@ function checkCookie(){
 
 //sets the cookie
 function setCookie(paramName, value){
-  document.cookie = paramName + "=" + value + ";expires=Wed, 01 Nov 2023 08:00:00 UTC;path=/;";
+  // document.cookie = paramName + "=" + value + ";expires=Wed, 01 Nov 2023 08:00:00 UTC;path=/;";
+  // Build the expiration date string:
+  var expiration_date = new Date();
+  var cookie_string = '';
+  expiration_date.setFullYear(expiration_date.getFullYear() + 1);
+  // Build the set-cookie string:
+  cookie_string =  paramName + "=" + value + "; path=/; expires=" + expiration_date.toUTCString();
+  // Create or update the cookie:
+  document.cookie = cookie_string;
 }
 
 
@@ -140,3 +146,4 @@ function getCookie(paramName) {
 function delCookie(){
   document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
+//End of parentPortal.js

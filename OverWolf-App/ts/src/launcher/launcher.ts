@@ -5,12 +5,12 @@ class Launcher extends AppWindow {
     private static _instance: Launcher;
     //private _gameEventsListener: OWGamesEvents;
     private mainWindowObject: Window;
-    private remoteAddress: string;
+    private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
     public bedTime: string;
   
     private constructor() {
       super(kWindowNames.launcher);
-      this.remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
+      //this.remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
       //Constructor inexplicably runs 3 times, make it so only 1 listener is set for each element. This seems to run when the dismiss button is hit too
       if (document.getElementById("smiley").getAttribute('listener') != 'true') {
         document.getElementById("smiley").setAttribute('listener', 'true');
@@ -22,7 +22,7 @@ class Launcher extends AppWindow {
         // document.getElementById("parentPortalButton").addEventListener("click", this.parentPortalOpen); 
         document.getElementById("message_send").addEventListener("click", this.twilio);
 
-        this.buildPreferences();
+        this.collectPreferences();
       }
       //Hide these
       document.getElementById("smilies").style.display = "none";
@@ -39,19 +39,58 @@ class Launcher extends AppWindow {
     //collect all messages from bus to be shown on the launcher page
     public async run() {
       this.setContent();
-      setInterval(this.checkBedtime, 1000);
-
-      // this.parentPortalOpen();
-      // this.parentPortalClose();
+      
+      //this.parentPortalOpen();
+      //this.parentPortalClose();
+      setInterval(this.checkBedtime, 1000*10);
+      setInterval(this.collectPreferences, 1000*5);
     }
 
-    public checkBedtime(){
+    public async checkBedtime(){
       if(Launcher.instance().bedTime != null){
         let date = new Date();
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+        let hoursString = (hours as unknown as string), minutesString = (minutes as unknown as string);
+        if(hours < 10){
+          hoursString = "0" + (hours as unknown as string);
+        }
+        if(minutes < 10){
+          minutesString = "0" + (minutes as unknown as string);
+        }
+        let localBedTime = hoursString + ":" + minutesString;
         document.getElementById("test_message").innerHTML = "betime is: " + Launcher.instance().bedTime + "and current time is: " + date.toLocaleTimeString();
+        if(Launcher.instance().bedTime > localBedTime){
+          document.getElementById("test_message3").innerHTML = "It is not your bedtime yet. " + Launcher.instance().bedTime + " > " + localBedTime;
+        }else{
+          document.getElementById("test_message3").innerHTML = "It is bedtime, time to stop playing."  + Launcher.instance().bedTime + " !> " + localBedTime;
+          //Launcher.instance().sendBedtimeMessage();
+        }
+        
       }
       //document.getElementById("test_message").innerHTML += "bedtime null";
     }
+
+    private sendBedtimeMessage(){
+      let messageData = {cellNum: "69"};
+      let serverAction = "bedtime-message";  //
+      let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("POST", remoteServer, true);
+      xmlHttp.setRequestHeader('Content-Type', 'application/json');
+      xmlHttp.send(JSON.stringify(messageData));
+  
+      xmlHttp.onreadystatechange = function () {
+        if (this.readyState != 4) return;
+        if (this.status == 200) {
+          var response = (this.responseText); // we get the returned data
+          //document.getElementById("test_message").innerHTML = "reponse from /upload-game-data = " + response;
+          //console.log("reponse from /send-message1 = " + response);
+        }
+        // end of state change: it can be after some time (async)
+      };
+    }
+
 
     //Sets all message content from the bus
     public setContent(){
@@ -111,14 +150,14 @@ class Launcher extends AppWindow {
     //     }
     //   }
     // }
-
-    private async buildPreferences(){
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private async collectPreferences(){
       var sendData = {cellNum:"0"};
       sendData["cellNum"] = "69";
 
       //let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
       let serverAction = "get-settings";
-      let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+      let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open("POST", remoteServer, true);
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
@@ -129,26 +168,13 @@ class Launcher extends AppWindow {
         if (this.status == 200) {
           var response = (this.responseText); // we get the returned data
           var parsed = JSON.parse(response);
-          document.getElementById("test_message").innerHTML += "Your bedtime is: " + parsed["bedTimeRule"];
+          //document.getElementById("test_message").innerHTML += "Your bedtime is: " + parsed["bedTimeRule"];
           Launcher.instance().bedTime = parsed["bedTimeRule"];
-          document.getElementById("test_message").innerHTML += "its set to: " + Launcher.instance().bedTime;
+          //document.getElementById("test_message").innerHTML += "its set to: " + Launcher.instance().bedTime;
         }
         // end of state change: it can be after some time (async)
       };
-      // let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
-      // let preferences = JSON.parse(preferencesData); 
-      // //set the cell number here
-      // (document.getElementById("timeLimitRule") as HTMLInputElement).value = preferences["timeLimitRule"];
-      // (document.getElementById("bedTimeRule") as HTMLInputElement).value = preferences["bedTimeRule"];
-      // (document.getElementById("gameLimitRule") as HTMLInputElement).value = preferences["gameLimitRule"];
-      // preferences["timeLimitToggle"] ? (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = true : (document.getElementById("timeLimitToggle") as HTMLFormElement).checked = false;
-      // preferences["bedTimeToggle"] ? (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = true : (document.getElementById("bedTimeToggle") as HTMLFormElement).checked = false;
-      // preferences["gameLimitToggle"] ? (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = true : (document.getElementById("gameLimitToggle") as HTMLFormElement).checked = false;
-      // preferences["dailyDigestToggle"] ? (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked = false;
-      // preferences["weeklyDigestToggle"] ? (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked = false;
-      // preferences["monthyDigestToggle"] ? (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = true : (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked = false;
     }
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   //Testing function for remote server connections
   private async twilio(){
