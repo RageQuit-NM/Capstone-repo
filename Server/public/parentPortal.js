@@ -1,6 +1,7 @@
 //listener for parent preference submission
 document.getElementById("parent_control_submit").addEventListener("click", parentFormHandler);
 
+
 //Enable tooltips
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -8,6 +9,7 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 })
 
 
+//if the cellNum cookie is set then populate the parent portal with corresponding data from server
 if(checkCookie()){
   //document.getElementById("test").innerHTML = "cookie SET: " + getCookie("cellNum");
   var sendData = {cellNum:0};
@@ -34,10 +36,13 @@ if(checkCookie()){
     }
     // end of state change: it can be after some time (async)
   };
+//If the cellNum cookie is not set, do not populate page.
 }else{
   document.getElementById("test").innerHTML = "cookie not set: " + document.cookie;
 }
 
+
+//populate the parent portal preferences form
 function buildPreferences(preferences){
   document.getElementById("cellNum").value = preferences["cellNum"];
   document.getElementById("timeLimitRule").value = preferences["timeLimitRule"];
@@ -56,6 +61,18 @@ function buildPreferences(preferences){
   }
 }
 
+
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+//populate the performance stats from server data
+function buildStatistics(statistics){
+}
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+
 //Collect data from parent preferences and ...
 function parentFormHandler(){
     var formData = Array.from(document.querySelectorAll('#parent_control_form input')).reduce((acc, input)=>({ ...acc, [input.id]: input.value }), {});
@@ -63,9 +80,10 @@ function parentFormHandler(){
     setCookie("cellNum", formData["cellNum"]);
 
     let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
-    let serverAction = "update-settings";  //
+    let serverAction = "update-settings";
     let remoteServer = "http://" +  remoteAddress + ":5000/" + serverAction;
     var xmlHttp = new XMLHttpRequest();
+
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send(JSON.stringify(formData));
@@ -81,6 +99,8 @@ function parentFormHandler(){
     document.getElementById("test").innerHTML = JSON.stringify(formData) + document.cookie;
 }
 
+
+//check if the cookie is set
 function checkCookie(){
   if(getCookie("cellNum") != ""){
     return true;
@@ -90,7 +110,10 @@ function checkCookie(){
   }
 }
 
+
+//sets the cookie
 function setCookie(paramName, value){
+  // document.cookie = paramName + "=" + value + ";expires=Wed, 01 Nov 2023 08:00:00 UTC;path=/;";
   // Build the expiration date string:
   var expiration_date = new Date();
   var cookie_string = '';
@@ -101,6 +124,8 @@ function setCookie(paramName, value){
   document.cookie = cookie_string;
 }
 
+
+//gets the cookie
 function getCookie(paramName) {
   let name = paramName + "=";
   let decodedCookie = decodeURIComponent(document.cookie);
@@ -117,6 +142,8 @@ function getCookie(paramName) {
   return "";
 }
 
+
+//delete the cookie
 function delCookie(){
   document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
