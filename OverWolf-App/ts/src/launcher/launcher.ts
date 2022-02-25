@@ -19,7 +19,7 @@ class Launcher extends AppWindow {
         // document.getElementById("smiley").addEventListener("click", this.clickSmiley);
         // document.getElementById("straight").addEventListener("click", this.clickSmiley);
         // document.getElementById("sad").addEventListener("click", this.clickSmiley);
-        document.getElementById("parentPortalButton").addEventListener("click", this.parentPortalOpen); 
+        // document.getElementById("parentPortalButton").addEventListener("click", this.parentPortalOpen); 
         document.getElementById("message_send").addEventListener("click", this.twilio);
 
         this.buildPreferences();
@@ -39,10 +39,10 @@ class Launcher extends AppWindow {
     //collect all messages from bus to be shown on the launcher page
     public async run() {
       this.setContent();
-      
-      //this.parentPortalOpen();
-      this.parentPortalClose();
       setInterval(this.checkBedtime, 1000);
+
+      // this.parentPortalOpen();
+      // this.parentPortalClose();
     }
 
     public checkBedtime(){
@@ -68,49 +68,49 @@ class Launcher extends AppWindow {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public parentPortalOpen(){
-      document.getElementById("parentPortalItems").classList.toggle("show");
-    }
+    // public parentPortalOpen(){
+    //   document.getElementById("parentPortalItems").classList.toggle("show");
+    // }
 
     //Closes the parent portal, updates locally stored settings, updates remote settings
-    public parentPortalClose(){
-      window.onclick = async function(event) {
-        if (!event.target.matches('.parentdd')) {
-          var elements = document.getElementsByClassName("parentPortalItems");
-          var i;
-          for (i = 0; i < elements.length; i++) {
-            var openDropdown = elements[i];
-            if (openDropdown.classList.contains('show')) {
-              openDropdown.classList.remove('show');
-            }
-          }
-        let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
-        let preferences = JSON.parse(preferencesData);
-        preferences["cellNum"] = 69;
-        preferences["timeLimitRule"] = (document.getElementById("timeLimitRule") as HTMLInputElement).value;
-        preferences["bedTimeRule"] = (document.getElementById("bedTimeRule") as HTMLInputElement).value;
-        preferences["gameLimitRule"] = (document.getElementById("gameLimitRule") as HTMLInputElement).value;
-        (document.getElementById("timeLimitToggle") as HTMLFormElement).checked ? preferences["timeLimitToggle"] = true : preferences["timeLimitToggle"] = false;
-        (document.getElementById("bedTimeToggle") as HTMLFormElement).checked ? preferences["bedTimeToggle"] = true : preferences["bedTimeToggle"] = false;
-        (document.getElementById("gameLimitToggle") as HTMLFormElement).checked ? preferences["gameLimitToggle"] = true : preferences["gameLimitToggle"] = false;
-        (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked ? preferences["dailyDigestToggle"] = true : preferences["dailyDigestToggle"] = false;
-        (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked ? preferences["weeklyDigestToggle"] = true : preferences["weeklyDigestToggle"] = false;
-        (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked ? preferences["monthyDigestToggle"] = true : preferences["monthyDigestToggle"] = false;
-        Launcher.instance().writeFile(JSON.stringify(preferences), `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
+    // public parentPortalClose(){
+    //   window.onclick = async function(event) {
+    //     if (!event.target.matches('.parentdd')) {
+    //       var elements = document.getElementsByClassName("parentPortalItems");
+    //       var i;
+    //       for (i = 0; i < elements.length; i++) {
+    //         var openDropdown = elements[i];
+    //         if (openDropdown.classList.contains('show')) {
+    //           openDropdown.classList.remove('show');
+    //         }
+    //       }
+    //     let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
+    //     let preferences = JSON.parse(preferencesData);
+    //     preferences["cellNum"] = 69;
+    //     preferences["timeLimitRule"] = (document.getElementById("timeLimitRule") as HTMLInputElement).value;
+    //     preferences["bedTimeRule"] = (document.getElementById("bedTimeRule") as HTMLInputElement).value;
+    //     preferences["gameLimitRule"] = (document.getElementById("gameLimitRule") as HTMLInputElement).value;
+    //     (document.getElementById("timeLimitToggle") as HTMLFormElement).checked ? preferences["timeLimitToggle"] = true : preferences["timeLimitToggle"] = false;
+    //     (document.getElementById("bedTimeToggle") as HTMLFormElement).checked ? preferences["bedTimeToggle"] = true : preferences["bedTimeToggle"] = false;
+    //     (document.getElementById("gameLimitToggle") as HTMLFormElement).checked ? preferences["gameLimitToggle"] = true : preferences["gameLimitToggle"] = false;
+    //     (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked ? preferences["dailyDigestToggle"] = true : preferences["dailyDigestToggle"] = false;
+    //     (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked ? preferences["weeklyDigestToggle"] = true : preferences["weeklyDigestToggle"] = false;
+    //     (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked ? preferences["monthyDigestToggle"] = true : preferences["monthyDigestToggle"] = false;
+    //     Launcher.instance().writeFile(JSON.stringify(preferences), `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
         
-        //Update remote server
-        // let serverAction = "update-settings";
-        // let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
-        // var xmlHttp = new XMLHttpRequest();
-        // xmlHttp.open("POST", remoteServer, true);
-        // xmlHttp.setRequestHeader('Content-Type', 'application/json');
-        // xmlHttp.send(JSON.stringify(preferences));
+    //     //Update remote server
+    //     // let serverAction = "update-settings";
+    //     // let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
+    //     // var xmlHttp = new XMLHttpRequest();
+    //     // xmlHttp.open("POST", remoteServer, true);
+    //     // xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    //     // xmlHttp.send(JSON.stringify(preferences));
 
-        //document.getElementById("test_message").innerHTML = "Message sent(/update-settings): " + JSON.stringify(preferences);  //For debugging
-        //document.getElementById("test_message").innerHTML = "bedLimitRule: " + JSON.stringify(preferences["bedTimeRule"]);  //For debugging
-        }
-      }
-    }
+    //     //document.getElementById("test_message").innerHTML = "Message sent(/update-settings): " + JSON.stringify(preferences);  //For debugging
+    //     //document.getElementById("test_message").innerHTML = "bedLimitRule: " + JSON.stringify(preferences["bedTimeRule"]);  //For debugging
+    //     }
+    //   }
+    // }
 
     private async buildPreferences(){
       var sendData = {cellNum:"0"};
