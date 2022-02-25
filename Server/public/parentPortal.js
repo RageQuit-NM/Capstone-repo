@@ -28,7 +28,8 @@ if(checkCookie()){
     if (this.status == 200) {
       var response = (this.responseText); // we get the returned data
       var parsed = JSON.parse(response);
-      document.getElementById("test_response").innerHTML = "reponse = " + response + "  also dailyDigest is: " + parsed["dailyDigest"];
+      //document.getElementById("test_response").innerHTML = "reponse = " + response + "  also dailyDigest is: " + parsed["dailyDigest"];
+      document.getElementById("test_response").innerHTML = "reponse = " + response;
       buildPreferences(parsed);
     }
     // end of state change: it can be after some time (async)
