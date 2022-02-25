@@ -15,4 +15,4 @@ process.on("message", function (message) {
 
     console.log('Twilio bedtime message done sending.')
 });
-//ENd of bedtime-message.js
+//End of bedtime-message.js

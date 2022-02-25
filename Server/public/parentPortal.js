@@ -9,9 +9,7 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 
 
 if(checkCookie()){
-  //generate perferences
   //document.getElementById("test").innerHTML = "cookie SET: " + getCookie("cellNum");
-
   var sendData = {cellNum:0};
   sendData["cellNum"] = getCookie("cellNum");
 
@@ -25,7 +23,6 @@ if(checkCookie()){
 
   document.getElementById("test").innerHTML = "sent = " + JSON.stringify(sendData);
 
-
   xmlHttp.onreadystatechange = function () {
     if (this.readyState != 4) return;
     if (this.status == 200) {
@@ -36,8 +33,6 @@ if(checkCookie()){
     }
     // end of state change: it can be after some time (async)
   };
-
-
 }else{
   document.getElementById("test").innerHTML = "cookie not set: " + document.cookie;
 }
@@ -95,7 +90,14 @@ function checkCookie(){
 }
 
 function setCookie(paramName, value){
-  document.cookie = paramName + "=" + value + ";Expires=Wed, 01 Nov 2023 08:00:00 UTC;path=/;";
+  // Build the expiration date string:
+  var expiration_date = new Date();
+  var cookie_string = '';
+  expiration_date.setFullYear(expiration_date.getFullYear() + 1);
+  // Build the set-cookie string:
+  cookie_string =  paramName + "=" + value + "; path=/; expires=" + expiration_date.toUTCString();
+  // Create or update the cookie:
+  document.cookie = cookie_string;
 }
 
 function getCookie(paramName) {
@@ -117,3 +119,4 @@ function getCookie(paramName) {
 function delCookie(){
   document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
+//End of parentPortal.js
