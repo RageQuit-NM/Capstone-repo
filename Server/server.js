@@ -12,9 +12,10 @@ app.use(express.json())//So JSON data can be parsed from HTTP URL
 app.use(express.static(__dirname+'/public'));//to know where the website assets live
 
 
+//listen for requests on port 5000
 app.listen(5000, function(){
   console.log('Node.js web server at port 5000 is running..')
-}); //listen for requests on port 5000
+}); 
 
 
 //********************************************GET Requests*************************************************
@@ -34,9 +35,7 @@ app.get('/parentPortal', function(req, res){
 //********************************************POST Requests*************************************************
 //Collect the parental settings for a given cell number
 app.post('/get-settings', async function(req, res){
-  var object = req.body;
-  var query = {cellNum: object["cellNum"]};
-  //console.log("query is: " + JSON.stringify(query));
+  var query = {cellNum: req.body["cellNum"]};
   var result;
 
   try {
@@ -52,17 +51,16 @@ app.post('/get-settings', async function(req, res){
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 //Collect the child performance stats for a given cell numberXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 app.post('/get-stats', async function(req, res){
-  var object = req.body;
-  var query = {cellNum: object["cellNum"]};
+  var query = {cellNum: req.body["cellNum"]};
   console.log("query is: " + JSON.stringify(query));
   var result;
 
   try {
-    result = await findMany(query);
+    result = await findMany(query).toArray();
   } catch (error){
     console.log(error);
   }
-  console.log("Returning parent portal settings "+ JSON.stringify(result));
+  console.log("Returning player stats "+ JSON.stringify(result));
   res.send(JSON.stringify(result));
 });
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -82,9 +80,8 @@ app.post('/bedtime-message', function(req, res){
 
 //Update the settings from the parent portal changes
 app.post('/update-settings', function(req, res){
-    var object = req.body;
-    var query = {cellNum: object["cellNum"]};
-    var newVals = { $set: object };
+    var query = {cellNum: req.body["cellNum"]};
+    var newVals = { $set: req.body };
     var options = { upsert: true };
 
     MongoClient.connect(url, function(err, db) {
@@ -103,13 +100,12 @@ app.post('/update-settings', function(req, res){
 
 //Add game stats to a collection
 app.post('/upload-game-data', function(req, res){
-    var object = req.body;
     var options = { upsert: false };
   
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var database = db.db("growing_gamers");
-        database.collection("player_records").insertOne(object, options, function(err, res) {
+        database.collection("player_records").insertOne(req.body, options, function(err, res) {
           if (err) throw err;
           console.log("player data entered: " + res);
           db.close();
