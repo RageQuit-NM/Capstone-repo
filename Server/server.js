@@ -62,7 +62,7 @@ app.post('/get-stats', async function(req, res){
   } catch (error){
     console.log(error);
   }
-  console.log("3rd layer result is "+ JSON.stringify(result));
+  console.log("Returning parent portal settings "+ JSON.stringify(result));
   res.send(JSON.stringify(result));
 });
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
