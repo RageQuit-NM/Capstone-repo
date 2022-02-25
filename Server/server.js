@@ -3,6 +3,9 @@ var childProcess = require('child_process');
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 
+var express = require('express');  
+var app = express();  
+
 app.use(express.json())//So JSON data can be parsed from HTTP URL
 app.use(express.static(__dirname+'/public'));//to know where the website assets live
 
@@ -15,14 +18,73 @@ app.get('/parentPortal', function(req, res){
     res.sendFile(__dirname+"/parent-portal/parentPortal.html");
 });
 
+app.post('/get-settings', async function(req, res){
+  var object = req.body;
+  var query = {cellNum: object["cellNum"]};
+  console.log("query is: " + JSON.stringify(query));
+  var result;
+
+  try {
+    result = await findOne(query);
+    //console.log("result: " + result);
+  }
+  catch (error){
+    console.log(error);
+  }
+  console.log("3rd layer result is "+ JSON.stringify(result));
+  res.send(JSON.stringify(result));
+  //res.send("i tried");
+});
+
+async function findOne(query){
+  console.log("finding one");
+  const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
+  if (!client) {
+    console.log("No client");
+    return;
+  }
+  try {
+  const db = client.db("growing_gamers");
+  let collection = db.collection('user_data');
+  let result = await collection.findOne(query);
+  console.log(result);
+  console.log("returning: " + result);
+  return result;
+  }catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+    //console.log("returning: " + result);
+    //return result;
+  }
+}
+
+// function searchDatabase(query){
+//   console.log("query2 is: " + JSON.stringify(query));
+
+//   var result2 = MongoClient.connect(url, async function(err, db) {
+//     console.log("connecting");
+//     if (err) throw err;
+//     var database = db.db("growing_gamers");
+//     var result1 = database.collection("user_data").find(query).toArray(function(err, result) {
+//       if (err) throw err;
+//       db.close();
+//       console.log("collected: " + JSON.stringify(result));
+//       //res.send(JSON.stringify(result));
+//       return result;
+//     });
+//     console.log("returning " + JSON.stringify(result1));
+//     return result1;
+//   });
+//   console.log("2nd layer result is " + JSON.stringify(result2));
+//   return result2;
+// }
+
+
 app.post('/send-message1', function(req, res){
     var cellNum = req.body["cellNum"];
     var smsScript = childProcess.fork('./sms-messages/message1.js');
     smsScript.send(cellNum);
-
-    smsScript.on("close", function (code) {
-        console.log("child process exited with code " + code);
-    });
     res.send('message 1 sms sent');
 });
 

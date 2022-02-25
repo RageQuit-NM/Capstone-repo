@@ -63,13 +63,12 @@ class BackgroundController {
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send(JSON.stringify(messageData));
 
-    console.log("sent message");
     xmlHttp.onreadystatechange = function () {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var response = (this.responseText); // we get the returned data
         //document.getElementById("test_message").innerHTML = "reponse from /upload-game-data = " + response;
-        console.log("reponse from /send-message1 = " + response);
+        //console.log("reponse from /send-message1 = " + response);
       }
       // end of state change: it can be after some time (async)
     };
@@ -101,7 +100,7 @@ class BackgroundController {
       let seconds = Math.floor((endTime.getTime() - this.firstGameRunTime.getTime()) / 1000);
       let minutes = Math.floor(seconds / 60);
       //this.mainWindowObject.document.getElementById("currentGameSessionLength").innerHTML = (minutes as unknown as string) + " minute(s)."; //update the time played
-      this.mainWindowObject.document.getElementById("currentGameSessionLength").innerHTML = (seconds as unknown as string) + " seconds."; //update the time played
+      this.mainWindowObject.document.getElementById("test_message").innerHTML = (seconds as unknown as string) + " seconds."; //update the time played
 
       if(positiveKD){
         this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[3];

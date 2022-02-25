@@ -1,0 +1,28 @@
+.header-container {
+    background-color: #24343D;
+    color: #81BADB;
+    padding: 4%;
+  }
+  
+  .body {
+    background-color: #81BADB;
+    color: #24343D;
+  }
+  
+  #parent_control_submit {
+    color: #81BADB;
+    background-color: #24343D;
+    border: #24343D;
+    outline: #24343D;
+  }
+  
+  #parent_control_submit:hover,
+  #parent_control_submit:focus {
+    color: #81BADB;
+    background-color: #456475;
+    border: #456475;
+    outline: #456475;
+    box-shadow: none;
+  }
+  /* #81BADB #456475 #24343D */
+  
