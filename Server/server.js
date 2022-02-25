@@ -56,7 +56,7 @@ app.post('/get-stats', async function(req, res){
   var result;
 
   try {
-    result = await findOne(query);
+    result = await findMany(query);
   } catch (error){
     console.log(error);
   }
