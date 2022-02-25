@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../../css/general.css" />
   <link rel="stylesheet" href="../../css/header.css" />
   <link rel="stylesheet" href="../../css/desktop.css" />
-  <link rel="stylesheet" href="../../css/dropdown.css" />
+  <!-- <link rel="stylesheet" href="../../css/dropdown.css" /> -->
   <!--Bootstrap 5 boilerplate
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>-->
@@ -18,68 +18,11 @@
 <body class="launcher">
   <!-- -------------------------------- Header ------------------------------- -->
   <header id="header" class="app-header">
+    <a href="http://ec2-35-183-27-150.ca-central-1.compute.amazonaws.com:5000/parentPortal" target="_blank">Parent Portal</a>
   </header>
 
   <!-- --------------------------------- Main -------------------------------- -->
   <main id = "main">
-
-    <div class="parentPortalDropdown">
-      <button id="parentPortalButton" class="parentPortalButton parentdd">Parent Portal</button>
-      <div id="parentPortalItems" class="parentPortalItems parentdd">
-          <div id="parentPortalSettings" class="parentdd">
-            <form id="parentPortalForm" class="parentPortalForm parentdd">
-              <p class="formTitle parentdd">Set the rules:</p>
-              <label for="timeLimitRule" class="parentdd">Time Limit</label>
-              <input type="number" id="timeLimitRule" class="parentdd"  min="0" max="600" name="timeLimitRule">
-              <br/><br/>
-
-              <label for="bedTimeRule" class="parentdd">Bed Time</label>
-              <input type="time" id="bedTimeRule" class="parentdd" name="bedTimeRule">
-              <br/><br/>
-
-              <label for="gameLimitRule" class="parentdd">Game Limit</label>
-              <input type="number" id="gameLimitRule" class="parentdd" min="0" max="100" name="gameLimitRule">
-              <br/><br/>
-
-              <p class="formTitle parentdd">Notify me if exceeded:</p>
-              <label for="timeLimitToggle" class="parentdd">Time Limit</label>
-              <input type="checkbox" id="timeLimitToggle" class="parentdd" name="timeLimitToggle">
-              <br/><br/>
-
-              <label for="bedTimeToggle" class="parentdd">Bed Time</label>
-              <input type="checkbox" id="bedTimeToggle" class="parentdd" name="bedTimeToggle">
-              <br/><br/>
-
-              <label for="gameLimitToggle" class="parentdd">Game Limit</label>
-              <input type="checkbox" id="gameLimitToggle" class="parentdd" name="gameLimitToggle">
-              <br/><br/>
-
-              <p class="formTitle parentdd">Send me digests:</p>
-              <label for="dailyDigestToggle" class="parentdd">Daily</label>
-              <input type="checkbox" id="dailyDigestToggle" class="parentdd" name="dailyDigestToggle">
-              <br/><br/>
-
-              <label for="weeklyDigestToggle" class="parentdd">Weekly</label>
-              <input type="checkbox" id="weeklyDigestToggle" class="parentdd" name="weeklyDigestToggle">
-              <br/><br/>
-
-              <label for="monthlyDigestToggle" class="parentdd">Monthly</label>
-              <input type="checkbox" id="monthyDigestToggle" class="parentdd" name="monthlyDigestToggle">
-              <br/><br/>
-
-              <p class="signifier parentdd">*click off of menu to apply changes*</p> 
-          </form>
-        </div>
-        <div id="parentPortalStats" class="parentdd">
-              TEST
-              <div>Current game session:<div id="currentGameSessionLength"></div></div>
-        </div>
-      </div>
-    </div>
-    
-    <div id="parentPortalSpacer"><br/></div>
-
-   
     <div class="title">
         <h1 id="primary_message"></h1>
         <h1 id="smiley_title">How are you feeling?</h1>

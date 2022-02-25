@@ -19,7 +19,7 @@ class Launcher extends AppWindow {
         // document.getElementById("smiley").addEventListener("click", this.clickSmiley);
         // document.getElementById("straight").addEventListener("click", this.clickSmiley);
         // document.getElementById("sad").addEventListener("click", this.clickSmiley);
-        //document.getElementById("parentPortalButton").addEventListener("click", this.parentPortalOpen); 
+        // document.getElementById("parentPortalButton").addEventListener("click", this.parentPortalOpen); 
         document.getElementById("message_send").addEventListener("click", this.twilio);
 
         this.collectPreferences();
@@ -111,7 +111,7 @@ class Launcher extends AppWindow {
     //   document.getElementById("parentPortalItems").classList.toggle("show");
     // }
 
-    // //Closes the parent portal, updates locally stored settings, updates remote settings
+    //Closes the parent portal, updates locally stored settings, updates remote settings
     // public parentPortalClose(){
     //   window.onclick = async function(event) {
     //     if (!event.target.matches('.parentdd')) {

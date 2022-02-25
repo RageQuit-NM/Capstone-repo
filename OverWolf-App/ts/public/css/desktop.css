@@ -52,3 +52,9 @@ body {
   flex: 1 1 20%;
   margin-top: 1.75%;
 }
+
+a {
+  color: #456475;
+  text-decoration: none;
+  padding: 1%;
+}
