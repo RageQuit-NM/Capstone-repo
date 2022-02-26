@@ -53,8 +53,36 @@ body {
   margin-top: 1.75%;
 }
 
-a {
+#parent_portal_link {
   color: #456475;
   text-decoration: none;
   padding: 1%;
+}
+
+#parent_portal_link:hover {
+  color: #81BADB;
+  text-decoration: none;
+  padding: 1%;
+}
+
+#minimizeButton {
+  color: #81BADB;
+  cursor: pointer;
+  padding: 6px;
+  padding-right: 14px;
+  padding-left: 14px;
+  border-radius: 7px;
+  background: #24343D;
+  border: 2px solid #81BADB;
+}
+
+#minimizeButton:hover {
+  color: #24343D;
+  cursor: pointer;
+  padding: 6px;
+  padding-right: 14px;
+  padding-left: 14px;
+  border-radius: 7px;
+  background: #81BADB;
+  border: 2px solid #81BADB;
 }
