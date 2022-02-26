@@ -7,7 +7,7 @@ var url = "mongodb://localhost:27017/";
     var result;
   
     try {
-      result = findMany(query).toArray();
+      result = find(query).toArray();
     } catch (error){
       console.log(error);
     }
