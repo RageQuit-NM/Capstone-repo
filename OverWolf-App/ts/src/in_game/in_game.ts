@@ -34,7 +34,8 @@ class InGame extends AppWindow {
       "kills": 0,
       "deaths": 0,
       "game_time": 0,
-      "timeStamp":"0000-00-00:00"
+      "timeStampTime":"NULL",
+      "timeStampDay":"NULL"
     }
     let stringJson = JSON.stringify(inital_json);
     this.writeFile(stringJson, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);

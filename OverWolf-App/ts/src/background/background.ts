@@ -124,10 +124,10 @@ class BackgroundController {
     let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
     let gameData = JSON.parse(fileData);
 
-    fileData =  JSON.parse(await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`));
-    let cellNum = fileData["cellNum"];
+    let cellNum = "69"
     gameData["cellNum"] = cellNum;
-    gameData["timeStamp"] = new Date();
+    gameData["timeStampTime"] = new Date().toLocaleTimeString();
+    gameData["timeStampDay"] = new Date().toDateString();
     //document.getElementById("kill_message").innerHTML = fileData;  //for debugging
 
     let serverAction = "upload-game-data";  //
@@ -137,8 +137,8 @@ class BackgroundController {
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send(JSON.stringify(gameData));
 
-    //this.mainWindowObject = overwolf.windows.getMainWindow();
-    //this.mainWindowObject.document.getElementById("test_message").innerHTML = "Game end message(/upload-game-data): " + JSON.stringify(gameData) + "cellNum is " + this.cellNum;  //For debugging
+    this.mainWindowObject = overwolf.windows.getMainWindow();
+    this.mainWindowObject.document.getElementById("test_message3").innerHTML = "Game end message(/upload-game-data): " + JSON.stringify(gameData) + "cellNum is " + cellNum;  //For debugging
 
     xmlHttp.onreadystatechange = await function () {
       if (this.readyState != 4) return;
