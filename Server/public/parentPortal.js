@@ -35,6 +35,36 @@ if(checkCookie()){
       document.getElementById("test_response").innerHTML = "reponse = " + response + "  also dailyDigest is: " + parsed["dailyDigest"];
       buildPreferences(parsed);
     }
+
+
+//*************************************************************************************************************** */
+//*************************************************************************************************************** */
+//*************************************************************************************************************** */
+//*************************************************************************************************************** */
+//*************************************************************************************************************** */
+    let serverAction = "get-stats";
+    let remoteServer = "http://" +  remoteAddress + ":5000/" + serverAction;
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("POST", remoteServer, true);
+    xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    xmlHttp.send(JSON.stringify(sendData));
+  
+    document.getElementById("test").innerHTML = "sent = " + JSON.stringify(sendData);
+  
+    xmlHttp.onreadystatechange = function () {
+      if (this.readyState != 4) return;
+      if (this.status == 200) {
+        var response = (this.responseText); // we get the returned data
+        var parsed = JSON.parse(response);
+        document.getElementById("test_response").innerHTML = "reponse = " + response;
+        // buildPreferences(parsed);
+      }
+
+//*************************************************************************************************************** */
+//*************************************************************************************************************** */
+//*************************************************************************************************************** */
+//*************************************************************************************************************** */
+//*************************************************************************************************************** */
     // end of state change: it can be after some time (async)
   };
 //If the cellNum cookie is not set, do not populate page.
@@ -61,44 +91,6 @@ function buildPreferences(preferences){
     }
   }
 }
-
-
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-//populate the performance stats from server data
-function buildStatistics(statistics){
-
-}
-
-function getStatistics(cellNum){
-  var sendData = {cellNum:0};
-  sendData["cellNum"] = getCookie("cellNum");
-
-  // let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
-  let serverAction = "get-settings";
-  let remoteServer = "http://" +  remoteAddress + ":5000/" + serverAction;
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open("POST", remoteServer, true);
-  xmlHttp.setRequestHeader('Content-Type', 'application/json');
-  xmlHttp.send(JSON.stringify(sendData));
-
-  document.getElementById("test").innerHTML = "sent = " + JSON.stringify(sendData);
-
-  xmlHttp.onreadystatechange = function () {
-    if (this.readyState != 4) return;
-    if (this.status == 200) {
-      var response = (this.responseText); // we get the returned data
-      var parsed = JSON.parse(response);
-      document.getElementById("test_response").innerHTML = "reponse = " + response + "  also dailyDigest is: " + parsed["dailyDigest"];
-      buildPreferences(parsed);
-    }
-    // end of state change: it can be after some time (async)
-  };
-}
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 
 //Collect data from parent preferences and ...
