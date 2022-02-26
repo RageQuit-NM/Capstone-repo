@@ -1,3 +1,6 @@
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/";
+
 
     var query = {cellNum: "69"};
     console.log("query is: " + JSON.stringify(query));
