@@ -10,7 +10,7 @@ MongoClient.connect(url, function(err, db) {
   if (err) throw err;
   var dbo = db.db("growing_gamers");
   //Find all documents in the customers collection:
-  dbo.collection("player_records").find({}).toArray(function(err, result) {
+  dbo.collection("player_records").find({cellNum: 69}).toArray(function(err, result) {
     if (err) throw err;
     console.log(result);
     db.close();

@@ -52,15 +52,14 @@ app.post('/get-settings', async function(req, res){
 //Collect the child performance stats for a given cell numberXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 app.post('/get-stats', async function(req, res){
   var query = {cellNum: req.body["cellNum"]};
-  console.log("query is: " + JSON.stringify(query));
   var result;
 
   try {
-    result = await findMany(query).toArray();
+    result = await findAll(query);
   } catch (error){
     console.log(error);
   }
-  console.log("Returning player stats "+ JSON.stringify(result));
+  console.log("Returing parentPortal statistics: "+ JSON.stringify(result));
   res.send(JSON.stringify(result));
 });
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -124,12 +123,11 @@ async function findOne(query){
   if (!client) {
     console.log("No client");
     return;
-  }
+  } 
   try {
     const db = client.db("growing_gamers");
     let collection = db.collection('user_data');
     let result = await collection.findOne(query);
-    console.log(result);
     console.log("returning: " + result);
     return result;
   } catch (err) {
@@ -138,4 +136,25 @@ async function findOne(query){
     client.close();
   }
 }
-  
+
+
+//get all matching items from player_records collection
+async function findAll(query){
+  console.log("finding all");
+  const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
+  if (!client) {
+    console.log("No client");
+    return;
+  }
+  try {
+    const db = client.db("growing_gamers");
+    let collection = db.collection('player_records');
+    let result = await collection.find(query).toArray();
+    console.log("returning: " + JSON.stringify(result));
+    return result;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
+}
