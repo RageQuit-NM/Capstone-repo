@@ -2,13 +2,12 @@ var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 
 
-    var query = {cellNum: "69"};
-    console.log("query is: " + JSON.stringify(query));
-    var result;
-  
-    try {
-      result = find(query).toArray();
-    } catch (error){
-      console.log(error);
-    }
-    console.log("Returning player stats "+ JSON.stringify(result));
+MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var database = db.db("growing_gamers");
+    database.collection("player_records").find({cellNum: "69"}, options, function(err, res) {
+      if (err) throw err;
+      console.log("player data collected: " + JSON.stringify(res));
+      db.close();
+    });
+  });

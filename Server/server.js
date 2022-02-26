@@ -89,7 +89,7 @@ app.post('/update-settings', function(req, res){
         var database = db.db("growing_gamers");
         database.collection("user_data").updateOne(query, newVals, options, function(err, res) {
           if (err) throw err;
-          console.log("settings updated: " + res);
+          console.log("settings updated: " + JSON.stringify(res));
           db.close();
         });
       });
