@@ -4,7 +4,7 @@
     var result;
   
     try {
-      result = await findMany(query).toArray();
+      result = findMany(query).toArray();
     } catch (error){
       console.log(error);
     }
