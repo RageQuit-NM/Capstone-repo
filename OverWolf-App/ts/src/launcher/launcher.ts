@@ -42,8 +42,8 @@ class Launcher extends AppWindow {
       
       //this.parentPortalOpen();
       //this.parentPortalClose();
-      setInterval(this.checkBedtime, 1000*10);
-      setInterval(this.collectPreferences, 1000*5);
+      //setInterval(this.checkBedtime, 1000*10);
+      //setInterval(this.collectPreferences, 1000*5);
     }
 
     public async checkBedtime(){
@@ -61,9 +61,9 @@ class Launcher extends AppWindow {
         let localBedTime = hoursString + ":" + minutesString;
         document.getElementById("test_message").innerHTML = "betime is: " + Launcher.instance().bedTime + "and current time is: " + date.toLocaleTimeString();
         if(Launcher.instance().bedTime > localBedTime){
-          document.getElementById("test_message3").innerHTML = "It is not your bedtime yet. " + Launcher.instance().bedTime + " > " + localBedTime;
+          document.getElementById("test_message2").innerHTML = "It is not your bedtime yet. " + Launcher.instance().bedTime + " > " + localBedTime;
         }else{
-          document.getElementById("test_message3").innerHTML = "It is bedtime, time to stop playing."  + Launcher.instance().bedTime + " !> " + localBedTime;
+          document.getElementById("test_message2").innerHTML = "It is bedtime, time to stop playing."  + Launcher.instance().bedTime + " !> " + localBedTime;
           //Launcher.instance().sendBedtimeMessage();
         }
         
@@ -102,6 +102,8 @@ class Launcher extends AppWindow {
       document.getElementById("time_played").innerHTML = time_message;
       let test_message: string = this.mainWindowObject.document.getElementById("test_message").innerHTML;
       document.getElementById("test_message").innerHTML = test_message;
+      document.getElementById("test_message2").innerHTML += this.mainWindowObject.document.getElementById("test_message2").innerHTML;
+      document.getElementById("test_message3").innerHTML += this.mainWindowObject.document.getElementById("test_message3").innerHTML;
       let currentGameSessionLength: string = this.mainWindowObject.document.getElementById("currentGameSessionLength").innerHTML;
       document.getElementById("currentGameSessionLength").innerHTML = currentGameSessionLength;
     }

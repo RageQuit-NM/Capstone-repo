@@ -106,7 +106,7 @@ app.post('/upload-game-data', function(req, res){
         var database = db.db("growing_gamers");
         database.collection("player_records").insertOne(req.body, options, function(err, res) {
           if (err) throw err;
-          console.log("player data entered: " + res);
+          console.log("player data entered: " + JSON.stringify(res));
           db.close();
         });
       });
