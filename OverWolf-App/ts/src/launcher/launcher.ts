@@ -19,7 +19,6 @@ class Launcher extends AppWindow {
         // document.getElementById("smiley").addEventListener("click", this.clickSmiley);
         // document.getElementById("straight").addEventListener("click", this.clickSmiley);
         // document.getElementById("sad").addEventListener("click", this.clickSmiley);
-        // document.getElementById("parentPortalButton").addEventListener("click", this.parentPortalOpen); 
         document.getElementById("message_send").addEventListener("click", this.twilio);
 
         this.collectPreferences();
@@ -40,10 +39,8 @@ class Launcher extends AppWindow {
     public async run() {
       this.setContent();
       
-      //this.parentPortalOpen();
-      //this.parentPortalClose();
-      //setInterval(this.checkBedtime, 1000*10);
-      //setInterval(this.collectPreferences, 1000*5);
+      setInterval(this.checkBedtime, 1000*1);
+      setInterval(this.collectPreferences, 1000*1);
     }
 
     public async checkBedtime(){
@@ -51,19 +48,45 @@ class Launcher extends AppWindow {
         let date = new Date();
         let hours = date.getHours();
         let minutes = date.getMinutes();
-        let hoursString = (hours as unknown as string), minutesString = (minutes as unknown as string);
+        let minutesString;
+        let hoursString;
+       
+        hoursString = (hours as unknown as string);
+        minutesString = (minutes as unknown as string);
         if(hours < 10){
           hoursString = "0" + (hours as unknown as string);
         }
         if(minutes < 10){
           minutesString = "0" + (minutes as unknown as string);
         }
-        let localBedTime = hoursString + ":" + minutesString;
-        document.getElementById("test_message").innerHTML = "betime is: " + Launcher.instance().bedTime + "and current time is: " + date.toLocaleTimeString();
-        if(Launcher.instance().bedTime > localBedTime){
-          document.getElementById("test_message2").innerHTML = "It is not your bedtime yet. " + Launcher.instance().bedTime + " > " + localBedTime;
+
+        let isBedTime;
+        let localTime = hoursString + ":" + minutesString;
+        // this.bedTime.substr(0,2).parseInt()
+        // document.getElementById("test_message2").innerHTML = hoursString;
+        // document.getElementById("test_message3").innerHTML = minutesString;
+        // document.getElementById("test_message").innerHTML = localTime + "        " + Launcher.instance().bedTime;
+        if(localTime > Launcher.instance().bedTime){
+          isBedTime = true;
         }else{
-          document.getElementById("test_message2").innerHTML = "It is bedtime, time to stop playing."  + Launcher.instance().bedTime + " !> " + localBedTime;
+          isBedTime = false;
+        }
+
+        if(hours > 12){
+          hoursString = (hours-12 as unknown as string), minutesString = (minutes as unknown as string);
+        }else{
+          hoursString = (hours as unknown as string), minutesString = (minutes as unknown as string);
+        }
+        
+        localTime = hoursString + ":" + minutesString;
+
+
+        
+        if(!isBedTime){
+          document.getElementById("minimizeButton").innerHTML = "Back to Game";
+        }else{
+          document.getElementById("primary_message").innerHTML = "It is <span class='urgentText'>past your bedtime</span>, time to stop playing. <br/><br/>The time is: <span class='urgentText'>"  + localTime + " </span>";
+          document.getElementById("minimizeButton").innerHTML = "See You Tomorrow";
           //Launcher.instance().sendBedtimeMessage();
         }
         
@@ -101,9 +124,9 @@ class Launcher extends AppWindow {
       let time_message: string = this.mainWindowObject.document.getElementById("time_message").innerHTML;
       document.getElementById("time_played").innerHTML = time_message;
       let test_message: string = this.mainWindowObject.document.getElementById("test_message").innerHTML;
-      document.getElementById("test_message").innerHTML = test_message;
-      document.getElementById("test_message2").innerHTML += this.mainWindowObject.document.getElementById("test_message2").innerHTML;
-      document.getElementById("test_message3").innerHTML += this.mainWindowObject.document.getElementById("test_message3").innerHTML;
+      //document.getElementById("test_message").innerHTML = test_message;
+      //document.getElementById("test_message2").innerHTML += this.mainWindowObject.document.getElementById("test_message2").innerHTML;
+      //document.getElementById("test_message3").innerHTML += this.mainWindowObject.document.getElementById("test_message3").innerHTML;
       let currentGameSessionLength: string = this.mainWindowObject.document.getElementById("currentGameSessionLength").innerHTML;
       document.getElementById("currentGameSessionLength").innerHTML = currentGameSessionLength;
     }
@@ -190,7 +213,7 @@ class Launcher extends AppWindow {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var response = (this.responseText); // we get the returned data
-        document.getElementById("test_message").innerHTML = "reponse = " + response;
+        //document.getElementById("test_message").innerHTML = "reponse = " + response;
       }
       // end of state change: it can be after some time (async)
     };
