@@ -53,6 +53,7 @@ class Launcher extends AppWindow {
        
         hoursString = (hours as unknown as string);
         minutesString = (minutes as unknown as string);
+        
         if(hours < 10){
           hoursString = "0" + (hours as unknown as string);
         }
@@ -60,23 +61,35 @@ class Launcher extends AppWindow {
           minutesString = "0" + (minutes as unknown as string);
         }
 
+
         let isBedTime;
         let localTime = hoursString + ":" + minutesString;
-        // this.bedTime.substr(0,2).parseInt()
-        // document.getElementById("test_message2").innerHTML = hoursString;
-        // document.getElementById("test_message3").innerHTML = minutesString;
-        // document.getElementById("test_message").innerHTML = localTime + "        " + Launcher.instance().bedTime;
         if(localTime > Launcher.instance().bedTime){
           isBedTime = true;
         }else{
           isBedTime = false;
         }
 
+        //Normalize the time
         if(hours > 12){
-          hoursString = (hours-12 as unknown as string), minutesString = (minutes as unknown as string);
+          hoursString = (hours-12 as unknown as string);
+          if(hours < 10){
+            hoursString = "0" + hoursString;
+          }
         }else{
-          hoursString = (hours as unknown as string), minutesString = (minutes as unknown as string);
+          hoursString = (hours as unknown as string);
+          if(minutes < 10){
+            minutesString = "0" + minutesString;
+          }
         }
+        if(hoursString == "0"){
+          hoursString == "00";
+        }
+        if(minutesString == "0"){
+          minutesString == "00";
+        }
+       
+  
         
         localTime = hoursString + ":" + minutesString;
 
@@ -84,6 +97,8 @@ class Launcher extends AppWindow {
         
         if(!isBedTime){
           document.getElementById("minimizeButton").innerHTML = "Back to Game";
+          this.mainWindowObject = overwolf.windows.getMainWindow();
+          document.getElementById("primary_message").innerHTML = this.mainWindowObject.document.getElementById("primary_message").innerHTML;
         }else{
           document.getElementById("primary_message").innerHTML = "It is <span class='urgentText'>past your bedtime</span>, time to stop playing. <br/><br/>The time is: <span class='urgentText'>"  + localTime + " </span>";
           document.getElementById("minimizeButton").innerHTML = "See You Tomorrow";
