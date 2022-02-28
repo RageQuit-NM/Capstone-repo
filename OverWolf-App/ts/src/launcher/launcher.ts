@@ -104,10 +104,12 @@ class Launcher extends AppWindow {
           document.getElementById("minimizeButton").innerHTML = "See You Tomorrow";
 
           this.mainWindowObject = overwolf.windows.getMainWindow();
-          if (this.mainWindowObject.document.getElementById("property_holde").getAttribute('bedTimeMessage') != 'true') {
-            document.getElementById("property_holde").setAttribute('bedTimeMessage', 'true');
+          if (this.mainWindowObject.document.getElementById("property_holder").getAttribute('bedTimeMessage') != 'true') {
+            this.mainWindowObject.document.getElementById("property_holder").setAttribute('bedTimeMessage', 'true');
             document.getElementById("test_message").innerHTML += "  text sms sent||"
-           //Launcher.instance().sendBedtimeMessage();
+            Launcher.instance().sendBedtimeMessage();
+          }else{
+            //document.getElementById("test_message").innerHTML += "  message already sent"
           }
         }
         
