@@ -7,7 +7,7 @@ process.on("message", function (message) {
     console.log(`Message from main.js: ${message}`);
 
     client.messages.create({
-     body: 'Your child is playing past their bedtime. Sent to: ' + message,
+     body: 'Your child is playing past their bedtime. Their bed time is: ' + message,
      from: '+13069850604',
      to: '+13066202479'
    })

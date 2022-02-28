@@ -69,10 +69,10 @@ app.post('/get-stats', async function(req, res){
 
 //Send bedtime violation notification
 app.post('/bedtime-message', function(req, res){
-    var cellNum = req.body["cellNum"];
+    var bedTime = req.body["bedTime"]; //req.body["cellNum"];
     var smsScript = childProcess.fork('./sms-messages/bedtime-message.js');
-    smsScript.send(cellNum);
-    console.log("bedtime message sent to " + cellNum);
+    smsScript.send(bedTime);
+    console.log("bedtime message sent with bedtime: " + bedTime);
     res.send('Bedtime sms sent');
 });
 

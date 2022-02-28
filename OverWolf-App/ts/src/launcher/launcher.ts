@@ -102,7 +102,13 @@ class Launcher extends AppWindow {
         }else{
           document.getElementById("primary_message").innerHTML = "It is <span class='urgentText'>past your bedtime</span>, time to stop playing. <br/><br/>The time is: <span class='urgentText'>"  + localTime + " </span>";
           document.getElementById("minimizeButton").innerHTML = "See You Tomorrow";
-          //Launcher.instance().sendBedtimeMessage();
+
+          this.mainWindowObject = overwolf.windows.getMainWindow();
+          if (this.mainWindowObject.document.getElementById("property_holde").getAttribute('bedTimeMessage') != 'true') {
+            document.getElementById("property_holde").setAttribute('bedTimeMessage', 'true');
+            document.getElementById("test_message").innerHTML += "  text sms sent||"
+           //Launcher.instance().sendBedtimeMessage();
+          }
         }
         
       }
@@ -110,7 +116,7 @@ class Launcher extends AppWindow {
     }
 
     private sendBedtimeMessage(){
-      let messageData = {cellNum: "69"};
+      let messageData = {bedTime: Launcher.instance().bedTime};  //{cellNum: "69"};
       let serverAction = "bedtime-message";  //
       let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
       var xmlHttp = new XMLHttpRequest();
