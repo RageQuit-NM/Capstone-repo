@@ -124,7 +124,7 @@ class BackgroundController {
     let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
     let gameData = JSON.parse(fileData);
 
-    let cellNum = "69"
+    let cellNum = "5551234"
     gameData["cellNum"] = cellNum;
     gameData["timeStampTime"] = new Date().toLocaleTimeString();
     gameData["timeStampDay"] = new Date().toDateString();

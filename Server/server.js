@@ -20,9 +20,9 @@ app.listen(5000, function(){
 
 //********************************************GET Requests*************************************************
 app.get('/', function(req, res){
-    var smsScript = childProcess.fork('./sms-messages/sms-test.js');
-    console.log('test sms sent');
-    res.send('test sms sent');
+    //var smsScript = childProcess.fork('./sms-messages/sms-test.js');
+    console.log('Root directory accessed');
+    res.send('Root directory accessed');
 });
 
 
