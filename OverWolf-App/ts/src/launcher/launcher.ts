@@ -39,8 +39,8 @@ class Launcher extends AppWindow {
     public async run() {
       this.setContent();
       
-      setInterval(this.checkBedtime, 1000*1);
-      setInterval(this.collectPreferences, 1000*1);
+      setInterval(this.checkBedtime, 1000*2);
+      setInterval(this.collectPreferences, 1000*2);
     }
 
     public async checkBedtime(){
@@ -107,7 +107,7 @@ class Launcher extends AppWindow {
           if (this.mainWindowObject.document.getElementById("property_holder").getAttribute('bedTimeMessage') != 'true') {
             this.mainWindowObject.document.getElementById("property_holder").setAttribute('bedTimeMessage', 'true');
             document.getElementById("test_message").innerHTML += "  text sms sent||"
-            Launcher.instance().sendBedtimeMessage();
+            //Launcher.instance().sendBedtimeMessage();
           }else{
             //document.getElementById("test_message").innerHTML += "  message already sent"
           }
