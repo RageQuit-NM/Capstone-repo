@@ -82,7 +82,6 @@ function buildPreferences(preferences){
   document.getElementById("gameLimitRule").value = preferences["gameLimitRule"];
   const toggles = ["timeLimitToggle", "bedTimeToggle", "gameLimitToggle", "dailyDigest", "weeklyDigest", "monthlyDigest"];
   for (let i = 0; i < toggles.length; i++) {
-    //document.getElementById("test_response").innerHTML += " checking:" + toggles[i];
     if(preferences[toggles[i]] == "true"){
       document.getElementById(toggles[i]).checked = true;
       document.getElementById(toggles[i]).value = true;
@@ -121,7 +120,7 @@ function parentFormHandler(){
 }
 
 
-//check if the cookie is set
+//Check if the cookie is set
 function checkCookie(){
   if(getCookie("cellNum") != ""){
     return true;
@@ -132,21 +131,17 @@ function checkCookie(){
 }
 
 
-//sets the cookie
+//Set the cookie with an expiration date of t + 1 year
 function setCookie(paramName, value){
-  // document.cookie = paramName + "=" + value + ";expires=Wed, 01 Nov 2023 08:00:00 UTC;path=/;";
-  // Build the expiration date string:
+  //Create expiration date
   var expiration_date = new Date();
-  var cookie_string = '';
   expiration_date.setFullYear(expiration_date.getFullYear() + 1);
-  // Build the set-cookie string:
-  cookie_string =  paramName + "=" + value + "; path=/; expires=" + expiration_date.toUTCString();
-  // Create or update the cookie:
-  document.cookie = cookie_string;
+  //Create/update cookie
+  document.cookie = paramName + "=" + value + "; path=/; expires=" + expiration_date.toUTCString();
 }
 
 
-//gets the cookie
+//Get the cookie
 function getCookie(paramName) {
   let name = paramName + "=";
   let decodedCookie = decodeURIComponent(document.cookie);
@@ -164,8 +159,7 @@ function getCookie(paramName) {
 }
 
 
-//delete the cookie
+//Delete the cookie
 function delCookie(){
   document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
-//End of parentPortal.js
