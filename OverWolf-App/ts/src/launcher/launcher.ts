@@ -50,7 +50,37 @@ class Launcher extends AppWindow {
         let minutes = date.getMinutes();
         let minutesString;
         let hoursString;
-       
+
+        //bry mintues code
+        let bedtimeHours = parseInt(Launcher.instance().bedTime);
+        let bedtimeMinutes = parseInt(Launcher.instance().bedTime.substring(3, 5))
+
+        let hourDiff = bedtimeHours - hours;
+        let minuteDiff = bedtimeMinutes - minutes;
+        let diff = (hourDiff*60) + minuteDiff;
+
+        let myMessage = "";
+        // if (document.getElementById("test_message").innerHTML.search("Bedtime is set to") == -1){
+        //   document.getElementById("test_message").innerHTML += "Bedtime is set to " + diff + " parsed: " + bedtimeHours + "__" + bedtimeMinutes;
+        // }
+        if(diff < 60 && diff >=45){
+          myMessage = "You have time for about 2 more games.";
+        }else if(diff < 45 && diff >=20){
+          myMessage = "You have time for one last game.";
+        }else if(diff < 20 && diff >=5){
+          myMessage = "You dont have enough time to play a game before bedtime."; //Playing a game will put you past your bedtime?
+        }else if(diff < 5 && diff >=-5){
+          myMessage = "Its time to stop playing and say good night.";
+          if(!(diff<0)){
+            myMessage += " You have " + diff + " minutes until bedtime";
+          }
+        }else if(diff < -5){
+          //myMessage = "You are " + -diff + " minutes past your bedtime."; //maybe delte this. We have the red stff popping up
+          //send the bedtime text message here!!
+        }
+        document.getElementById("secondary_message").innerHTML = myMessage;
+
+
         hoursString = (hours as unknown as string);
         minutesString = (minutes as unknown as string);
         
@@ -83,10 +113,10 @@ class Launcher extends AppWindow {
           }
         }
         if(hoursString == "0"){
-          hoursString == "00";
+          hoursString = "00";
         }
         if(minutesString == "0"){
-          minutesString == "00";
+          minutesString = "00";
         }
        
   
@@ -106,15 +136,11 @@ class Launcher extends AppWindow {
           this.mainWindowObject = overwolf.windows.getMainWindow();
           if (this.mainWindowObject.document.getElementById("property_holder").getAttribute('bedTimeMessage') != 'true') {
             this.mainWindowObject.document.getElementById("property_holder").setAttribute('bedTimeMessage', 'true');
-            document.getElementById("test_message").innerHTML += "  text sms sent||"
+            //document.getElementById("test_message").innerHTML += "  text sms sent||"
             //Launcher.instance().sendBedtimeMessage();
-          }else{
-            //document.getElementById("test_message").innerHTML += "  message already sent"
           }
         }
-        
       }
-      //document.getElementById("test_message").innerHTML += "bedtime null";
     }
 
     private sendBedtimeMessage(){
@@ -144,14 +170,11 @@ class Launcher extends AppWindow {
 
       let primary_message: string = this.mainWindowObject.document.getElementById("primary_message").innerHTML; //collect the primary_message
       document.getElementById("primary_message").innerHTML = primary_message;                                   //Update HTML document
-      let time_message: string = this.mainWindowObject.document.getElementById("time_message").innerHTML;
-      document.getElementById("time_played").innerHTML = time_message;
+
       let test_message: string = this.mainWindowObject.document.getElementById("test_message").innerHTML;
-      //document.getElementById("test_message").innerHTML = test_message;
-      //document.getElementById("test_message2").innerHTML += this.mainWindowObject.document.getElementById("test_message2").innerHTML;
-      //document.getElementById("test_message3").innerHTML += this.mainWindowObject.document.getElementById("test_message3").innerHTML;
-      let currentGameSessionLength: string = this.mainWindowObject.document.getElementById("currentGameSessionLength").innerHTML;
-      document.getElementById("currentGameSessionLength").innerHTML = currentGameSessionLength;
+      document.getElementById("test_message").innerHTML += test_message;
+      document.getElementById("test_message2").innerHTML += this.mainWindowObject.document.getElementById("test_message2").innerHTML;
+      document.getElementById("test_message3").innerHTML += this.mainWindowObject.document.getElementById("test_message3").innerHTML;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

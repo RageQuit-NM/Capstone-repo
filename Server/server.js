@@ -43,7 +43,7 @@ app.post('/get-settings', async function(req, res){
   } catch (error){
     console.log(error);
   }
-  console.log("Returing parentPortal settings: "+ JSON.stringify(result));
+  console.log("Returing parentPortal settings. id: "+ JSON.stringify(result[_id]) + " cellNum: " + SON.stringify(result[cellNum]));
   res.send(JSON.stringify(result));
 });
 
@@ -118,7 +118,6 @@ app.post('/upload-game-data', function(req, res){
 //*****************************Functions*****************************************************************************************
 //Get one item from the user_data collection  
 async function findOne(query){
-  console.log("finding one");
   const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
   if (!client) {
     console.log("No client");
@@ -128,7 +127,7 @@ async function findOne(query){
     const db = client.db("growing_gamers");
     let collection = db.collection('user_data');
     let result = await collection.findOne(query);
-    console.log("returning: " + result);
+    //console.log("returning: " + result);
     return result;
   } catch (err) {
     console.log(err);
