@@ -43,7 +43,7 @@ app.post('/get-settings', async function(req, res){
   } catch (error){
     console.log(error);
   }
-  console.log("Returing parentPortal settings. id: "+ JSON.stringify(result[_id]) + " cellNum: " + SON.stringify(result[cellNum]));
+  console.log("Returing parentPortal settings. id: "+ JSON.stringify(result[_id]) + " cellNum: " + JSON.stringify(result[cellNum]));
   res.send(JSON.stringify(result));
 });
 
