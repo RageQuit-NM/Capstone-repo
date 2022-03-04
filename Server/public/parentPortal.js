@@ -57,7 +57,7 @@ if(checkCookie()){
       if (this.status == 200) {
         var response = (this.responseText); // we get the returned data
         var parsed = JSON.parse(response);
-        document.getElementById("test_response").innerHTML = "3" + response;
+        document.getElementById("test").innerHTML = "3" + response;
         buildStats(parsed);
       }
     }
