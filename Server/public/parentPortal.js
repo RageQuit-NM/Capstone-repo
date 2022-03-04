@@ -78,7 +78,7 @@ function buildStats(statistics) {
   let wins = 0;
   let losses = 0;
   
-   document.getElementById("test").innerHTML += "4" + statistics;
+   document.getElementById("test").innerHTML += "4" + JSON.stringify(statistics);
 
   for (var key in statistics) {
     if (statistics.hasOwnProperty(wins)) {
