@@ -58,7 +58,7 @@ if(checkCookie()){
         var response = (this.responseText); // we get the returned data
         var parsed = JSON.parse(response);
         document.getElementById("test_response").innerHTML = "reponse = " + response;
-        // buildPreferences(parsed);
+        buildStats(parsed);
       }
     }
 //*************************************************************************************************************** */
@@ -74,8 +74,29 @@ if(checkCookie()){
 }
 
 
+function buildStats(statistics) {
+  let wins = 0;
+  let losses = 0;
+  
+  for (var key in statistics) {
+    if (statistics.hasOwnProperty(wins)) {
+        if (statistics[key].wins >= 0) {
+          wins = statistics[key].wins;
+        }
+    }
+  } 
+  document.getElementById("test_response").innerHTML = "reponse = " + wins;
+
+  let winLossR = 0;
+
+
+}
+
+
+
+
 //populate the parent portal preferences form
-function buildPreferences(preferences){
+function buildPreferences(preferences) {
   document.getElementById("cellNum").value = preferences["cellNum"];
   document.getElementById("timeLimitRule").value = preferences["timeLimitRule"];
   document.getElementById("bedTimeRule").value = preferences["bedTimeRule"];
@@ -94,7 +115,7 @@ function buildPreferences(preferences){
 
 
 //Collect data from parent preferences and ...
-function parentFormHandler(){
+function parentFormHandler() {
     var formData = Array.from(document.querySelectorAll('#parent_control_form input')).reduce((acc, input)=>({ ...acc, [input.id]: input.value }), {});
 
     setCookie("cellNum", formData["cellNum"]);
@@ -121,7 +142,7 @@ function parentFormHandler(){
 
 
 //Check if the cookie is set
-function checkCookie(){
+function checkCookie() {
   if(getCookie("cellNum") != ""){
     return true;
   }
@@ -132,7 +153,7 @@ function checkCookie(){
 
 
 //Set the cookie with an expiration date of t + 1 year
-function setCookie(paramName, value){
+function setCookie(paramName, value) {
   //Create expiration date
   var expiration_date = new Date();
   expiration_date.setFullYear(expiration_date.getFullYear() + 1);
@@ -160,6 +181,6 @@ function getCookie(paramName) {
 
 
 //Delete the cookie
-function delCookie(){
+function delCookie() {
   document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
