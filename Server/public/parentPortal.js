@@ -33,7 +33,7 @@ if(checkCookie()){
       var response = (this.responseText); // we get the returned data
       var parsed = JSON.parse(response);
       //document.getElementById("test_response").innerHTML = "reponse = " + response + "  also dailyDigest is: " + parsed["dailyDigest"];
-      document.getElementById("test_response").innerHTML = "reponse = " + response;
+      document.getElementById("test_response").innerHTML = "1" + response;
       buildPreferences(parsed);
     }
 
@@ -50,7 +50,7 @@ if(checkCookie()){
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send(JSON.stringify(sendData));
   
-    document.getElementById("test").innerHTML = "sent = " + JSON.stringify(sendData);
+    document.getElementById("test").innerHTML = "2" + JSON.stringify(sendData);
   
     xmlHttp.onreadystatechange = function () {
       if (this.readyState != 4) return;
