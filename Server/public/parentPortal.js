@@ -81,13 +81,16 @@ function buildStats(statistics) {
   let wins = 0;
   let losses = 0;
   for (var key in statistics) {
+    document.getElementById("test_response").innerHTML += "looping-";
     if (statistics.hasOwnProperty("win")) {
+      document.getElementById("test_response").innerHTML += "does have property-";
         if (statistics[key].win == "true") {
           wins ++;
         } else {
           losses ++;
         }
     }
+    document.getElementById("test_response").innerHTML += "NO property-";
   }
   let winLossR = 0;
   if (losses !=0) {
