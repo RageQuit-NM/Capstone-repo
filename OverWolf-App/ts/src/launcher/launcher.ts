@@ -6,7 +6,7 @@ class Launcher extends AppWindow {
     private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com"; //Move to the parent class, all app windows need this remote address
     //public bedTime: string;
     public parentPreferenes;  //timeLimitRule bedTimeRule gameLimitRule
-  
+    public isCellNumSet:boolean;
 
     private constructor() {
       super(kWindowNames.launcher);
@@ -15,15 +15,37 @@ class Launcher extends AppWindow {
         overwolf.windows.getMainWindow().document.getElementById("attributes").setAttribute('listener', 'true');
        
         (document.getElementById("parent_portal_link") as HTMLAnchorElement).href="http://" + this.remoteAddress + ":5000/parentPortal";
-        document.getElementById("cellInput").addEventListener("change", this.testFunction);
-        document.getElementById("poo").addEventListener("click", this.poo);
+        document.getElementById("cellInput").addEventListener("change", this.setCellNum);
+        document.getElementById("poo").addEventListener("click", this.submitCellNum);
 
+
+        //if cell num has been entered
+        if(!this.checkCellNum()){
+          this.isCellNumSet = false;
+          this.initalize();
+        }
+        else{
+        this.isCellNumSet = true;
         this.collectPreferences();
         this.setContent();
 
         setInterval(this.checkBedtime, 1000*2);
         setInterval(this.collectPreferences, 1000*2);
+        }
       }
+    }
+
+    public async checkCellNum(){
+      if (await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`) == null){
+        return false;
+      }else{
+        return true;
+      }
+    }
+
+    public initalize(){
+      document.getElementById("main").style.display = "none";
+      document.getElementById("initalization").style.display = "inline";
     }
     
 
@@ -40,19 +62,15 @@ class Launcher extends AppWindow {
     public async run() {
       //this.testFunction();
     }
-    public async testFunction(){
-      //let myData = {cellNum: '5551234'}
-      //document.getElementById("test_message3").innerHTML += `${overwolf.io.paths.localAppData}\\Overwolf\\Log\\Apps\\RageQuit.NM\\game_data.json`;
-      let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
-      
-      Launcher.instance()._writeFile(JSON.stringify(myData),  `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+    public setCellNum(){    //Shouldnt set cellNum completely without the submit button!! this fucniton should probs do nohting and th submit does everything
+      // let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
+      // Launcher.instance()._writeFile(JSON.stringify(myData),  `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
     }
-    public async poo(){
-      let result = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
-      let cellNum = JSON.parse(result)["cellNum"];
-      var sendData = {"cellNum": cellNum, bedtime: "30"};
-      document.getElementById("test_message").innerHTML += "cellnum " + cellNum + "you wrote: " + sendData["cellNum"] + "bedtime si " + sendData["bedtime"];
+    public async submitCellNum(){
+      let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
+      Launcher.instance()._writeFile(JSON.stringify(myData),  `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      // let result = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
     }
 
 

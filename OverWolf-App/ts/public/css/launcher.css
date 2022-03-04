@@ -59,6 +59,11 @@ body {
   /* inherit; none; */
 }
 
+.initalization {
+  display: none; 
+  /* inherit; none; */
+}
+
 .urgentText {
   color: #F47174;
 }
