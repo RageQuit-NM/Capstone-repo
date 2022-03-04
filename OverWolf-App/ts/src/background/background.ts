@@ -56,12 +56,14 @@ class BackgroundController {
     this.sendMessageToLauncher();
   }
  
-
+  //----------------------------------------------------------implement all messages for kid----------------||
   //Updates primary_message on bus
   private async sendMessageToLauncher(){
     let negativeKD:boolean = false;//--------------------Change to a single variable------------------------||
     let positiveKD:boolean = false;//-----------------------------------------------------------------------||
-    let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    //overwolf.extensions.io.readTextFile(overwolf.extensions.io.enums.StorageSpace.appData,"hal9000\\loxg.txt",console.log)
+    let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.json`);
+    //let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\Log\\Apps\\RageQuit.NM\\game_data.json`);
     let killDeath = JSON.parse(fileData);
 
     if(killDeath["kills"] > killDeath["deaths"]){
@@ -94,14 +96,13 @@ class BackgroundController {
       }
     } else {
       this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
-      this.mainWindowObject.document.getElementById("currentGameSessionLength").innerHTML = "Session not started.";
     }
   }
 
 
-  //Called when a games ends. Sends all data in game_data.txt, along with a cellnum and a timeStamp to /upload-game-data
+  //Called when a games ends. Sends all data in game_data.json, along with a cellnum and a timeStamp to /upload-game-data
   private async sendGameInfoToRemote(){
-    let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.json`);
     let gameData = JSON.parse(fileData);
 
     let cellNum = "5551234"

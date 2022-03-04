@@ -55,7 +55,8 @@ body {
 
 .testMessage {
   word-wrap: break-word; 
-  display: inherit;
+  display: inherit; 
+  /* inherit; none; */
 }
 
 .urgentText {

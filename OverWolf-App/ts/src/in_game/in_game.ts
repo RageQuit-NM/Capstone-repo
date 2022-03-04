@@ -16,7 +16,7 @@ class InGame extends AppWindow {
   private constructor() {
     super(kWindowNames.inGame);
 
-    //intializes the game_data.txt file to be used in dataUpdate()
+    //intializes the game_data.json file to be used in dataUpdate()
     let inital_json = {
       "cellNum": 0,
       "kills": 0,
@@ -26,7 +26,8 @@ class InGame extends AppWindow {
       "timeStampDay":"NULL"
     }
     let stringJson = JSON.stringify(inital_json);
-    this.writeFile(stringJson, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    //${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json
+    this.writeFile(stringJson, `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
   }
 
   //Singleton design pattern
@@ -71,9 +72,9 @@ class InGame extends AppWindow {
   }
 
 
-  //Updates game_data.txt
+  //Updates game_data.json
   private async updateData(dataField:string, time:number){
-    let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`); //`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.json`
     let jsonData = JSON.parse(fileData);
     if(dataField == "kills"){
       jsonData["kills"]++;
@@ -86,7 +87,7 @@ class InGame extends AppWindow {
     }
 
     let stringified = JSON.stringify(jsonData);
-    this.writeFile(stringified, `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.txt`);
+    this.writeFile(stringified, `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
     //document.getElementById("death_message").innerHTML = jsonData["deaths"]; //For debugging
   }
 
