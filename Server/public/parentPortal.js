@@ -78,6 +78,8 @@ function buildStats(statistics) {
   let wins = 0;
   let losses = 0;
   
+  document.getElementById("test").innerHTML = "4" + statistics;
+
   for (var key in statistics) {
     if (statistics.hasOwnProperty(wins)) {
         if (statistics[key].wins >= 0) {
