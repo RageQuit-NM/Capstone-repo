@@ -73,21 +73,35 @@ if(checkCookie()){
 
 
 function buildStats(statistics) {
+  
+  
+  // document.getElementById("test").innerHTML += "4" + JSON.stringify(statistics);
+
+  //---------------------------------------TEST WITH NEW DATABSE ENTRIES__________________________________&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
   let wins = 0;
   let losses = 0;
-  
-   document.getElementById("test").innerHTML += "4" + JSON.stringify(statistics);
-
   for (var key in statistics) {
-    if (statistics.hasOwnProperty(wins)) {
-        if (statistics[key].wins >= 0) {
-          wins = statistics[key].wins;
+    if (statistics.hasOwnProperty("win")) {
+        if (statistics[key].win == "true") {
+          wins ++;
+        } else {
+          losses ++;
         }
     }
-  } 
-  document.getElementById("test_response").innerHTML = "reponse = " + wins;
-
+  }
   let winLossR = 0;
+  if (losses !=0) {
+    winLossR = wins/losses;
+  } else if (wins > 0){
+    winLossR = 1;
+  } else {
+    winLossR = 0;
+  }
+  document.getElementById("test_response").innerHTML = "wins = " + wins + " lossess = " + losses + " winLossR = " + winLossR;
+
+  //---------------------------------------TEST WITH NEW DATABSE ENTRIES__________________________________&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+  
 
 
 }
