@@ -25,7 +25,7 @@ if(checkCookie()){
   xmlHttp.setRequestHeader('Content-Type', 'application/json');
   xmlHttp.send(JSON.stringify(sendData));
 
-  document.getElementById("test").innerHTML = "sent = " + JSON.stringify(sendData);
+  // document.getElementById("test").innerHTML = "sent = " + JSON.stringify(sendData);
 
   xmlHttp.onreadystatechange = function () {
     if (this.readyState != 4) return;
