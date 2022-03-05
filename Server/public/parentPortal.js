@@ -80,9 +80,10 @@ function buildStats(statistics) {
   //---------------------------------------TEST WITH NEW DATABSE ENTRIES__________________________________&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
   let wins = 0;
   let losses = 0;
-  for (var key in statistics) {
+  for (let i=0; i<statistics.length; i++) {
     document.getElementById("test_response").innerHTML += "looping-";
     if (statistics.hasOwnProperty("win")) {
+      console.log("loop entered");
       document.getElementById("test_response").innerHTML += "does have property-";
         if (statistics[key].win == "true") {
           wins ++;
