@@ -86,8 +86,10 @@ function buildStats(statistics) {
       document.getElementById("test_response").innerHTML += "does have property-";
         if (statistics[key].win == "true") {
           wins ++;
+          console.log("win counted");
         } else {
           losses ++;
+          console.log("loss counted");
         }
     }
     document.getElementById("test_response").innerHTML += "NO property-";
@@ -100,6 +102,7 @@ function buildStats(statistics) {
   } else {
     winLossR = 0;
   }
+  console.log("wins: " + wins + " losses: " + losses + " win/loss: " + winLossR);
   document.getElementById("test_response").innerHTML = "wins = " + wins + " lossess = " + losses + " winLossR = " + winLossR;
 
   //---------------------------------------TEST WITH NEW DATABSE ENTRIES__________________________________&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
