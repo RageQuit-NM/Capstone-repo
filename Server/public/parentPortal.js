@@ -76,13 +76,14 @@ async function getWinLossRatio(statistics) {
   let winLossRatioPromise = new Promise(function(resolve, reject) {
     let wins = 0;
     let losses = 0;
+    let parsed = JSON.parse(statistics);
     //document.getElementById("test").innerHTML = statistics;
-    for (let i=0; i<statistics.length; i++) {
-      document.getElementById("test_response").innerHTML += statistics[0][i] + "\n";
-      if (statistics[0][i].hasOwnProperty("win")) {
+    for (let i=0; i<parsed.length; i++) {
+      document.getElementById("test_response").innerHTML += statistics[i] + "\n";
+      if (parsed[i].hasOwnProperty("win")) {
         console.log("loop entered");
         document.getElementById("test_response").innerHTML += "does have property-";
-          if (statistics[0][i].win == "true") {
+          if (parsed[i].win == "true") {
             wins ++;
             console.log("win counted");
           } else {
