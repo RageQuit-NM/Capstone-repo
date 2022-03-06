@@ -31,10 +31,7 @@ if(checkCookie()){
     if (this.readyState != 4) return;
     if (this.status == 200) {
       var response = (this.responseText); // we get the returned data
-      var parsed = JSON.parse(response);
-      //document.getElementById("test_response").innerHTML = "reponse = " + response + "  also dailyDigest is: " + parsed["dailyDigest"];
-      document.getElementById("test_response").innerHTML = "1" + response;
-      buildPreferences(parsed);
+      buildPreferences(response);
     }
 
 
@@ -101,7 +98,7 @@ async function getWinLossRatio(statistics) {
     } else {
       winLossR = 0;
     }
-    console.log("wins: " + wins + " losses: " + losses + " win/loss: " + winLossR);
+    // console.log("wins: " + wins + " losses: " + losses + " win/loss: " + winLossR);
     resolve(winLossR);
     });
 
@@ -111,7 +108,7 @@ async function getWinLossRatio(statistics) {
 function buildStats(statistics) {
   getWinLossRatio(statistics).then(
     function(winLossRatio) { 
-      // document.getElementById("test").innerHTML = "WLR = " + winLossRatio;
+      document.getElementById("test").innerHTML = "WLR = " + winLossRatio;
     }
   );
 
