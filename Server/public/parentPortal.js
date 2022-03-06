@@ -116,7 +116,7 @@ function buildStats(statistics) {
 
         //add correct classes and style
         document.getElementById("wlRatioBar").classList.add("bg-success");
-        document.getElementById("wlRatioBar").style.width = "100%"
+        document.getElementById("wlRatioBar").style.width = "80%";
       }
     }
   );
