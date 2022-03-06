@@ -65,6 +65,7 @@ class BackgroundController {
     let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
     if (fileData == null){
       document.getElementById("test_message").innerHTML += "Couldnt collect info from game_data.json (sendMessageToLauncher)";
+      document.getElementById("primary_message").innerHTML = "Background has poor programming and cant run send message to launcher without some game_dat yet";
       return;
     }
     //let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\Log\\Apps\\RageQuit.NM\\game_data.json`);
@@ -94,7 +95,7 @@ class BackgroundController {
       let endTime = new Date()
       let seconds = Math.floor((endTime.getTime() - this.firstGameRunTime.getTime()) / 1000);
       let minutes = Math.floor(seconds / 60);
-      this.mainWindowObject.document.getElementById("test_message").innerHTML = (seconds as unknown as string) + " seconds."; //update the time played
+      this.mainWindowObject.document.getElementById("test_message").innerHTML += (seconds as unknown as string) + " seconds."; //update the time played
 
       if(positiveKD){
         this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[3];
@@ -131,13 +132,13 @@ class BackgroundController {
     xmlHttp.send(JSON.stringify(gameData));
 
     this.mainWindowObject = overwolf.windows.getMainWindow();
-    this.mainWindowObject.document.getElementById("test_message3").innerHTML = "Game end message(/upload-game-data): " + JSON.stringify(gameData) + "cellNum is " + cellNum;  //For debugging
+    this.mainWindowObject.document.getElementById("test_message3").innerHTML += "Game end message(/upload-game-data): " + JSON.stringify(gameData) + "cellNum is " + cellNum;  //For debugging
 
     xmlHttp.onreadystatechange = await function () {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var response = (this.responseText); // we get the returned data
-        //document.getElementById("test_message").innerHTML = "reponse from /upload-game-data = " + response;
+        //document.getElementById("test_message").innerHTML += "reponse from /upload-game-data = " + response;
       }
       // end of state change: it can be after some time (async)
     };

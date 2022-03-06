@@ -7,6 +7,7 @@ class Launcher extends AppWindow {
     //public bedTime: string;
     public parentPreferenes;  //timeLimitRule bedTimeRule gameLimitRule
     public isCellNumSet:boolean;
+    public endIntializationIntervalId;
 
     private constructor() {
       super(kWindowNames.launcher);
@@ -17,42 +18,38 @@ class Launcher extends AppWindow {
         (document.getElementById("parent_portal_link") as HTMLAnchorElement).href="http://" + this.remoteAddress + ":5000/parentPortal";
         //document.getElementById("cellInput").addEventListener("change", this.setCellNum);
         document.getElementById("submitCellNum").addEventListener("click", this.submitCellNum);
-
-
-        //if cell num has been entered
-        if(!this.checkCellNum()){
-          this.isCellNumSet = false;
-          this.initalize();
-          let checkCellNumInterval = setInterval(this.checkCellNum, 1000*1);
-        }
-        else{
-        document.getElementById("initalization").style.display = "none";
-        this.isCellNumSet = true;
-        this.collectPreferences();
-        this.setContent();
-
-        setInterval(this.checkBedtime, 1000*2);
-        setInterval(this.collectPreferences, 1000*2);
-        }
       }
     }
 
-    public endIntialization(){
-      if (this.checkCellNum){
+    public async endIntialization(){
+      document.getElementById("test_message").innerHTML += "endItialization ";
+      if(await Launcher.instance().checkCellNum()){
+        document.getElementById("test_message").innerHTML += "_Phone number entered: result is: " + await Launcher.instance().checkCellNum() + "___";
         document.getElementById("main").style.display = "inherit";
+        document.getElementById("cellDisplay").style.display = "inherit";
         document.getElementById("initalization").style.display = "none";
-        this.isCellNumSet = true;
-        this.collectPreferences();
-        this.setContent();
+        Launcher.instance().isCellNumSet = true;
+        Launcher.instance().collectPreferences();
+        Launcher.instance().setContent();
 
-        setInterval(this.checkBedtime, 1000*2);
-        setInterval(this.collectPreferences, 1000*2);
+        setInterval(Launcher.instance().checkBedtime, 1000*2);
+        setInterval(Launcher.instance().collectPreferences, 1000*2);
+
+        if(Launcher.instance().endIntializationIntervalId != null){
+          clearInterval(Launcher.instance().endIntializationIntervalId);
+        }
+
+        let cellNum = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`)
+        document.getElementById("cellDisplay").innerHTML = cellNum;
       }
     }
     public async checkCellNum(){
-      if (await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`) == null){
+      let cellNum = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`)
+      if (cellNum == null){
+        document.getElementById("test_message").innerHTML += "Not set ";
         return false;
       }else{
+        document.getElementById("test_message").innerHTML += "Set! ";
         return true;
       }
     }
@@ -74,6 +71,18 @@ class Launcher extends AppWindow {
 
     //Called once to build the class
     public async run() {
+      document.getElementById("test_message").innerHTML += "Running ";
+      //if cell num has been entered
+      if(await Launcher.instance().checkCellNum()){
+        document.getElementById("test_message").innerHTML += "Skipping first insialize " + await Launcher.instance().checkCellNum() + "___";
+        Launcher.instance().endIntialization();
+      }
+      else{
+        document.getElementById("test_message").innerHTML += "Perfoming first intialize ";
+        Launcher.instance().isCellNumSet = false;
+        Launcher.instance().initalize();
+        Launcher.instance().endIntializationIntervalId = setInterval(Launcher.instance().endIntialization, 1000*1);
+      }
     }
     // public setCellNum(){    //Shouldnt set cellNum completely without the submit button!! this fucniton should probs do nohting and th submit does everything
     //   // let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
@@ -89,7 +98,12 @@ class Launcher extends AppWindow {
 
     //Check if bedtime rule is violated on an interval, display appropriate message, notify parent.
     public async checkBedtime(){
-      //if(Launcher.instance().bedTime != null){
+      if(Launcher.instance().parentPreferenes == null){
+        if (document.getElementById("test_message2").innerHTML.indexOf("ParentPrefecnes is not set") == -1){
+          document.getElementById("test_message2").innerHTML += "ParentPrefecnes is not set";
+        }
+        return
+      }
       if(Launcher.instance().parentPreferenes["bedTimeRule"] != null){
         //---------------------------------------------------------------------Make the time string foramtting into a functoin of its own?--||
         let date = new Date();
@@ -163,7 +177,7 @@ class Launcher extends AppWindow {
         if (this.readyState != 4) return; //---------What is response code '4'?--------------------------------------------||
         if (this.status == 200) {
           var response = (this.responseText); // we get the returned data
-          //document.getElementById("test_message").innerHTML = "reponse from /upload-game-data = " + response;
+          //document.getElementById("test_message").innerHTML += "reponse from /upload-game-data = " + response;
           //console.log("reponse from /send-message1 = " + response);
         }
       };
@@ -183,6 +197,12 @@ class Launcher extends AppWindow {
     //Collect parental preferences at an interval
     private async collectPreferences(){
       let result = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      if(result == null){
+        if (document.getElementById("test_message2").innerHTML.indexOf("cell_number.json does not exist") == -1){
+          document.getElementById("test_message2").innerHTML += "cell_number.json does not exist";
+        }
+        return
+      }
       var sendData = {cellNum:JSON.parse(result)["cellNum"]};
       if (document.getElementById("test_message").innerHTML.indexOf(JSON.stringify(sendData)) == -1){
         document.getElementById("test_message").innerHTML += "sneding cell num " + JSON.stringify(sendData);

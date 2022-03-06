@@ -76,7 +76,7 @@ class InGame extends AppWindow {
   private async updateData(dataField:string, time:number){
     let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`); //`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.json`
     if (fileData == null){
-      document.getElementById("test_message").innerHTML += "Couldnt collect info from game_data.json (updateData)";
+      console.log("Couldnt collect info from game_data.json (updateData)");
       return;
     }
     let jsonData = JSON.parse(fileData);
