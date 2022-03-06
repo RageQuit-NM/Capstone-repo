@@ -77,6 +77,28 @@ app.post('/bedtime-message', function(req, res){
 });
 
 
+//Insert a new cell num on itialization.
+//check for if it alreawdy exists. 
+app.post('/insert-cellNum', function(req, res){
+  //var query = {cellNum: req.body["cellNum"]};
+  var newVals = { $set: req.body };
+  var options = { upsert: true };
+
+  MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
+      var database = db.db("growing_gamers");
+      database.collection("user_data").insertOne(newVals, options, function(err, res) {
+        if (err) throw err;
+        console.log("inserted to database: " + JSON.stringify(res));
+        db.close();
+      });
+    });
+
+  res.send('succesfully inserted Cell Number');
+});
+
+
+
 //Update the settings from the parent portal changes
 app.post('/update-settings', function(req, res){
     var query = {cellNum: req.body["cellNum"]};
