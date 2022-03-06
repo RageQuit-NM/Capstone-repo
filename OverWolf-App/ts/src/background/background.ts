@@ -62,7 +62,11 @@ class BackgroundController {
     let negativeKD:boolean = false;//--------------------Change to a single variable------------------------||
     let positiveKD:boolean = false;//-----------------------------------------------------------------------||
     //overwolf.extensions.io.readTextFile(overwolf.extensions.io.enums.StorageSpace.appData,"hal9000\\loxg.txt",console.log)
-    let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.json`);
+    let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
+    if (fileData == null){
+      document.getElementById("test_message").innerHTML += "Couldnt collect info from game_data.json (sendMessageToLauncher)";
+      return;
+    }
     //let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\Log\\Apps\\RageQuit.NM\\game_data.json`);
     let killDeath = JSON.parse(fileData);
 
@@ -75,7 +79,11 @@ class BackgroundController {
 
     //let randNum:number = this._pickRandomNumWithinObjectSize(messageObject);
 
-    let result = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\Messages.txt`);
+    let result = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\messages.txt`);
+    if (result == null){
+      document.getElementById("test_message").innerHTML += "Couldnt collect info from Messages.txt (sendMessageToLauncher)";
+      return;
+    }
     let messageObject:string[] = this._buildMessageObject(result);
    
     this.mainWindowObject = overwolf.windows.getMainWindow();
@@ -102,10 +110,15 @@ class BackgroundController {
 
   //Called when a games ends. Sends all data in game_data.json, along with a cellnum and a timeStamp to /upload-game-data
   private async sendGameInfoToRemote(){
-    let fileData = await this.readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\game_data.json`);
+    let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
+    if (fileData == null){
+      document.getElementById("test_message").innerHTML += "Couldnt collect info from game_data.json (sendGameInfoToRemote)";
+      return;
+    }
     let gameData = JSON.parse(fileData);
 
-    let cellNum = "5551234"
+    let cellNumUnparsed = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+    let cellNum = JSON.parse(cellNumUnparsed)["cellNum"];
     gameData["cellNum"] = cellNum;
     gameData["timeStampTime"] = new Date().toLocaleTimeString();
     gameData["timeStampDay"] = new Date().toDateString();

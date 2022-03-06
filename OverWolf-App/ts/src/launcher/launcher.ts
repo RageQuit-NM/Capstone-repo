@@ -15,16 +15,18 @@ class Launcher extends AppWindow {
         overwolf.windows.getMainWindow().document.getElementById("attributes").setAttribute('listener', 'true');
        
         (document.getElementById("parent_portal_link") as HTMLAnchorElement).href="http://" + this.remoteAddress + ":5000/parentPortal";
-        document.getElementById("cellInput").addEventListener("change", this.setCellNum);
-        document.getElementById("poo").addEventListener("click", this.submitCellNum);
+        //document.getElementById("cellInput").addEventListener("change", this.setCellNum);
+        document.getElementById("submitCellNum").addEventListener("click", this.submitCellNum);
 
 
         //if cell num has been entered
         if(!this.checkCellNum()){
           this.isCellNumSet = false;
           this.initalize();
+          let checkCellNumInterval = setInterval(this.checkCellNum, 1000*1);
         }
         else{
+        document.getElementById("initalization").style.display = "none";
         this.isCellNumSet = true;
         this.collectPreferences();
         this.setContent();
@@ -35,6 +37,18 @@ class Launcher extends AppWindow {
       }
     }
 
+    public endIntialization(){
+      if (this.checkCellNum){
+        document.getElementById("main").style.display = "inherit";
+        document.getElementById("initalization").style.display = "none";
+        this.isCellNumSet = true;
+        this.collectPreferences();
+        this.setContent();
+
+        setInterval(this.checkBedtime, 1000*2);
+        setInterval(this.collectPreferences, 1000*2);
+      }
+    }
     public async checkCellNum(){
       if (await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`) == null){
         return false;
@@ -60,12 +74,11 @@ class Launcher extends AppWindow {
 
     //Called once to build the class
     public async run() {
-      //this.testFunction();
     }
-    public setCellNum(){    //Shouldnt set cellNum completely without the submit button!! this fucniton should probs do nohting and th submit does everything
-      // let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
-      // Launcher.instance()._writeFile(JSON.stringify(myData),  `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
-    }
+    // public setCellNum(){    //Shouldnt set cellNum completely without the submit button!! this fucniton should probs do nohting and th submit does everything
+    //   // let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
+    //   // Launcher.instance()._writeFile(JSON.stringify(myData),  `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+    // }
 
     public async submitCellNum(){
       let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
