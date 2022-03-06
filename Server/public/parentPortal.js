@@ -109,6 +109,15 @@ function buildStats(statistics) {
   getWinLossRatio(statistics).then(
     function(winLossRatio) { 
       document.getElementById("test").innerHTML = "WLR = " + winLossRatio;
+      if(winLossRatio >= 1) {
+        //clear existing classes
+        var classList = document.getElementById("wlRatioBar").classList;
+        while (classList.length > 0) { classList.remove(classList.item(0));}
+
+        //add correct classes and style
+        document.getElementById("wlRatioBar").classList.add("bg-success");
+        document.getElementById("wlRatioBar").style.width = "100%"
+      }
     }
   );
 
