@@ -79,10 +79,10 @@ async function getWinLossRatio(statistics) {
     document.getElementById("test").innerHTML = JSON.stringify(statistics);
     for (let i=0; i<statistics.length; i++) {
       document.getElementById("test_response").innerHTML += "looping-" + i;
-      if (statistics[key].hasOwnProperty("win")) {
+      if (statistics[i].hasOwnProperty("win")) {
         console.log("loop entered");
         document.getElementById("test_response").innerHTML += "does have property-";
-          if (statistics[key].win == "true") {
+          if (statistics[i].win == "true") {
             wins ++;
             console.log("win counted");
           } else {
