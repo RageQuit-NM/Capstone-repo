@@ -78,7 +78,7 @@ async function getWinLossRatio(statistics) {
     let losses = 0;
     document.getElementById("test").innerHTML = statistics;
     for (let i=0; i<statistics.length; i++) {
-      document.getElementById("test_response").innerHTML += statistics[i];
+      document.getElementById("test_response").innerHTML += statistics[i] + "\n";
       if (statistics[i].hasOwnProperty("win")) {
         console.log("loop entered");
         document.getElementById("test_response").innerHTML += "does have property-";
@@ -90,7 +90,7 @@ async function getWinLossRatio(statistics) {
             console.log("loss counted");
           }
       }
-      document.getElementById("test_response").innerHTML += "NO property-";
+      // document.getElementById("test_response").innerHTML += "NO property-";
     }
     let winLossR = 0;
     if (losses !=0) {
