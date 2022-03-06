@@ -78,7 +78,7 @@ async function getWinLossRatio(statistics) {
     let losses = 0;
     for (let i=0; i<statistics.length; i++) {
       document.getElementById("test_response").innerHTML += "looping-";
-      if (statistics.hasOwnProperty("win")) {
+      if (statistics[i].hasOwnProperty("win")) {
         console.log("loop entered");
         document.getElementById("test_response").innerHTML += "does have property-";
           if (statistics[key].win == "true") {
