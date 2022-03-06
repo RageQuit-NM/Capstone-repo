@@ -76,8 +76,9 @@ async function getWinLossRatio(statistics) {
   let winLossRatioPromise = new Promise(function(resolve, reject) {
     let wins = 0;
     let losses = 0;
+    document.getElementById("test").innerHTML = JSON.stringify(statistics);
     for (let i=0; i<statistics.length; i++) {
-      document.getElementById("test_response").innerHTML += "looping-";
+      document.getElementById("test_response").innerHTML += "looping-" + i;
       if (statistics[i].hasOwnProperty("win")) {
         console.log("loop entered");
         document.getElementById("test_response").innerHTML += "does have property-";
@@ -109,7 +110,7 @@ async function getWinLossRatio(statistics) {
 function buildStats(statistics) {
   getWinLossRatio(statistics).then(
     function(winLossRatio) { 
-      document.getElementById("test").innerHTML = "WLR = " + winLossRatio;
+      // document.getElementById("test").innerHTML = "WLR = " + winLossRatio;
     }
   );
 
