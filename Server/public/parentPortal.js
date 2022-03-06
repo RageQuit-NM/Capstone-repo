@@ -109,7 +109,7 @@ async function getWinLossRatio(statistics) {
 function buildStats(statistics) {
   getWinLossRatio(statistics).then(
     function(winLossRatio) { 
-      document.getElementById("test_response").innerHTML = "WLR = " + winLossRatio;
+      document.getElementById("test").innerHTML = "WLR = " + winLossRatio;
     }
   );
 
