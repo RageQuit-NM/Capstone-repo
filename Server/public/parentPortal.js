@@ -74,36 +74,36 @@ if(checkCookie()){
 //returns the win loss ratio
 async function getWinLossRatio(statistics) {
   let winLossRatioPromise = new Promise(function(resolve, reject) {
-    resolve("I love You !!");
-  });
-  let wins = 0;
-  let losses = 0;
-  for (let i=0; i<statistics.length; i++) {
-    document.getElementById("test_response").innerHTML += "looping-";
-    if (statistics.hasOwnProperty("win")) {
-      console.log("loop entered");
-      document.getElementById("test_response").innerHTML += "does have property-";
-        if (statistics[key].win == "true") {
-          wins ++;
-          console.log("win counted");
-        } else {
-          losses ++;
-          console.log("loss counted");
-        }
+    let wins = 0;
+    let losses = 0;
+    for (let i=0; i<statistics.length; i++) {
+      document.getElementById("test_response").innerHTML += "looping-";
+      if (statistics.hasOwnProperty("win")) {
+        console.log("loop entered");
+        document.getElementById("test_response").innerHTML += "does have property-";
+          if (statistics[key].win == "true") {
+            wins ++;
+            console.log("win counted");
+          } else {
+            losses ++;
+            console.log("loss counted");
+          }
+      }
+      document.getElementById("test_response").innerHTML += "NO property-";
     }
-    document.getElementById("test_response").innerHTML += "NO property-";
-  }
-  let winLossR = 0;
-  if (losses !=0) {
-    winLossR = wins/losses;
-  } else if (wins > 0){
-    winLossR = 1;
-  } else {
-    winLossR = 0;
-  }
-  console.log("wins: " + wins + " losses: " + losses + " win/loss: " + winLossR);
-  resolve(winLossR);
+    let winLossR = 0;
+    if (losses !=0) {
+      winLossR = wins/losses;
+    } else if (wins > 0){
+      winLossR = 1;
+    } else {
+      winLossR = 0;
+    }
+    console.log("wins: " + wins + " losses: " + losses + " win/loss: " + winLossR);
+    resolve(winLossR);
+    });
 
+    return await winLossRatioPromise;
 }
 
 function buildStats(statistics) {
