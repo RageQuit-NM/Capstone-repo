@@ -71,13 +71,11 @@ if(checkCookie()){
   document.getElementById("test").innerHTML = "cookie not set: " + document.cookie;
 }
 
-
-function buildStats(statistics) {
-  
-  
-  // document.getElementById("test").innerHTML += "4" + JSON.stringify(statistics);
-
-  //---------------------------------------TEST WITH NEW DATABSE ENTRIES__________________________________&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//returns the win loss ratio
+async function getWinLossRatio(statistics) {
+  let winLossRatioPromise = new Promise(function(resolve, reject) {
+    resolve("I love You !!");
+  });
   let wins = 0;
   let losses = 0;
   for (let i=0; i<statistics.length; i++) {
@@ -104,15 +102,19 @@ function buildStats(statistics) {
     winLossR = 0;
   }
   console.log("wins: " + wins + " losses: " + losses + " win/loss: " + winLossR);
-  document.getElementById("test_response").innerHTML = "wins = " + wins + " lossess = " + losses + " winLossR = " + winLossR;
-
-  //---------------------------------------TEST WITH NEW DATABSE ENTRIES__________________________________&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
-  
-
+  resolve(winLossR);
 
 }
 
+function buildStats(statistics) {
+  getWinLossRatio(statistics).then(
+    function(winLossR) { 
+      document.getElementById("test_response").innerHTML = "WLR = " + winLossR;
+    }
+  );
+
+
+}
 
 
 
