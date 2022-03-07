@@ -23,7 +23,7 @@ class Launcher extends AppWindow {
 
     public async endIntialization(){
       if(await Launcher.instance().checkCellNum()){
-        document.getElementById("test_message").innerHTML += "_Phone number entered: result is: " + await Launcher.instance().checkCellNum() + "___";
+        document.getElementById("test_message").innerHTML += " (shuldnt see this more than once. id of interval is: "+Launcher.instance().endIntializationIntervalId+") Phone number entered: " + await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`); + " ";
         document.getElementById("main").style.display = "inherit";
         document.getElementById("cellDisplay").style.display = "inherit";
         document.getElementById("initalization").style.display = "none";
@@ -33,7 +33,7 @@ class Launcher extends AppWindow {
 
         //This code can be run without the first time intialization running, Everything inside here will only run after a first time intialization
         if(Launcher.instance().endIntializationIntervalId != null){
-          document.getElementById("test_message1").innerHTML += " Ending first time intialization! ";
+          document.getElementById("test_message").innerHTML += " Ending first time intialization! ";
           let result = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
           var sendData = {cellNum:JSON.parse(result)["cellNum"]};
 
@@ -56,7 +56,7 @@ class Launcher extends AppWindow {
         setInterval(Launcher.instance().checkBedtime, 1000*2);
         setInterval(Launcher.instance().collectPreferences, 1000*2);
 
-        let cellNum = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`)
+        let cellNum = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
         document.getElementById("cellDisplay").innerHTML = cellNum;
       }
     }
@@ -87,15 +87,18 @@ class Launcher extends AppWindow {
     //Called once to build the class
     public async run() {
       //if cell num has been entered
-      if(await Launcher.instance().checkCellNum()){
-        //document.getElementById("test_message").innerHTML += "Skipping first insialize " + await Launcher.instance().checkCellNum() + "___";
-        Launcher.instance().endIntialization();
-      }
-      else{
-        document.getElementById("test_message").innerHTML += "Perfoming first intialize ";
-        Launcher.instance().isCellNumSet = false;
-        Launcher.instance().initalize();
-        Launcher.instance().endIntializationIntervalId = setInterval(Launcher.instance().endIntialization, 1000*1);
+      if(overwolf.windows.getMainWindow().document.getElementById("attributes").getAttribute('firstCellCheck') != 'true'){
+        overwolf.windows.getMainWindow().document.getElementById("attributes").setAttribute('firstCellCheck', 'true');
+        if(await Launcher.instance().checkCellNum()){
+          //document.getElementById("test_message").innerHTML += "Skipping first insialize " + await Launcher.instance().checkCellNum() + "___";
+          Launcher.instance().endIntialization();
+        }
+        else{
+          document.getElementById("test_message").innerHTML += "Perfoming first intialize ";
+          Launcher.instance().isCellNumSet = false;
+          Launcher.instance().initalize();
+          Launcher.instance().endIntializationIntervalId = setInterval(Launcher.instance().endIntialization, 1000*1);
+        }
       }
     }
     // public setCellNum(){    //Shouldnt set cellNum completely without the submit button!! this fucniton should probs do nohting and th submit does everything
