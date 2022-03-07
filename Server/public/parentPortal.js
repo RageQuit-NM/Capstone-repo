@@ -82,8 +82,6 @@ async function getWinLossRatio(statistics) {
     for (let i=0; i<parsed.length; i++) {
       document.getElementById("test_response").innerHTML += statistics[i] + "\n";
       if (parsed[i].hasOwnProperty("win")) {
-        console.log("loop entered");
-        document.getElementById("test_response").innerHTML += "does have property-";
           if (parsed[i].win == "true") {
             wins ++;
           } else {
@@ -99,7 +97,6 @@ async function getWinLossRatio(statistics) {
     } else {
       winLossR = 0;
     }
-    console.log("wlr = " + winLossR);
     resolve(winLossR);
     });
     return await winLossRatioPromise;
@@ -167,6 +164,7 @@ function buildStats(statistics) {
         document.getElementById("wlRatioBar").classList.add("bg-danger");
         document.getElementById("wlRatioBar").style.width = "10%";
       }
+      document.getElementById("wlRatioBarWrapper").title = winLossRatio;
     }
   );
 
@@ -196,6 +194,7 @@ function buildStats(statistics) {
         document.getElementById("kdRatioBar").classList.add("bg-danger");
         document.getElementById("kdRatioBar").style.width = "10%";
       }
+      document.getElementById("kdRatioBarWrapper").title = killDeathRatio;
     }
   );
 
