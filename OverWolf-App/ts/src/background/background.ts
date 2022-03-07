@@ -61,11 +61,13 @@ class BackgroundController {
   private async sendMessageToLauncher(){
     let negativeKD:boolean = false;//--------------------Change to a single variable------------------------||
     let positiveKD:boolean = false;//-----------------------------------------------------------------------||
-    //overwolf.extensions.io.readTextFile(overwolf.extensions.io.enums.StorageSpace.appData,"hal9000\\loxg.txt",console.log)
+
+
+    //If game hasent run we will show Welcome Back too!! refactor for this
     let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
     if (fileData == null){
-      document.getElementById("test_message").innerHTML += "Couldnt collect info from game_data.json (sendMessageToLauncher)";
-      document.getElementById("primary_message").innerHTML = "Background has poor programming and cant run send message to launcher without some game_dat yet";
+      //document.getElementById("test_message").innerHTML += "Couldnt collect info from game_data.json (sendMessageToLauncher)";
+      document.getElementById("primary_message").innerHTML = "Welcome back!";
       return;
     }
     //let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\Log\\Apps\\RageQuit.NM\\game_data.json`);

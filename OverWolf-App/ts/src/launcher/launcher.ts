@@ -22,7 +22,6 @@ class Launcher extends AppWindow {
     }
 
     public async endIntialization(){
-      document.getElementById("test_message").innerHTML += "endItialization ";
       if(await Launcher.instance().checkCellNum()){
         document.getElementById("test_message").innerHTML += "_Phone number entered: result is: " + await Launcher.instance().checkCellNum() + "___";
         document.getElementById("main").style.display = "inherit";
@@ -35,7 +34,27 @@ class Launcher extends AppWindow {
         setInterval(Launcher.instance().checkBedtime, 1000*2);
         setInterval(Launcher.instance().collectPreferences, 1000*2);
 
+        //This code can be run without the first time intialization running, Everything inside here will only run after a first time intialization
         if(Launcher.instance().endIntializationIntervalId != null){
+          document.getElementById("test_message1").innerHTML += " Ending first time intialization! ";
+          let result = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+          var sendData = {cellNum:JSON.parse(result)["cellNum"]};
+
+          let serverAction = "insert-cellNum";
+          let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
+          var xmlHttp = new XMLHttpRequest();
+          xmlHttp.open("POST", remoteServer, true);
+          xmlHttp.setRequestHeader('Content-Type', 'application/json');
+          xmlHttp.send(JSON.stringify(sendData));
+
+          xmlHttp.onreadystatechange = function () {
+            if (this.readyState != 4) return;
+            if (this.status == 200) {
+              var parsed = JSON.parse(this.responseText);
+              //Launcher.instance().bedTime = parsed["bedTimeRule"]; //---------------------------Set all of parsed not only bedTimeRule----------------||
+              Launcher.instance().parentPreferenes = parsed;
+            }
+          };
           clearInterval(Launcher.instance().endIntializationIntervalId);
         }
 
@@ -46,10 +65,8 @@ class Launcher extends AppWindow {
     public async checkCellNum(){
       let cellNum = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`)
       if (cellNum == null){
-        document.getElementById("test_message").innerHTML += "Not set ";
         return false;
       }else{
-        document.getElementById("test_message").innerHTML += "Set! ";
         return true;
       }
     }
@@ -71,10 +88,9 @@ class Launcher extends AppWindow {
 
     //Called once to build the class
     public async run() {
-      document.getElementById("test_message").innerHTML += "Running ";
       //if cell num has been entered
       if(await Launcher.instance().checkCellNum()){
-        document.getElementById("test_message").innerHTML += "Skipping first insialize " + await Launcher.instance().checkCellNum() + "___";
+        //document.getElementById("test_message").innerHTML += "Skipping first insialize " + await Launcher.instance().checkCellNum() + "___";
         Launcher.instance().endIntialization();
       }
       else{
@@ -196,6 +212,7 @@ class Launcher extends AppWindow {
 
     //Collect parental preferences at an interval
     private async collectPreferences(){
+      document.getElementById("test_message3").innerHTML = "Collecting preferneces" + new Date();
       let result = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
       if(result == null){
         if (document.getElementById("test_message2").innerHTML.indexOf("cell_number.json does not exist") == -1){
@@ -205,7 +222,7 @@ class Launcher extends AppWindow {
       }
       var sendData = {cellNum:JSON.parse(result)["cellNum"]};
       if (document.getElementById("test_message").innerHTML.indexOf(JSON.stringify(sendData)) == -1){
-        document.getElementById("test_message").innerHTML += "sneding cell num " + JSON.stringify(sendData);
+        document.getElementById("test_message").innerHTML += " CellNum: " + JSON.stringify(sendData);
       }
 
       let serverAction = "get-settings";
