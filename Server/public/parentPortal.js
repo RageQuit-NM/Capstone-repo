@@ -71,7 +71,7 @@ if(checkCookie()){
 
 
 
-
+//_____ASYNC_FUNCTIONS_FOR_CALCULATING_STATISTICS__________________________________________________________________________________________________________________
 //Async function for calculating win/loss ratio
 async function getWinLossRatio(statistics) {
   let winLossRatioPromise = new Promise(function(resolve, reject) {
