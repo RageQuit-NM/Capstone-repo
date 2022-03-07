@@ -164,7 +164,7 @@ function buildStats(statistics) {
         document.getElementById("wlRatioBar").classList.add("bg-danger");
         document.getElementById("wlRatioBar").style.width = "10%";
       }
-      document.getElementById("wlRatioBarWrapper").title = winLossRatio;
+      document.getElementById("wlRatioBarWrapper").title = winLossRatio.toString;
     }
   );
 
@@ -194,7 +194,7 @@ function buildStats(statistics) {
         document.getElementById("kdRatioBar").classList.add("bg-danger");
         document.getElementById("kdRatioBar").style.width = "10%";
       }
-      document.getElementById("kdRatioBarWrapper").title = killDeathRatio;
+      document.getElementById("kdRatioBarWrapper").title = killDeathRatio.toString();
     }
   );
 
