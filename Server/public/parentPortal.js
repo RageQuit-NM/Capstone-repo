@@ -109,14 +109,37 @@ function buildStats(statistics) {
   getWinLossRatio(statistics).then(
     function(winLossRatio) { 
       document.getElementById("test").innerHTML = "WLR = " + winLossRatio;
-      if(winLossRatio >= 1) {
-        //clear existing classes
-        var classList = document.getElementById("wlRatioBar").classList;
-        while (classList.length > 0) { classList.remove(classList.item(0));}
+      
+      //clear existing classes
+      var classList = document.getElementById("wlRatioBar").classList;
+      while (classList.length > 0) { classList.remove(classList.item(0));}
 
-        //add correct classes and style
+
+
+      winLossRatio = 0.77777777;
+      //Apply correct new classes and styling
+      let percent = 0;
+      if(winLossRatio >= 1) {
         document.getElementById("wlRatioBar").classList.add("bg-success");
         document.getElementById("wlRatioBar").style.width = "100%";
+      } else if (winLossRatio > 0) {
+        percent = winLossRatio * 100;
+        if (winLossRatio > 0.6) {  
+          document.getElementById("wlRatioBar").classList.add("bg-success");
+          document.getElementById("wlRatioBar").style.width = percent.toString() + "%";
+        }
+        if (winLossRatio > 0.4) {  
+          document.getElementById("wlRatioBar").classList.add("bg-warning");
+          document.getElementById("wlRatioBar").style.width = percent.toString() + "%";
+        }
+        if (winLossRatio > 0.1) {  
+          document.getElementById("wlRatioBar").classList.add("bg-danger");
+          document.getElementById("wlRatioBar").style.width = percent.toString() + "%";
+        }
+      }
+      else {
+        document.getElementById("wlRatioBar").classList.add("bg-danger");
+        document.getElementById("wlRatioBar").style.width = "10%";
       }
     }
   );
