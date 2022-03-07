@@ -3,13 +3,7 @@ var remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
 //listener for parent preference submission
 document.getElementById("parent_control_submit").addEventListener("click", parentFormHandler);
 
-
-//Enable tooltips
-var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-  return new bootstrap.Tooltip(tooltipTriggerEl)
-})
-
+createToolTips();
 
 //if the cellNum cookie is set then populate the parent portal with corresponding data from server
 if(checkCookie()){
@@ -66,6 +60,17 @@ if(checkCookie()){
 //If the cellNum cookie is not set, do not populate page.
 }else{
   document.getElementById("test").innerHTML = "cookie not set: " + document.cookie;
+}
+
+
+
+
+//Enable tooltips
+function createToolTips() {
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
 }
 
 
@@ -164,7 +169,8 @@ function buildStats(statistics) {
         document.getElementById("wlRatioBar").classList.add("bg-danger");
         document.getElementById("wlRatioBar").style.width = "10%";
       }
-     //document.getElementById("wlRatioBarColumn").title = "test";
+      document.getElementById("wlRatioBarColumn").title = "test";
+      createToolTips();
     }
   );
 
@@ -194,7 +200,8 @@ function buildStats(statistics) {
         document.getElementById("kdRatioBar").classList.add("bg-danger");
         document.getElementById("kdRatioBar").style.width = "10%";
       }
-     // document.getElementById("kdRatioBarColumn").title = killDeathRatio.toString();
+      document.getElementById("kdRatioBarColumn").title = killDeathRatio.toString();
+      createToolTips();
     }
   );
 
