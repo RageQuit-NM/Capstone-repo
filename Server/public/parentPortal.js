@@ -68,13 +68,17 @@ if(checkCookie()){
   document.getElementById("test").innerHTML = "cookie not set: " + document.cookie;
 }
 
-//returns the win loss ratio
+
+
+
+
+//Async function for calculating win/loss ratio
 async function getWinLossRatio(statistics) {
-  let winLossRatioPromise = new Promise(function(resolve, reject) {
+  let winLossPromise = new Promise(function(resolve, reject) {
     let wins = 0;
     let losses = 0;
     let parsed = JSON.parse(statistics);
-    //document.getElementById("test").innerHTML = statistics;
+
     for (let i=0; i<parsed.length; i++) {
       document.getElementById("test_response").innerHTML += statistics[i] + "\n";
       if (parsed[i].hasOwnProperty("win")) {
@@ -82,13 +86,10 @@ async function getWinLossRatio(statistics) {
         document.getElementById("test_response").innerHTML += "does have property-";
           if (parsed[i].win == "true") {
             wins ++;
-            console.log("win counted");
           } else {
             losses ++;
-            console.log("loss counted");
           }
       }
-      // document.getElementById("test_response").innerHTML += "NO property-";
     }
     let winLossR = 0;
     if (losses !=0) {
@@ -98,25 +99,56 @@ async function getWinLossRatio(statistics) {
     } else {
       winLossR = 0;
     }
-    // console.log("wins: " + wins + " losses: " + losses + " win/loss: " + winLossR);
     resolve(winLossR);
     });
 
     return await winLossRatioPromise;
 }
 
+
+//Async function for calculating kill/death ratio
+async function getKillDeathRatio(statistics) {
+  let killDeathRatioPromise = new Promise(function(resolve, reject) {
+    let kills = 0;
+    let deaths = 0;
+    let parsed = JSON.parse(statistics);
+
+    for (let i=0; i<parsed.length; i++) {
+      document.getElementById("test_response").innerHTML += statistics[i] + "\n";
+      if (parsed[i].hasOwnProperty("kills")) {
+        kills += parseInt(statistics[i]["kills"]);
+      }
+      if (parsed[i].hasOwnProperty("deaths")) {
+        deaths += parseInt(statistics[i]["deaths"]);
+      }
+    }
+
+    let killDeathR = 0;
+    if (deaths !=0) {
+      killDeathR = kills/deaths;
+    } else if (kills > 0){
+      killDeathR = 1;
+    } else {
+      killDeathR = 0;
+    }
+    console.log("kills: " + kills + " deaths: " + deaths + " kill/death: " + killDeathR);
+    resolve(killDeathR);
+    });
+
+    return await killDeathRatioPromise;
+}
+
+
+
+
 function buildStats(statistics) {
+  //Populate the win loss ratio progress bar
   getWinLossRatio(statistics).then(
     function(winLossRatio) { 
-      document.getElementById("test").innerHTML = "WLR = " + winLossRatio;
-      
       //clear existing classes
       var classList = document.getElementById("wlRatioBar").classList;
       while (classList.length > 0) { classList.remove(classList.item(0));}
 
-
-
-      winLossRatio = 0.05;
       //Apply correct new classes and styling
       let percent = 0;
       if(winLossRatio >= 1) {
@@ -138,6 +170,37 @@ function buildStats(statistics) {
       }
     }
   );
+
+
+  getKillDeathRatio(statistics).then(
+    function(killDeathRatio) { 
+      //clear existing classes
+      var classList = document.getElementById("kdRatioBar").classList;
+      while (classList.length > 0) { classList.remove(classList.item(0));}
+
+      //Apply correct new classes and styling
+      let percent = 0;
+      if(killDeathRatio >= 1) {
+        document.getElementById("kdRatioBar").classList.add("bg-success");
+        document.getElementById("kdRatioBar").style.width = "100%";
+      } else if (killDeathRatio > 0.1) {
+        percent = killDeathRatio * 100;
+        if (killDeathRatio > 0.6) {  
+          document.getElementById("kdRatioBar").classList.add("bg-success");
+        } else if (killDeathRatio > 0.4) {  
+          document.getElementById("kdRatioBar").classList.add("bg-warning");
+        } else if (killDeathRatio > 0.1) {  
+          document.getElementById("kdRatioBar").classList.add("bg-danger");
+        }
+        document.getElementById("kdRatioBar").style.width = percent.toString() + "%";
+      } else {
+        document.getElementById("kdRatioBar").classList.add("bg-danger");
+        document.getElementById("kdRatioBar").style.width = "10%";
+      }
+    }
+  );
+
+  
 
 
 }
