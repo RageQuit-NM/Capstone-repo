@@ -164,7 +164,7 @@ function buildStats(statistics) {
         document.getElementById("wlRatioBar").classList.add("bg-danger");
         document.getElementById("wlRatioBar").style.width = "10%";
       }
-      document.getElementById("wlRatioBarWrapper").title = winLossRatio.toString;
+      document.getElementById("wlRatioBarWrapper").title = "test";
     }
   );
 
