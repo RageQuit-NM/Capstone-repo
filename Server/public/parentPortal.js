@@ -3,6 +3,7 @@ var remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
 //listener for parent preference submission
 document.getElementById("parent_control_submit").addEventListener("click", parentFormHandler);
 
+//Initialize tooltips
 createToolTips();
 
 //if the cellNum cookie is set then populate the parent portal with corresponding data from server
@@ -65,7 +66,7 @@ if(checkCookie()){
 
 
 
-//Enable tooltips
+//Re loads all tooltips to reflect current relevant properties, must run this for a change to be applied
 function createToolTips() {
   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
   var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -133,7 +134,6 @@ async function getKillDeathRatio(statistics) {
     } else {
       killDeathR = 0;
     }
-    console.log("kills: " + kills + " deaths: " + deaths + " kill/death: " + killDeathR);
     resolve(killDeathR);
     });
     return await killDeathRatioPromise;
@@ -169,7 +169,7 @@ function buildStats(statistics) {
         document.getElementById("wlRatioBar").classList.add("bg-danger");
         document.getElementById("wlRatioBar").style.width = "10%";
       }
-      document.getElementById("wlRatioBarColumn").title = "test";
+      document.getElementById("wlRatioBarColumn").title = winLossRatio.toString();
       createToolTips();
     }
   );
