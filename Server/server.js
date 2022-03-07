@@ -37,13 +37,17 @@ app.get('/parentPortal', function(req, res){
 app.post('/get-settings', async function(req, res){
   var query = {cellNum: req.body["cellNum"]};
   var result;
-
+  console.log("searching for: " + query);
   try {
     result = await findOne(query);
   } catch (error){
     console.log(error);
   }
-  console.log("Returing parentPortal settings. id: "+ JSON.stringify(result["_id"]) + " cellNum: " + JSON.stringify(result["cellNum"]));
+  if(result == null){
+    console.log("there was an error");
+  }else{
+    console.log("Returing parentPortal settings. id: "+ JSON.stringify(result["_id"]) + " cellNum: " + JSON.stringify(result["cellNum"]));
+  }
   res.send(JSON.stringify(result));
 });
 
