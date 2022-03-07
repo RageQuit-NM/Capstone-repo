@@ -116,7 +116,7 @@ function buildStats(statistics) {
 
 
 
-      winLossRatio = 0.444;
+      winLossRatio = 0.05;
       //Apply correct new classes and styling
       let percent = 0;
       if(winLossRatio >= 1) {
