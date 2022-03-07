@@ -51,8 +51,7 @@ class Launcher extends AppWindow {
             if (this.readyState != 4) return;
             if (this.status == 200) {
               var parsed = JSON.parse(this.responseText);
-              //Launcher.instance().bedTime = parsed["bedTimeRule"]; //---------------------------Set all of parsed not only bedTimeRule----------------||
-              Launcher.instance().parentPreferenes = parsed;
+              document.getElementById("test_message2").innerHTML += " Response = parsed";
             }
           };
           clearInterval(Launcher.instance().endIntializationIntervalId);
