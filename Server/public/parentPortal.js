@@ -102,7 +102,6 @@ async function getWinLossRatio(statistics) {
     console.log("wlr = " + winLossR);
     resolve(winLossR);
     });
-
     return await winLossRatioPromise;
 }
 
@@ -135,7 +134,6 @@ async function getKillDeathRatio(statistics) {
     console.log("kills: " + kills + " deaths: " + deaths + " kill/death: " + killDeathR);
     resolve(killDeathR);
     });
-
     return await killDeathRatioPromise;
 }
 
