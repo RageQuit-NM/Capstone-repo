@@ -74,7 +74,7 @@ if(checkCookie()){
 
 //Async function for calculating win/loss ratio
 async function getWinLossRatio(statistics) {
-  let winLossPromise = new Promise(function(resolve, reject) {
+  let winLossRatioPromise = new Promise(function(resolve, reject) {
     let wins = 0;
     let losses = 0;
     let parsed = JSON.parse(statistics);
