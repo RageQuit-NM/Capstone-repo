@@ -201,6 +201,7 @@ function buildStats(statistics) {
         document.getElementById("kdRatioBar").classList.add("bg-danger");
         document.getElementById("kdRatioBar").style.width = "10%";
       }
+      document.getElementById("kdRatioBar").innerHTML = killDeathRatio.toString() + " kills/death";
       document.getElementById("kdRatioBarColumn").title = killDeathRatio.toString() + " kills/death";
       createToolTips();
     }
