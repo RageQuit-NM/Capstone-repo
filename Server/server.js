@@ -37,7 +37,7 @@ app.get('/parentPortal', function(req, res){
 app.post('/get-settings', async function(req, res){
   var query = {cellNum: req.body["cellNum"]};
   var result;
-  console.log("searching for: " + query);
+  console.log("searching for: " + JSON.stringify(query));
   try {
     result = await findOne(query);
   } catch (error){
