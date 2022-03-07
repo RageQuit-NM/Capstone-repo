@@ -126,16 +126,12 @@ function buildStats(statistics) {
         percent = winLossRatio * 100;
         if (winLossRatio > 0.6) {  
           document.getElementById("wlRatioBar").classList.add("bg-success");
-          document.getElementById("wlRatioBar").style.width = percent.toString() + "%";
-        }
-        if (winLossRatio > 0.4) {  
+        } else if (winLossRatio > 0.4) {  
           document.getElementById("wlRatioBar").classList.add("bg-warning");
-          document.getElementById("wlRatioBar").style.width = percent.toString() + "%";
-        }
-        if (winLossRatio > 0.1) {  
+        } else if (winLossRatio > 0.1) {  
           document.getElementById("wlRatioBar").classList.add("bg-danger");
-          document.getElementById("wlRatioBar").style.width = percent.toString() + "%";
         }
+        document.getElementById("wlRatioBar").style.width = percent.toString() + "%";
       }
       else {
         document.getElementById("wlRatioBar").classList.add("bg-danger");
