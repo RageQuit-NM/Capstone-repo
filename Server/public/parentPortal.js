@@ -170,6 +170,7 @@ function buildStats(statistics) {
         document.getElementById("wlRatioBar").classList.add("bg-danger");
         document.getElementById("wlRatioBar").style.width = "10%";
       }
+      document.getElementById("wlRatioBar").innerHTML = winLossRatio.toString() + " wins/loss";
       document.getElementById("wlRatioBarColumn").title = winLossRatio.toString() + " wins/loss";
       createToolTips();
     }
