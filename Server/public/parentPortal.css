@@ -10,14 +10,30 @@
 }
 
 .progress {
+  position: relative;
   height: 16px;
 }
 
 .progress-bar {
   width: 50%;
   height: 16px;
-  text-align: center;
+  z-index: 1;
+  position: absolute;
 }
+
+.progress-bar span {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  /*color: black; /* Change according to needs */
+  text-align: center;
+  width: 100%;
+}
+
+
+
+
+
 
 .stats-container {
   background-color: #456475;
