@@ -99,6 +99,7 @@ async function getWinLossRatio(statistics) {
     } else {
       winLossR = 0;
     }
+    console.log("wlr = " + winLossR);
     resolve(winLossR);
     });
 
@@ -114,12 +115,12 @@ async function getKillDeathRatio(statistics) {
     let parsed = JSON.parse(statistics);
 
     for (let i=0; i<parsed.length; i++) {
-      document.getElementById("test_response").innerHTML += statistics[i] + "\n";
+      document.getElementById("test_response").innerHTML += parsed[i] + "\n";
       if (parsed[i].hasOwnProperty("kills")) {
-        kills += parseInt(statistics[i]["kills"]);
+        kills += parseInt(parsed[i]["kills"]);
       }
       if (parsed[i].hasOwnProperty("deaths")) {
-        deaths += parseInt(statistics[i]["deaths"]);
+        deaths += parseInt(parsed[i]["deaths"]);
       }
     }
 
