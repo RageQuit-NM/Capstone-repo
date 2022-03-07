@@ -144,7 +144,7 @@ async function getKillDeathRatio(statistics) {
 
 function buildStats(statistics) {
   //Populate the win loss ratio progress bar
-  console.log(parse(statistics));
+  console.log(JSON.parse(statistics));
   getWinLossRatio(statistics).then(
     function(winLossRatio) { 
       //clear existing classes
