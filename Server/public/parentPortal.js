@@ -135,7 +135,7 @@ function buildStats(statistics) {
       }
       else {
         document.getElementById("wlRatioBar").classList.add("bg-danger");
-        document.getElementById("wlRatioBar").style.width = "10%";
+        document.getElementById("wlRatioBar").style.width = "20%";
       }
     }
   );
