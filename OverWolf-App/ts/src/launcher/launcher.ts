@@ -31,9 +31,6 @@ class Launcher extends AppWindow {
         Launcher.instance().collectPreferences();
         Launcher.instance().setContent();
 
-        setInterval(Launcher.instance().checkBedtime, 1000*2);
-        setInterval(Launcher.instance().collectPreferences, 1000*2);
-
         //This code can be run without the first time intialization running, Everything inside here will only run after a first time intialization
         if(Launcher.instance().endIntializationIntervalId != null){
           document.getElementById("test_message1").innerHTML += " Ending first time intialization! ";
@@ -56,6 +53,8 @@ class Launcher extends AppWindow {
           };
           clearInterval(Launcher.instance().endIntializationIntervalId);
         }
+        setInterval(Launcher.instance().checkBedtime, 1000*2);
+        setInterval(Launcher.instance().collectPreferences, 1000*2);
 
         let cellNum = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`)
         document.getElementById("cellDisplay").innerHTML = cellNum;
