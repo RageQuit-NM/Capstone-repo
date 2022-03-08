@@ -108,3 +108,22 @@ body {
   padding-right: 15%;
   padding-top: 5%;
 }
+
+#submitCellNum {
+  font-family: "Roboto Mono", sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 22px;
+  color: #81BADB;
+  display: inline-block;
+  flex: 1 1 20%;
+  margin-top: 1.75%;
+}
+
+#cellNumText{
+  font-style: normal;
+  font-weight: normal;
+  font-size: 28px;
+  color: #24343D;
+  text-align: center;
+}
