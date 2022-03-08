@@ -15,8 +15,8 @@ class Launcher extends AppWindow {
         overwolf.windows.getMainWindow().document.getElementById("attributes").setAttribute('listener', 'true');
        
         (document.getElementById("parent_portal_link") as HTMLAnchorElement).href="http://" + this.remoteAddress + ":5000/parentPortal";
-        document.getElementById("cellInput").addEventListener("change", this.testFunction);
-        document.getElementById("poo").addEventListener("click", this.poo);
+        // document.getElementById("cellInput").addEventListener("change", this.testFunction);
+        // document.getElementById("poo").addEventListener("click", this.poo);
 
         this.collectPreferences();
         this.setContent();
@@ -40,20 +40,20 @@ class Launcher extends AppWindow {
     public async run() {
       //this.testFunction();
     }
-    public async testFunction(){
-      //let myData = {cellNum: '5551234'}
-      //document.getElementById("test_message3").innerHTML += `${overwolf.io.paths.localAppData}\\Overwolf\\Log\\Apps\\RageQuit.NM\\game_data.json`;
-      let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
+    // public async testFunction(){
+    //   //let myData = {cellNum: '5551234'}
+    //   //document.getElementById("test_message3").innerHTML += `${overwolf.io.paths.localAppData}\\Overwolf\\Log\\Apps\\RageQuit.NM\\game_data.json`;
+    //   let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
       
-      Launcher.instance()._writeFile(JSON.stringify(myData),  `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
-    }
-    public async poo(){
-      let result = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+    //   Launcher.instance()._writeFile(JSON.stringify(myData),  `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+    // }
+    // public async poo(){
+    //   let result = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
-      let cellNum = JSON.parse(result)["cellNum"];
-      var sendData = {"cellNum": cellNum, bedtime: "30"};
-      document.getElementById("test_message").innerHTML += "cellnum " + cellNum + "you wrote: " + sendData["cellNum"] + "bedtime si " + sendData["bedtime"];
-    }
+    //   let cellNum = JSON.parse(result)["cellNum"];
+    //   var sendData = {"cellNum": cellNum, bedtime: "30"};
+    //   document.getElementById("test_message").innerHTML += "cellnum " + cellNum + "you wrote: " + sendData["cellNum"] + "bedtime si " + sendData["bedtime"];
+    // }
 
 
     //Check if bedtime rule is violated on an interval, display appropriate message, notify parent.
