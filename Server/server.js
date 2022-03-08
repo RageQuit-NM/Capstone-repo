@@ -37,13 +37,17 @@ app.get('/parentPortal', function(req, res){
 app.post('/get-settings', async function(req, res){
   var query = {cellNum: req.body["cellNum"]};
   var result;
-
+  console.log("searching for: " + JSON.stringify(query));
   try {
     result = await findOne(query);
   } catch (error){
     console.log(error);
   }
-  console.log("Returing parentPortal settings. id: "+ JSON.stringify(result["_id"]) + " cellNum: " + JSON.stringify(result["cellNum"]));
+  if(result == null){
+    console.log("there was an error");
+  }else{
+    console.log("Returing parentPortal settings. id: "+ JSON.stringify(result["_id"]) + " cellNum: " + JSON.stringify(result["cellNum"]));
+  }
   res.send(JSON.stringify(result));
 });
 
@@ -78,16 +82,14 @@ app.post('/bedtime-message', function(req, res){
 
 
 //Insert a new cell num on itialization.
-//check for if it alreawdy exists. 
+//check for if it alreawdy exists. Maybe call this a upsert? maybe a search for if the cell num already exists
 app.post('/insert-cellNum', function(req, res){
-  //var query = {cellNum: req.body["cellNum"]};
-  var newVals = { $set: req.body };
-  var options = { upsert: true };
+  var toInsert = {cellNum: req.body["cellNum"]};
 
   MongoClient.connect(url, function(err, db) {
       if (err) throw err;
       var database = db.db("growing_gamers");
-      database.collection("user_data").insertOne(newVals, options, function(err, res) {
+      database.collection("user_data").insertOne(toInsert, function(err, res) {
         if (err) throw err;
         console.log("inserted to database: " + JSON.stringify(res));
         db.close();
