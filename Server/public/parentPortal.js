@@ -3,13 +3,8 @@ var remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
 //listener for parent preference submission
 document.getElementById("parent_control_submit").addEventListener("click", parentFormHandler);
 
-
-//Enable tooltips
-var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-  return new bootstrap.Tooltip(tooltipTriggerEl)
-})
-
+//Initialize tooltips
+createToolTips();
 
 //if the cellNum cookie is set then populate the parent portal with corresponding data from server
 if(checkCookie()){
@@ -71,7 +66,18 @@ if(checkCookie()){
 
 
 
+//Re loads all tooltips to reflect current relevant properties, must run this for a change to be applied
+function createToolTips() {
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
+}
 
+
+
+
+//_____ASYNC_FUNCTIONS_FOR_CALCULATING_STATISTICS__________________________________________________________________________________________________________________
 //Async function for calculating win/loss ratio
 async function getWinLossRatio(statistics) {
   let winLossRatioPromise = new Promise(function(resolve, reject) {
@@ -82,8 +88,6 @@ async function getWinLossRatio(statistics) {
     for (let i=0; i<parsed.length; i++) {
       document.getElementById("test_response").innerHTML += statistics[i] + "\n";
       if (parsed[i].hasOwnProperty("win")) {
-        console.log("loop entered");
-        document.getElementById("test_response").innerHTML += "does have property-";
           if (parsed[i].win == "true") {
             wins ++;
           } else {
@@ -99,7 +103,6 @@ async function getWinLossRatio(statistics) {
     } else {
       winLossR = 0;
     }
-    console.log("wlr = " + winLossR);
     resolve(winLossR);
     });
     return await winLossRatioPromise;
@@ -131,7 +134,6 @@ async function getKillDeathRatio(statistics) {
     } else {
       killDeathR = 0;
     }
-    console.log("kills: " + kills + " deaths: " + deaths + " kill/death: " + killDeathR);
     resolve(killDeathR);
     });
     return await killDeathRatioPromise;
@@ -142,6 +144,8 @@ async function getKillDeathRatio(statistics) {
 
 function buildStats(statistics) {
   //Populate the win loss ratio progress bar
+  console.log(JSON.parse(statistics));
+
   getWinLossRatio(statistics).then(
     function(winLossRatio) { 
       //clear existing classes
@@ -167,6 +171,9 @@ function buildStats(statistics) {
         document.getElementById("wlRatioBar").classList.add("bg-danger");
         document.getElementById("wlRatioBar").style.width = "10%";
       }
+      document.getElementById("wlRatioBar").innerHTML = winLossRatio.toString() + " wins/loss";
+      document.getElementById("wlRatioBarColumn").title = winLossRatio.toString() + " wins/loss";
+      createToolTips();
     }
   );
 
@@ -196,12 +203,11 @@ function buildStats(statistics) {
         document.getElementById("kdRatioBar").classList.add("bg-danger");
         document.getElementById("kdRatioBar").style.width = "10%";
       }
+      document.getElementById("kdRatioBar").innerHTML = killDeathRatio.toString() + " kills/death";
+      document.getElementById("kdRatioBarColumn").title = killDeathRatio.toString() + " kills/death";
+      createToolTips();
     }
   );
-
-  
-
-
 }
 
 
