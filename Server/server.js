@@ -36,10 +36,11 @@ app.get('/parentPortal', function(req, res){
 //Collect the parental settings for a given cell number
 app.post('/get-settings', async function(req, res){
   var query = {cellNum: req.body["cellNum"]};
+  var collection = "user_data";
   var result;
 
   try {
-    result = await findOne(query);
+    result = await findOne(query, collection);
   } catch (error){
     console.log(error);
   }
@@ -47,9 +48,8 @@ app.post('/get-settings', async function(req, res){
   res.send(JSON.stringify(result));
 });
 
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-//Collect the child performance stats for a given cell numberXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+//Collect the child performance stats for a given cell number
 app.post('/get-stats', async function(req, res){
   var query = {cellNum: req.body["cellNum"]};
   var result;
@@ -62,9 +62,6 @@ app.post('/get-stats', async function(req, res){
   console.log("Returing parentPortal statistics: "+ JSON.stringify(result));
   res.send(JSON.stringify(result));
 });
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 
 //Send bedtime violation notification
@@ -78,7 +75,7 @@ app.post('/bedtime-message', function(req, res){
 
 
 //Insert a new cell num on itialization.
-//check for if it alreawdy exists. 
+//check for if it already exists. 
 app.post('/insert-cellNum', function(req, res){
   //var query = {cellNum: req.body["cellNum"]};
   var newVals = { $set: req.body };
@@ -135,11 +132,27 @@ app.post('/upload-game-data', function(req, res){
   
     res.send('successfully uploaded user data');
   });
+
+
+//Returns message based on message ID to the app
+app.post('/get-message', function(req, res){
+  var query = {messageID: req.body["messageID"]};
+  var collection = "app_messages"
+  var result;
+
+  try {
+    result = await findOne(query, collection);
+  } catch (error){
+    console.log(error);
+  }
+  console.log("Returning app message: " + JSON.stringify(result));
+  res.send(JSON.stringify(result));
+});
   
 
 //*****************************Functions*****************************************************************************************
 //Get one item from the user_data collection  
-async function findOne(query){
+async function findOne(query, collectionName){
   const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
   if (!client) {
     console.log("No client");
@@ -147,9 +160,9 @@ async function findOne(query){
   } 
   try {
     const db = client.db("growing_gamers");
-    let collection = db.collection('user_data');
+    let collection = db.collection(collectionName);
     let result = await collection.findOne(query);
-    //console.log("returning: " + result);
+    console.log("findOne is returning: " + result);
     return result;
   } catch (err) {
     console.log(err);
