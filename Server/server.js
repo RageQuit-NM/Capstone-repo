@@ -137,7 +137,7 @@ app.post('/upload-game-data', function(req, res){
 
 
 //Returns message based on message ID to the app
-app.post('/get-message', function(req, res){
+app.post('/get-message', async function(req, res){
   var query = {messageID: req.body["messageID"]};
   var collection = "app_messages"
   var result;
