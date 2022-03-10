@@ -133,12 +133,13 @@ app.post('/upload-game-data', function(req, res){
       });
   
     res.send('successfully uploaded user data');
-  });
+});
 
 
 //Returns message based on message ID to the app
 app.post('/get-message', async function(req, res){
   var query = {messageID: req.body["messageID"]};
+  console.log(JSON.stringify(query));
   var collection = "app_messages"
   var result;
 
