@@ -79,11 +79,7 @@ app.post('/bedtime-message', function(req, res){
 
 
 //Insert a new cell num on itialization.
-<<<<<<< HEAD
 //check for if it already exists. 
-=======
-//check for if it alreawdy exists. Maybe call this a upsert? maybe a search for if the cell num already exists
->>>>>>> ecea138478ffadbed6d065927eb8e47a7cf76c86
 app.post('/insert-cellNum', function(req, res){
   var toInsert = {cellNum: req.body["cellNum"]};
 
