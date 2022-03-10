@@ -164,7 +164,6 @@ async function findOne(query, collectionName){
     const db = client.db("growing_gamers");
     let collection = db.collection(collectionName);
     let result = await collection.findOne(query);
-    console.log("findOne is returning: " + result);
     return result;
   } catch (err) {
     console.log(err);
