@@ -38,7 +38,7 @@ app.post('/get-settings', async function(req, res){
   var query = {cellNum: req.body["cellNum"]};
   var collection = "user_data";
   var result;
-  console.log("searching for: " + JSON.stringify(query));
+  //console.log("searching for: " + JSON.stringify(query));
   try {
     result = await findOne(query, collection);
   } catch (error){
@@ -47,7 +47,7 @@ app.post('/get-settings', async function(req, res){
   if(result == null){
     console.log("there was an error");
   }else{
-    console.log("Returing parentPortal settings. id: "+ JSON.stringify(result["_id"]) + " cellNum: " + JSON.stringify(result["cellNum"]));
+    //console.log("Returing parentPortal settings. id: "+ JSON.stringify(result["_id"]) + " cellNum: " + JSON.stringify(result["cellNum"]));
   }
   res.send(JSON.stringify(result));
 });
