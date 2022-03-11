@@ -27,7 +27,7 @@ if(checkCookie()){
     if (this.readyState != 4) return;
     if (this.status == 200) {
       var response = (this.responseText); // we get the returned data
-      document.getElementById("test2").value += response;
+      document.getElementById("test2").innerHTML += response;
       buildPreferences(response);
     }
 
@@ -216,7 +216,7 @@ function buildStats(statistics) {
 
 //populate the parent portal preferences form
 function buildPreferences(preferences) {
-  document.getElementById("test2").value += JSON.stringify(preferences);
+  document.getElementById("test2").innerHTML += JSON.stringify(preferences);
   document.getElementById("cellNum").value = preferences["cellNum"];
   document.getElementById("timeLimitRule").value = preferences["timeLimitRule"];
   document.getElementById("bedTimeRule").value = preferences["bedTimeRule"];
