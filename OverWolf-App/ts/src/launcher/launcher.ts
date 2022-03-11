@@ -100,27 +100,7 @@ class Launcher extends AppWindow {
           Launcher.instance().endIntializationIntervalId = setInterval(Launcher.instance().endIntialization, 1000*1);
         }
       }
-
-      let serverAction = "get-message";
-      let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
-      var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open("POST", remoteServer, true);
-      xmlHttp.setRequestHeader('Content-Type', 'application/json');
-      xmlHttp.send(JSON.stringify({messageID:"homework"}));
-
-      xmlHttp.onreadystatechange = function () {
-        if (this.readyState != 4) return;
-        if (this.status == 200) {
-          var parsed = JSON.parse(this.responseText);
-          //Launcher.instance().bedTime = parsed["bedTimeRule"]; //---------------------------Set all of parsed not only bedTimeRule----------------||
-          document.getElementById("test_message3").innerHTML += " message response: " + this.responseText;
-        }
-      };
     }
-    // public setCellNum(){    //Shouldnt set cellNum completely without the submit button!! this fucniton should probs do nohting and th submit does everything
-    //   // let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
-    //   // Launcher.instance()._writeFile(JSON.stringify(myData),  `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
-    // }
 
     public async submitCellNum(){
       let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
@@ -188,7 +168,7 @@ class Launcher extends AppWindow {
           if (mainWindowObject.document.getElementById("attributes").getAttribute('bedTimeMessage') != 'true') {
             mainWindowObject.document.getElementById("attributes").setAttribute('bedTimeMessage', 'true');
             //document.getElementById("test_message").innerHTML += "  text sms sent||"
-            //Launcher.instance().sendBedtimeMessage();
+            //Launcher.instance().sendBedtimeMessage(); <--------------------------------- sending bedtime text message
           }
         }else{  //It is not past your bedtime
           document.getElementById("minimizeButton").innerHTML = "Back to Game";//-----------staticly sets it to "back to game"

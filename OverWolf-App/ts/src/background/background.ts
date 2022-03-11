@@ -67,7 +67,8 @@ class BackgroundController {
     let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
     if (fileData == null){
       //document.getElementById("test_message").innerHTML += "Couldnt collect info from game_data.json (sendMessageToLauncher)";
-      document.getElementById("primary_message").innerHTML = "Welcome back!";
+      document.getElementById("primary_message").innerHTML = "welcome (no game_data.json set)";
+      overwolf.windows.getMainWindow().document.getElementById("test_message2").innerHTML += "No data";
       return;
     }
     //let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\Log\\Apps\\RageQuit.NM\\game_data.json`);
@@ -92,6 +93,7 @@ class BackgroundController {
     let messageID = "welcomeback";
     //if game has run send a message from Messages.txt else just a welcome message
     if(this.hasGameRun){
+      overwolf.windows.getMainWindow().document.getElementById("test_message2").innerHTML += "game has run..."
       //this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[1];  //Should be randNum
       messageID = "homework";
 
@@ -111,6 +113,7 @@ class BackgroundController {
     } else {
       //this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
       messageID = "welcomeback";
+      overwolf.windows.getMainWindow().document.getElementById("test_message2").innerHTML += "Game has not run"
     }
 
     let serverAction = "get-message";
