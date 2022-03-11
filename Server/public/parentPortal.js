@@ -215,6 +215,7 @@ function buildStats(statistics) {
 
 //populate the parent portal preferences form
 function buildPreferences(preferences) {
+  preferences = JSON.parse(preferences);
   document.getElementById("test2").innerHTML += preferences;
   document.getElementById("test2").innerHTML += "__trying " + preferences["timeLimitRule"] + " " + preferences["bedTimeRule"] + " " + preferences["gameLimitRule"];
   document.getElementById("cellNum").value = preferences["cellNum"];
