@@ -27,6 +27,7 @@ if(checkCookie()){
     if (this.readyState != 4) return;
     if (this.status == 200) {
       var response = (this.responseText); // we get the returned data
+      document.getElementById("test2").value += JSON.stringify(response);
       buildPreferences(response);
     }
 
