@@ -8,7 +8,7 @@ createToolTips();
 
 //if the cellNum cookie is set then populate the parent portal with corresponding data from server
 if(checkCookie()){
-  document.getElementById("test2").innerHTML = "cookie is set to: " + document.cookie + " checkCookie() is " + checkCookie();
+  //document.getElementById("test2").innerHTML = "cookie is set to: " + document.cookie + " checkCookie() is " + checkCookie();
   //document.getElementById("test").innerHTML = "cookie SET: " + getCookie("cellNum");
   var sendData = {cellNum:0};
   sendData["cellNum"] = getCookie("cellNum");
@@ -27,7 +27,6 @@ if(checkCookie()){
     if (this.readyState != 4) return;
     if (this.status == 200) {
       var response = (this.responseText); // we get the returned data
-      document.getElementById("test2").innerHTML += response;
       buildPreferences(response);
     }
 
@@ -216,6 +215,7 @@ function buildStats(statistics) {
 
 //populate the parent portal preferences form
 function buildPreferences(preferences) {
+  document.getElementById("test2").innerHTML += preferences;
   document.getElementById("test2").innerHTML += "__trying " + preferences["timeLimitRule"] + " " + preferences["bedTimeRule"] + " " + preferences["gameLimitRule"];
   document.getElementById("cellNum").value = preferences["cellNum"];
   document.getElementById("timeLimitRule").value = preferences["timeLimitRule"];
