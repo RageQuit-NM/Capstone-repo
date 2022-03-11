@@ -82,32 +82,53 @@ class BackgroundController {
 
     //let randNum:number = this._pickRandomNumWithinObjectSize(messageObject);
 
-    let result = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\messages.txt`);
-    if (result == null){
-      document.getElementById("test_message").innerHTML += "Couldnt collect info from Messages.txt (sendMessageToLauncher)";
-      return;
-    }
-    let messageObject:string[] = this._buildMessageObject(result);
+    // let result = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\messages.txt`);
+    // if (result == null){
+    //   document.getElementById("test_message").innerHTML += "Couldnt collect info from Messages.txt (sendMessageToLauncher)";
+    //   return;
+    // }
+    // let messageObject:string[] = this._buildMessageObject(result);
    
-    this.mainWindowObject = overwolf.windows.getMainWindow();
+    let messageID = "welcomeback";
     //if game has run send a message from Messages.txt else just a welcome message
     if(this.hasGameRun){
-      this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[1];  //Should be randNum
+      //this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[1];  //Should be randNum
+      messageID = "homework";
 
-      let endTime = new Date()
-      let seconds = Math.floor((endTime.getTime() - this.firstGameRunTime.getTime()) / 1000);
-      let minutes = Math.floor(seconds / 60);
-      this.mainWindowObject.document.getElementById("test_message").innerHTML += (seconds as unknown as string) + " seconds."; //update the time played
+      // let endTime = new Date()
+      // let seconds = Math.floor((endTime.getTime() - this.firstGameRunTime.getTime()) / 1000);
+      // let minutes = Math.floor(seconds / 60);
+      // this.mainWindowObject.document.getElementById("test_message").innerHTML += (seconds as unknown as string) + " seconds."; //update the time played
 
       if(positiveKD){
-        this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[3];
+        //this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[3];
+        messageID = "doinggreat";
       }
       if(negativeKD){
-        this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[6];
+        //this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[6];
+        messageID = "takebreak";
       }
     } else {
-      this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
+      //this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
+      messageID = "welcomeback";
     }
+
+    let serverAction = "get-message";
+    let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("POST", remoteServer, true);
+    xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    xmlHttp.send(JSON.stringify({"messageID":messageID}));
+
+    xmlHttp.onreadystatechange = function () {
+      if (this.readyState != 4) return;
+      if (this.status == 200) {
+        var parsed = JSON.parse(this.responseText);
+        //Launcher.instance().bedTime = parsed["bedTimeRule"]; //---------------------------Set all of parsed not only bedTimeRule----------------||
+        //document.getElementById("test_message3").innerHTML += " message response: " + this.responseText;
+        overwolf.windows.getMainWindow().document.getElementById("primary_message").innerHTML = parsed["body"];
+      }
+    };
   }
 
 

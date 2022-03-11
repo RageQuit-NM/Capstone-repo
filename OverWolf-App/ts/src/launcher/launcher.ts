@@ -100,6 +100,22 @@ class Launcher extends AppWindow {
           Launcher.instance().endIntializationIntervalId = setInterval(Launcher.instance().endIntialization, 1000*1);
         }
       }
+
+      let serverAction = "get-message";
+      let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("POST", remoteServer, true);
+      xmlHttp.setRequestHeader('Content-Type', 'application/json');
+      xmlHttp.send(JSON.stringify({messageID:"homework"}));
+
+      xmlHttp.onreadystatechange = function () {
+        if (this.readyState != 4) return;
+        if (this.status == 200) {
+          var parsed = JSON.parse(this.responseText);
+          //Launcher.instance().bedTime = parsed["bedTimeRule"]; //---------------------------Set all of parsed not only bedTimeRule----------------||
+          document.getElementById("test_message3").innerHTML += " message response: " + this.responseText;
+        }
+      };
     }
     // public setCellNum(){    //Shouldnt set cellNum completely without the submit button!! this fucniton should probs do nohting and th submit does everything
     //   // let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
@@ -158,7 +174,7 @@ class Launcher extends AppWindow {
           myMessage = "You dont have enough time to play a game before bedtime."; //Playing a game will put you past your bedtime?
         }else if(diff < 5 && diff >=-5){
           myMessage = "Its time to stop playing and say good night.";
-          if(!(diff<0)){
+          if(diff<0){
             myMessage += " You are" + -diff + " minutes past your bedtime";
           }
         }
@@ -176,7 +192,8 @@ class Launcher extends AppWindow {
           }
         }else{  //It is not past your bedtime
           document.getElementById("minimizeButton").innerHTML = "Back to Game";//-----------staticly sets it to "back to game"
-          document.getElementById("primary_message").innerHTML = mainWindowObject.document.getElementById("primary_message").innerHTML;
+          //document.getElementById("primary_message").innerHTML = mainWindowObject.document.getElementById("primary_message").innerHTML;
+          Launcher.instance().setContent();
         }
       }
     }
@@ -213,7 +230,7 @@ class Launcher extends AppWindow {
 
     //Collect parental preferences at an interval
     private async collectPreferences(){
-      document.getElementById("test_message3").innerHTML = "Collecting preferneces" + new Date();
+      //document.getElementById("test_message3").innerHTML += "Collecting preferneces" + new Date();
       let result = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
       if(result == null){
         if (document.getElementById("test_message2").innerHTML.indexOf("cell_number.json does not exist") == -1){
