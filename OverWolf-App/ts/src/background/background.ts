@@ -10,9 +10,8 @@ class BackgroundController {
   private static _instance: BackgroundController;
   private _windows: Record<string, OWWindow> = {};
   private _gameListener: OWGameListener;
-  private mainWindowObject: Window;
   private hasGameRun:boolean;
-  private firstGameRunTime: Date = null;
+  //private firstGameRunTime: Date = null;
   private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
 
 
@@ -46,8 +45,13 @@ class BackgroundController {
   // When running the app, start listening to games' status and decide which window should
   // be launched first, based on whether a supported game is currently running
   public async run() {
-    this._gameListener.start();
+    if(document.getElementById("attributes").getAttribute('firstCellCheck') != 'true'){
+      document.getElementById("attributes").setAttribute('firstCellCheck', 'true');
+      document.getElementById("isCellNumSet").innerHTML = await BackgroundController.instance().checkCellNum();
+      console.log("isCellNumSet: " +  document.getElementById("isCellNumSet").innerHTML);
+    }
 
+    this._gameListener.start();
     const currWindowName = (await this.isSupportedGameRunning())
       ? kWindowNames.inGame
       : kWindowNames.launcher;
@@ -55,65 +59,37 @@ class BackgroundController {
 
     this.sendMessageToLauncher();
   }
+
+  public async checkCellNum(){
+    let cellNum = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`)
+    if (cellNum == null){
+      return 'false';
+    }else{
+      return 'true';
+    }
+  }
  
   //----------------------------------------------------------implement all messages for kid----------------||
   //Updates primary_message on bus
   private async sendMessageToLauncher(){
-    let negativeKD:boolean = false;//--------------------Change to a single variable------------------------||
-    let positiveKD:boolean = false;//-----------------------------------------------------------------------||
-
-
-    //If game hasent run we will show Welcome Back too!! refactor for this
-    let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
-    if (fileData == null){
-      //document.getElementById("test_message").innerHTML += "Couldnt collect info from game_data.json (sendMessageToLauncher)";
-      document.getElementById("primary_message").innerHTML = "welcome (no game_data.json set)";
-      overwolf.windows.getMainWindow().document.getElementById("test_message2").innerHTML += "No data";
-      return;
-    }
-    //let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\Log\\Apps\\RageQuit.NM\\game_data.json`);
-    let killDeath = JSON.parse(fileData);
-
-    if(killDeath["kills"] > killDeath["deaths"]){
-      positiveKD = true;
-    }
-    if(killDeath["deaths"] > killDeath["kills"]){
-      negativeKD = true;
-    }
-
-    //let randNum:number = this._pickRandomNumWithinObjectSize(messageObject);
-
-    // let result = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\messages.txt`);
-    // if (result == null){
-    //   document.getElementById("test_message").innerHTML += "Couldnt collect info from Messages.txt (sendMessageToLauncher)";
-    //   return;
-    // }
-    // let messageObject:string[] = this._buildMessageObject(result);
-   
+    console.log("sendMessageToLauncher(). Primary is: " +  document.getElementById("primary_message").innerHTML);
     let messageID = "welcomeback";
-    //if game has run send a message from Messages.txt else just a welcome message
     if(this.hasGameRun){
-      overwolf.windows.getMainWindow().document.getElementById("test_message2").innerHTML += "game has run..."
-      //this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[1];  //Should be randNum
-      messageID = "homework";
+      document.getElementById("test_message2").innerHTML += "game has run..."
+      messageID = "homework"; //if the player did not have a positive or negative KD deafault to homework
 
-      // let endTime = new Date()
-      // let seconds = Math.floor((endTime.getTime() - this.firstGameRunTime.getTime()) / 1000);
-      // let minutes = Math.floor(seconds / 60);
-      // this.mainWindowObject.document.getElementById("test_message").innerHTML += (seconds as unknown as string) + " seconds."; //update the time played
-
-      if(positiveKD){
-        //this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[3];
-        messageID = "doinggreat";
+      let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
+      if (fileData == null){
+        document.getElementById("test_message2").innerHTML += "No data stored in game_data.json. This should never occur.";
+        return;
       }
-      if(negativeKD){
-        //this.mainWindowObject.document.getElementById("primary_message").innerHTML = messageObject[6];
-        messageID = "takebreak";
+      let killDeath = JSON.parse(fileData);
+      if(killDeath["kills"] > killDeath["deaths"]){
+        messageID = "doinggreat"; //positiveKD
       }
-    } else {
-      //this.mainWindowObject.document.getElementById("primary_message").innerHTML = "Welcome back!";
-      messageID = "welcomeback";
-      overwolf.windows.getMainWindow().document.getElementById("test_message2").innerHTML += "Game has not run"
+      if(killDeath["deaths"] > killDeath["kills"]){
+        messageID = "takebreak";  //negativeKD
+      }
     }
 
     let serverAction = "get-message";
@@ -127,9 +103,7 @@ class BackgroundController {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var parsed = JSON.parse(this.responseText);
-        //Launcher.instance().bedTime = parsed["bedTimeRule"]; //---------------------------Set all of parsed not only bedTimeRule----------------||
-        //document.getElementById("test_message3").innerHTML += " message response: " + this.responseText;
-        overwolf.windows.getMainWindow().document.getElementById("primary_message").innerHTML = parsed["body"];
+        document.getElementById("primary_message").innerHTML = parsed["body"];
       }
     };
   }
@@ -137,6 +111,7 @@ class BackgroundController {
 
   //Called when a games ends. Sends all data in game_data.json, along with a cellnum and a timeStamp to /upload-game-data
   private async sendGameInfoToRemote(){
+    console.log("Sending Game info to remote");
     let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
     if (fileData == null){
       document.getElementById("test_message").innerHTML += "Couldnt collect info from game_data.json (sendGameInfoToRemote)";
@@ -157,14 +132,14 @@ class BackgroundController {
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send(JSON.stringify(gameData));
 
-    this.mainWindowObject = overwolf.windows.getMainWindow();
-    this.mainWindowObject.document.getElementById("test_message3").innerHTML += "Game end message(/upload-game-data): " + JSON.stringify(gameData) + "cellNum is " + cellNum;  //For debugging
+    document.getElementById("test_message3").innerHTML += "Game end message(/upload-game-data): " + JSON.stringify(gameData) + "cellNum is " + cellNum;  //For debugging
 
     xmlHttp.onreadystatechange = await function () {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var response = (this.responseText); // we get the returned data
         //document.getElementById("test_message").innerHTML += "reponse from /upload-game-data = " + response;
+        console.log("reponse from /upload-game-data = " + response);
       }
       // end of state change: it can be after some time (async)
     };
@@ -192,6 +167,7 @@ class BackgroundController {
     
     if (await this.isSupportedGameRunning()) {
       this._windows[kWindowNames.launcher].close();
+      document.getElementById("attributes").setAttribute('listener', 'false');
       this._windows[kWindowNames.inGame].restore();
     } else {
       this._windows[kWindowNames.launcher].restore();
@@ -209,15 +185,15 @@ class BackgroundController {
 
     if (info.isRunning) {
       this._windows[kWindowNames.launcher].close();
+      document.getElementById("attributes").setAttribute('listener', 'false');
       this._windows[kWindowNames.inGame].restore();
       this.hasGameRun = true;
-      if(this.firstGameRunTime == null){
-        this.firstGameRunTime = new Date(); //set the time for first game run time
-      }
     } else {
       //A game has just ended
+      console.log("game has ended. Primary is: " +  document.getElementById("primary_message").innerHTML);
       this.sendGameInfoToRemote();
-      this.sendMessageToLauncher();
+      //this.sendMessageToLauncher();
+      console.log("Finished updating message from launcher. Primary is: " +  document.getElementById("primary_message").innerHTML);
       this._windows[kWindowNames.launcher].restore();
       setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 1500); //Brings the launcher window infront of the game launcher after 1.5s
       this._windows[kWindowNames.inGame].close();
@@ -234,27 +210,6 @@ class BackgroundController {
   // Identify whether the RunningGameInfo object we have references a supported game
   private isSupportedGame(info: RunningGameInfo) {
     return kGameClassIds.includes(info.classId);
-  }
-
-
-  //Arrange lines into an array object
-  //All information before a ";" character is stored into an entry in the messageObject
-  private _buildMessageObject(originMessage:string){
-    var messageObject:string[] = new Array();
-    while(originMessage.indexOf(";") != -1){
-      messageObject.push(originMessage.substr(0, originMessage.indexOf(";")));
-      originMessage = originMessage.substr(originMessage.indexOf(";")+1);
-    }
-    return messageObject;
-  }
-
-
-  //Takes an array object and returns a number between 0 and length
-  private _pickRandomNumWithinObjectSize(myObject:Array<string>){
-    let min:number = 0;
-    let max:any = myObject.length;
-    let randomNum:number =  Math.floor(Math.random() * max ) + min;
-    return randomNum;
   }
 }
 BackgroundController.instance().run();

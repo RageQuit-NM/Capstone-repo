@@ -6,7 +6,7 @@ class Launcher extends AppWindow {
     private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com"; //Move to the parent class, all app windows need this remote address
     //public bedTime: string;
     public parentPreferenes;  //timeLimitRule bedTimeRule gameLimitRule
-    public isCellNumSet:boolean;
+    //public isCellNumSet:boolean;
     public endIntializationIntervalId;
 
     private constructor() {
@@ -18,16 +18,34 @@ class Launcher extends AppWindow {
         (document.getElementById("parent_portal_link") as HTMLAnchorElement).href="http://" + this.remoteAddress + ":5000/parentPortal";
         //document.getElementById("cellInput").addEventListener("change", this.setCellNum);
         document.getElementById("submitCellNum").addEventListener("click", this.submitCellNum);
+
+        if(overwolf.windows.getMainWindow().document.getElementById("isCellNumSet").innerHTML == "false"){
+          
+        }
+        if(overwolf.windows.getMainWindow().document.getElementById("isCellNumSet").innerHTML == "true"){
+          document.getElementById("initalization").style.display = "none";
+          Launcher.instance().collectPreferences();
+          Launcher.instance().setContent();
+
+          setInterval(Launcher.instance().checkBedtime, 1000*2);
+          setInterval(Launcher.instance().collectPreferences, 1000*2);
+
+          Launcher.instance().displayCellNum();
+        }
       }
+    }
+
+    public async displayCellNum(){
+      document.getElementById("cellDisplay").innerHTML = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
     }
 
     public async endIntialization(){
       if(await Launcher.instance().checkCellNum()){
-        document.getElementById("test_message").innerHTML += " (shuldnt see this more than once. id of interval is: "+Launcher.instance().endIntializationIntervalId+") Phone number entered: " + await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`); + " ";
+        //document.getElementById("test_message").innerHTML += " (shuldnt see this more than once. id of interval is: "+Launcher.instance().endIntializationIntervalId+") Phone number entered: " + await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`); + " ";
         document.getElementById("main").style.display = "inherit";
         document.getElementById("cellDisplay").style.display = "inherit";
-        document.getElementById("initalization").style.display = "none";
-        Launcher.instance().isCellNumSet = true;
+        //document.getElementById("initalization").style.display = "none";
+        //Launcher.instance().isCellNumSet = true;
         Launcher.instance().collectPreferences();
         Launcher.instance().setContent();
 
@@ -87,19 +105,19 @@ class Launcher extends AppWindow {
     //Called once to build the class
     public async run() {
       //if cell num has been entered
-      if(overwolf.windows.getMainWindow().document.getElementById("attributes").getAttribute('firstCellCheck') != 'true'){
-        overwolf.windows.getMainWindow().document.getElementById("attributes").setAttribute('firstCellCheck', 'true');
-        if(await Launcher.instance().checkCellNum()){
-          //document.getElementById("test_message").innerHTML += "Skipping first insialize " + await Launcher.instance().checkCellNum() + "___";
-          Launcher.instance().endIntialization();
-        }
-        else{
-          document.getElementById("test_message").innerHTML += "Perfoming first intialize ";
-          Launcher.instance().isCellNumSet = false;
-          Launcher.instance().initalize();
-          Launcher.instance().endIntializationIntervalId = setInterval(Launcher.instance().endIntialization, 1000*1);
-        }
-      }
+      // if(overwolf.windows.getMainWindow().document.getElementById("attributes").getAttribute('firstCellCheck') != 'true'){
+      //   overwolf.windows.getMainWindow().document.getElementById("attributes").setAttribute('firstCellCheck', 'true');
+      //   if(await Launcher.instance().checkCellNum()){
+      //     //document.getElementById("test_message").innerHTML += "Skipping first insialize " + await Launcher.instance().checkCellNum() + "___";
+      //     Launcher.instance().endIntialization();
+      //   }
+      //   else{
+      //     document.getElementById("test_message").innerHTML += "Perfoming first intialize ";
+      //     Launcher.instance().isCellNumSet = false;
+      //     Launcher.instance().initalize();
+      //     Launcher.instance().endIntializationIntervalId = setInterval(Launcher.instance().endIntialization, 1000*1);
+      //   }
+      // }
     }
 
     public async submitCellNum(){
@@ -202,9 +220,15 @@ class Launcher extends AppWindow {
     public setContent(){
       let mainWindowObject = overwolf.windows.getMainWindow(); //Gets the HTML Object of the main window for messaging
       document.getElementById("primary_message").innerHTML = mainWindowObject.document.getElementById("primary_message").innerHTML;
-      document.getElementById("test_message").innerHTML += mainWindowObject.document.getElementById("test_message").innerHTML;
-      document.getElementById("test_message2").innerHTML += mainWindowObject.document.getElementById("test_message2").innerHTML;
-      document.getElementById("test_message3").innerHTML += mainWindowObject.document.getElementById("test_message3").innerHTML;
+      if(document.getElementById("test_message").innerHTML.indexOf(mainWindowObject.document.getElementById("test_message").innerHTML) == -1){
+        document.getElementById("test_message").innerHTML += mainWindowObject.document.getElementById("test_message").innerHTML;
+      }
+      if(document.getElementById("test_message2").innerHTML.indexOf(mainWindowObject.document.getElementById("test_message2").innerHTML) == -1){
+        document.getElementById("test_message2").innerHTML += mainWindowObject.document.getElementById("test_message2").innerHTML;
+      }
+      if(document.getElementById("test_message3").innerHTML.indexOf(mainWindowObject.document.getElementById("test_message3").innerHTML) == -1){
+        document.getElementById("test_message3").innerHTML += mainWindowObject.document.getElementById("test_message3").innerHTML;
+      }
     }
 
 
