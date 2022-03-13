@@ -16,6 +16,10 @@ body {
   font-size: 52px;
   color: #81BADB;
   margin-top: 35px;
+  word-wrap: break-word;
+  padding-left: 15%;
+  padding-right: 15%;
+  padding-top: 5%;
 }
 
 .content {
@@ -47,10 +51,23 @@ body {
   font-style: normal;
   font-weight: normal;
   font-size: 22px;
-  color: #81BADB;
   display: inline-block;
   flex: 1 1 20%;
   margin-top: 1.75%;
+
+  color: #81BADB;
+  cursor: pointer;
+  padding: 6px;
+  padding-right: 14px;
+  padding-left: 14px;
+  border-radius: 7px;
+  background: #24343D;
+  border: 2px solid #81BADB;
+}
+
+.dismissButton:hover {
+  color: #24343D;
+  background: #81BADB;
 }
 
 .testMessage {
@@ -68,7 +85,17 @@ body {
   color: #F47174;
 }
 
-#parent_portal_link {
+.textInput {
+  margin: 3%;
+
+  font-family: "Roboto Mono", sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 22px;
+  display: inline-block;
+}
+
+.headerText {
   color: #456475;
   text-decoration: none;
   padding: 1%;
@@ -76,54 +103,4 @@ body {
 
 #parent_portal_link:hover {
   color: #81BADB;
-  text-decoration: none;
-  padding: 1%;
-}
-
-#minimizeButton {
-  color: #81BADB;
-  cursor: pointer;
-  padding: 6px;
-  padding-right: 14px;
-  padding-left: 14px;
-  border-radius: 7px;
-  background: #24343D;
-  border: 2px solid #81BADB;
-}
-
-#minimizeButton:hover {
-  color: #24343D;
-  cursor: pointer;
-  padding: 6px;
-  padding-right: 14px;
-  padding-left: 14px;
-  border-radius: 7px;
-  background: #81BADB;
-  border: 2px solid #81BADB;
-}
-
-#primary_message {
-  word-wrap: break-word;
-  padding-left: 15%;
-  padding-right: 15%;
-  padding-top: 5%;
-}
-
-#submitCellNum {
-  font-family: "Roboto Mono", sans-serif;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 22px;
-  color: #81BADB;
-  display: inline-block;
-  flex: 1 1 20%;
-  margin-top: 1.75%;
-}
-
-#cellNumText{
-  font-style: normal;
-  font-weight: normal;
-  font-size: 28px;
-  color: #24343D;
-  text-align: center;
 }

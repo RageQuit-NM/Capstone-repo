@@ -10,13 +10,11 @@
   </head>
   <body class="launcher">
     <header id="header" class="app-header">
-      <a id="parent_portal_link" href="" target="_blank">Parent Portal</a>
-      <div id="cellDisplay" style="padding-left:60%"></div>
+      <a class="headerText" id="parent_portal_link" href="" target="_blank">Parent Portal</a>
+      <div class="headerText" id="cellDisplay"></div>
     </header>
     <main id = "main">
-      <div class="title">
-          <h1 id="primary_message"></h1>
-      </div>
+      <h1 class="title" id="primary_message"></h1>
       <div class = "bottomSection" id="bottomSection">
         <div class="content" id="content">
           <h1 id="secondary_message"></h1>
@@ -32,12 +30,13 @@
         </div> 
       </div>
     </main>
+
     <div class="initalization" id="initalization">
-      <div class="content" id="content">Enter your Cellphone Number</div><input type="text" id="cellInput" name="cellInput"><br>
-      <div>
-        <button id="submitCellNum" name="submitCellNum">Submit</button><br>
-      </div>
+      <div class="title">Enter your Cellphone Number</div>
+      <input type="text" class="textInput" id="cellInput" name="cellInput"><br/>
+      <button class="dismissButton" id="submitCellNum" name="submitCellNum">Submit</button>
     </div>
+
     <div class="testMessage" id="test_message"></div>
     <div class="testMessage" id="test_message2"></div>
     <div class="testMessage" id="test_message3"></div>

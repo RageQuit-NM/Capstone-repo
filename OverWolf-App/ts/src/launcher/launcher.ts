@@ -33,7 +33,9 @@ class Launcher extends AppWindow {
     }
 
     public async displayCellNum(){
-      document.getElementById("cellDisplay").innerHTML = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      let fileData = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      fileData = JSON.parse(fileData);
+      document.getElementById("cellDisplay").innerHTML = fileData["cellNum"].substring(0, 3) + "-" + fileData["cellNum"].substring(3);
     }
     
 
