@@ -3,16 +3,12 @@ var remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
 //listener for parent preference submission
 document.getElementById("parent_control_submit").addEventListener("click", parentFormHandler);
 
-
-//Enable tooltips
-var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-  return new bootstrap.Tooltip(tooltipTriggerEl)
-})
-
+//Initialize tooltips
+createToolTips();
 
 //if the cellNum cookie is set then populate the parent portal with corresponding data from server
 if(checkCookie()){
+  //document.getElementById("test2").innerHTML = "cookie is set to: " + document.cookie + " checkCookie() is " + checkCookie();
   //document.getElementById("test").innerHTML = "cookie SET: " + getCookie("cellNum");
   var sendData = {cellNum:0};
   sendData["cellNum"] = getCookie("cellNum");
@@ -25,16 +21,13 @@ if(checkCookie()){
   xmlHttp.setRequestHeader('Content-Type', 'application/json');
   xmlHttp.send(JSON.stringify(sendData));
 
-  document.getElementById("test").innerHTML = "sent = " + JSON.stringify(sendData);
+  // document.getElementById("test").innerHTML = "sent = " + JSON.stringify(sendData);
 
   xmlHttp.onreadystatechange = function () {
     if (this.readyState != 4) return;
     if (this.status == 200) {
       var response = (this.responseText); // we get the returned data
-      var parsed = JSON.parse(response);
-      //document.getElementById("test_response").innerHTML = "reponse = " + response + "  also dailyDigest is: " + parsed["dailyDigest"];
-      document.getElementById("test_response").innerHTML = "reponse = " + response;
-      buildPreferences(parsed);
+      buildPreferences(response);
     }
 
 
@@ -50,15 +43,13 @@ if(checkCookie()){
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send(JSON.stringify(sendData));
   
-    document.getElementById("test").innerHTML = "sent = " + JSON.stringify(sendData);
+    // document.getElementById("test").innerHTML = "2" + JSON.stringify(sendData);
   
     xmlHttp.onreadystatechange = function () {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var response = (this.responseText); // we get the returned data
-        var parsed = JSON.parse(response);
-        document.getElementById("test_response").innerHTML = "reponse = " + response;
-        // buildPreferences(parsed);
+        buildStats(response);
       }
     }
 //*************************************************************************************************************** */
@@ -74,8 +65,157 @@ if(checkCookie()){
 }
 
 
+
+
+//Re loads all tooltips to reflect current relevant properties, must run this for a change to be applied
+function createToolTips() {
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
+}
+
+
+
+
+//_____ASYNC_FUNCTIONS_FOR_CALCULATING_STATISTICS__________________________________________________________________________________________________________________
+//Async function for calculating win/loss ratio
+async function getWinLossRatio(statistics) {
+  let winLossRatioPromise = new Promise(function(resolve, reject) {
+    let wins = 0;
+    let losses = 0;
+    let parsed = JSON.parse(statistics);
+
+    for (let i=0; i<parsed.length; i++) {
+      document.getElementById("test_response").innerHTML += statistics[i] + "\n";
+      if (parsed[i].hasOwnProperty("win")) {
+          if (parsed[i].win == "true") {
+            wins ++;
+          } else {
+            losses ++;
+          }
+      }
+    }
+    let winLossR = 0;
+    if (losses !=0) {
+      winLossR = wins/losses;
+    } else if (wins > 0){
+      winLossR = 1;
+    } else {
+      winLossR = 0;
+    }
+    resolve(winLossR);
+    });
+    return await winLossRatioPromise;
+}
+
+
+//Async function for calculating kill/death ratio
+async function getKillDeathRatio(statistics) {
+  let killDeathRatioPromise = new Promise(function(resolve, reject) {
+    let kills = 0;
+    let deaths = 0;
+    let parsed = JSON.parse(statistics);
+
+    for (let i=0; i<parsed.length; i++) {
+      document.getElementById("test_response").innerHTML += parsed[i] + "\n";
+      if (parsed[i].hasOwnProperty("kills")) {
+        kills += parseInt(parsed[i]["kills"]);
+      }
+      if (parsed[i].hasOwnProperty("deaths")) {
+        deaths += parseInt(parsed[i]["deaths"]);
+      }
+    }
+
+    let killDeathR = 0;
+    if (deaths !=0) {
+      killDeathR = kills/deaths;
+    } else if (kills > 0){
+      killDeathR = 1;
+    } else {
+      killDeathR = 0;
+    }
+    resolve(killDeathR);
+    });
+    return await killDeathRatioPromise;
+}
+
+
+
+
+function buildStats(statistics) {
+  //Populate the win loss ratio progress bar
+  console.log(JSON.parse(statistics));
+
+  getWinLossRatio(statistics).then(
+    function(winLossRatio) { 
+      //clear existing classes
+      var classList = document.getElementById("wlRatioBar").classList;
+      while (classList.length > 0) { classList.remove(classList.item(0));}
+
+      //Apply correct new classes and styling
+      let percent = 0;
+      if(winLossRatio >= 1) {
+        document.getElementById("wlRatioBar").classList.add("bg-success");
+        document.getElementById("wlRatioBar").style.width = "100%";
+      } else if (winLossRatio > 0.1) {
+        percent = winLossRatio * 100;
+        if (winLossRatio > 0.6) {  
+          document.getElementById("wlRatioBar").classList.add("bg-success");
+        } else if (winLossRatio > 0.4) {  
+          document.getElementById("wlRatioBar").classList.add("bg-warning");
+        } else if (winLossRatio > 0.1) {  
+          document.getElementById("wlRatioBar").classList.add("bg-danger");
+        }
+        document.getElementById("wlRatioBar").style.width = percent.toString() + "%";
+      } else {
+        document.getElementById("wlRatioBar").classList.add("bg-danger");
+        document.getElementById("wlRatioBar").style.width = "10%";
+      }
+      document.getElementById("wlRatioBar").innerHTML = winLossRatio.toString() + " wins/loss";
+      document.getElementById("wlRatioBarColumn").title = winLossRatio.toString() + " wins/loss";
+      createToolTips();
+    }
+  );
+
+
+  getKillDeathRatio(statistics).then(
+    function(killDeathRatio) { 
+      //clear existing classes
+      var classList = document.getElementById("kdRatioBar").classList;
+      while (classList.length > 0) { classList.remove(classList.item(0));}
+
+      //Apply correct new classes and styling
+      let percent = 0;
+      if(killDeathRatio >= 1) {
+        document.getElementById("kdRatioBar").classList.add("bg-success");
+        document.getElementById("kdRatioBar").style.width = "100%";
+      } else if (killDeathRatio > 0.1) {
+        percent = killDeathRatio * 100;
+        if (killDeathRatio > 0.6) {  
+          document.getElementById("kdRatioBar").classList.add("bg-success");
+        } else if (killDeathRatio > 0.4) {  
+          document.getElementById("kdRatioBar").classList.add("bg-warning");
+        } else if (killDeathRatio > 0.1) {  
+          document.getElementById("kdRatioBar").classList.add("bg-danger");
+        }
+        document.getElementById("kdRatioBar").style.width = percent.toString() + "%";
+      } else {
+        document.getElementById("kdRatioBar").classList.add("bg-danger");
+        document.getElementById("kdRatioBar").style.width = "10%";
+      }
+      document.getElementById("kdRatioBar").innerHTML = killDeathRatio.toString() + " kills/death";
+      document.getElementById("kdRatioBarColumn").title = killDeathRatio.toString() + " kills/death";
+      createToolTips();
+    }
+  );
+}
+
+
+
 //populate the parent portal preferences form
-function buildPreferences(preferences){
+function buildPreferences(preferences) {
+  preferences = JSON.parse(preferences);
   document.getElementById("cellNum").value = preferences["cellNum"];
   document.getElementById("timeLimitRule").value = preferences["timeLimitRule"];
   document.getElementById("bedTimeRule").value = preferences["bedTimeRule"];
@@ -94,7 +234,7 @@ function buildPreferences(preferences){
 
 
 //Collect data from parent preferences and ...
-function parentFormHandler(){
+function parentFormHandler() {
     var formData = Array.from(document.querySelectorAll('#parent_control_form input')).reduce((acc, input)=>({ ...acc, [input.id]: input.value }), {});
 
     setCookie("cellNum", formData["cellNum"]);
@@ -121,7 +261,7 @@ function parentFormHandler(){
 
 
 //Check if the cookie is set
-function checkCookie(){
+function checkCookie() {
   if(getCookie("cellNum") != ""){
     return true;
   }
@@ -132,7 +272,7 @@ function checkCookie(){
 
 
 //Set the cookie with an expiration date of t + 1 year
-function setCookie(paramName, value){
+function setCookie(paramName, value) {
   //Create expiration date
   var expiration_date = new Date();
   expiration_date.setFullYear(expiration_date.getFullYear() + 1);
@@ -160,6 +300,6 @@ function getCookie(paramName) {
 
 
 //Delete the cookie
-function delCookie(){
+function delCookie() {
   document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }

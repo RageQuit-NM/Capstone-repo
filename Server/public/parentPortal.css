@@ -16,6 +16,7 @@
 .progress-bar {
   width: 50%;
   height: 16px;
+  text-align: center;
 }
 
 .stats-container {
