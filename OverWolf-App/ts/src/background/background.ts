@@ -139,7 +139,7 @@ class BackgroundController {
       if (this.status == 200) {
         var parsed = JSON.parse(this.responseText);
         BackgroundController.instance().parentPreferenes = parsed;
-        console.log(JSON.stringify(parsed));
+        //console.log(JSON.stringify(parsed));
 
         let cellNumUnparsed = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
         let cellNum = JSON.parse(cellNumUnparsed)["cellNum"];
@@ -165,8 +165,6 @@ class BackgroundController {
           (diff < -5) ? bedTimeViolated = true : bedTimeViolated = false;
           gameData["bedTimeViolated"] = bedTimeViolated;
         }
-
-
         let serverAction = "upload-game-data";  //
         let remoteServer = "http://" +  BackgroundController.instance().remoteAddress + ":5000/" + serverAction;
         var xmlHttp = new XMLHttpRequest();
