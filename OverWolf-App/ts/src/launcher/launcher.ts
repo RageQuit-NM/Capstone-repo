@@ -92,7 +92,6 @@ class Launcher extends AppWindow {
         return
       }
       if(Launcher.instance().parentPreferenes["bedTimeRule"] != null){
-        //---------------------------------------------------------------------Make the time string foramtting into a functoin of its own?--||
         let date = new Date();
         let hours = date.getHours();
         let minutes = date.getMinutes();
@@ -135,18 +134,14 @@ class Launcher extends AppWindow {
         document.getElementById("secondary_message").innerHTML = myMessage;   //send the secondary message
         
         if(diff < -5){  //it is past your betime.
-          //myMessage = "You are " + -diff + " minutes past your bedtime."; //maybe delte this. We have the red stff popping up
-          //send the bedtime text message here!!
           document.getElementById("primary_message").innerHTML = "It is <span class='urgentText'>past your bedtime</span>, time to stop playing. <br/><br/>The time is: <span class='urgentText'>"  + localTime + " </span>";
           document.getElementById("minimizeButton").innerHTML = "See You Tomorrow";
           if (mainWindowObject.document.getElementById("attributes").getAttribute('bedTimeMessage') != 'true') {
             mainWindowObject.document.getElementById("attributes").setAttribute('bedTimeMessage', 'true');
-            //document.getElementById("test_message").innerHTML += "  text sms sent||"
-            //Launcher.instance().sendBedtimeMessage(); <--------------------------------- sending bedtime text message
+            //Launcher.instance().sendBedtimeMessage(); //<--------------------------------- sending bedtime text message
           }
         }else{  //It is not past your bedtime
           document.getElementById("minimizeButton").innerHTML = "Back to Game";//-----------staticly sets it to "back to game"
-          //document.getElementById("primary_message").innerHTML = mainWindowObject.document.getElementById("primary_message").innerHTML;
           Launcher.instance().setContent();
         }
       }
@@ -161,14 +156,12 @@ class Launcher extends AppWindow {
       xmlHttp.open("POST", remoteServer, true);
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
       xmlHttp.send(JSON.stringify(messageData));
-      xmlHttp.onreadystatechange = function(){
-        if (this.readyState != 4) return; //---------What is response code '4'?--------------------------------------------||
-        if (this.status == 200) {
-          var response = (this.responseText); // we get the returned data
-          //document.getElementById("test_message").innerHTML += "reponse from /upload-game-data = " + response;
-          //console.log("reponse from /send-message1 = " + response);
-        }
-      };
+      // xmlHttp.onreadystatechange = function(){
+      //   if (this.readyState != 4) return; //---------What is response code '4'?--------------------------------------------||
+      //   if (this.status == 200) {
+      //     var response = (this.responseText); // we get the returned data
+      //   }
+      // };
     }
 
 
@@ -214,7 +207,6 @@ class Launcher extends AppWindow {
         if (this.readyState != 4) return;
         if (this.status == 200) {
           var parsed = JSON.parse(this.responseText);
-          //Launcher.instance().bedTime = parsed["bedTimeRule"]; //---------------------------Set all of parsed not only bedTimeRule----------------||
           Launcher.instance().parentPreferenes = parsed;
         }
       };

@@ -48,7 +48,7 @@ class BackgroundController {
     if(document.getElementById("attributes").getAttribute('firstCellCheck') != 'true'){
       document.getElementById("attributes").setAttribute('firstCellCheck', 'true');
       document.getElementById("isCellNumSet").innerHTML = await BackgroundController.instance().checkCellNum();
-      console.log("isCellNumSet: " +  document.getElementById("isCellNumSet").innerHTML);
+     // console.log("isCellNumSet: " +  document.getElementById("isCellNumSet").innerHTML);
     }
 
     this._gameListener.start();
@@ -72,7 +72,7 @@ class BackgroundController {
   //----------------------------------------------------------implement all messages for kid----------------||
   //Updates primary_message on bus
   private async sendMessageToLauncher(){
-    console.log("sendMessageToLauncher(). Primary is: " +  document.getElementById("primary_message").innerHTML);
+    //console.log("sendMessageToLauncher(). Primary is: " +  document.getElementById("primary_message").innerHTML);
     let messageID = "welcomeback";
     if(this.hasGameRun){
       document.getElementById("test_message2").innerHTML += "game has run..."
@@ -111,7 +111,7 @@ class BackgroundController {
 
   //Called when a games ends. Sends all data in game_data.json, along with a cellnum and a timeStamp to /upload-game-data
   private async sendGameInfoToRemote(){
-    console.log("Sending Game info to remote");
+    //console.log("Sending Game info to remote");
     let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
     if (fileData == null){
       document.getElementById("test_message").innerHTML += "Couldnt collect info from game_data.json (sendGameInfoToRemote)";
@@ -139,7 +139,7 @@ class BackgroundController {
       if (this.status == 200) {
         var response = (this.responseText); // we get the returned data
         //document.getElementById("test_message").innerHTML += "reponse from /upload-game-data = " + response;
-        console.log("reponse from /upload-game-data = " + response);
+        //console.log("reponse from /upload-game-data = " + response);
       }
       // end of state change: it can be after some time (async)
     };
@@ -190,10 +190,10 @@ class BackgroundController {
       this.hasGameRun = true;
     } else {
       //A game has just ended
-      console.log("game has ended. Primary is: " +  document.getElementById("primary_message").innerHTML);
+      //console.log("game has ended. Primary is: " +  document.getElementById("primary_message").innerHTML);
       this.sendGameInfoToRemote();
       //this.sendMessageToLauncher();
-      console.log("Finished updating message from launcher. Primary is: " +  document.getElementById("primary_message").innerHTML);
+      //console.log("Finished updating message from launcher. Primary is: " +  document.getElementById("primary_message").innerHTML);
       this._windows[kWindowNames.launcher].restore();
       setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 1500); //Brings the launcher window infront of the game launcher after 1.5s
       this._windows[kWindowNames.inGame].close();
