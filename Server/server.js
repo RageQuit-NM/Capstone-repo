@@ -79,21 +79,39 @@ app.post('/bedtime-message', function(req, res){
 
 
 //Insert a new cell num on itialization.
-//check for if it already exists. 
-app.post('/insert-cellNum', function(req, res){
+app.post('/insert-cellNum', async function(req, res){
   var toInsert = {cellNum: req.body["cellNum"]};
 
-  MongoClient.connect(url, function(err, db) {
-      if (err) throw err;
-      var database = db.db("growing_gamers");
-      database.collection("user_data").insertOne(toInsert, function(err, res) {
-        if (err) throw err;
-        console.log("inserted to database: " + JSON.stringify(res));
-        db.close();
-      });
-    });
+  const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
+  const db = client.db("growing_gamers");
+  let collection = db.collection(user_data);
 
-  res.send('succesfully inserted Cell Number');
+  var cellNumExists = await collection.exists(toInsert);
+
+  if(cellNumExists){
+    console.log(JSON.stringify(toInsert) + " already exists in database. Not insertting.");
+    res.send('This cell number already exists');
+  }else{
+    try{
+      let result = await collection.insertOne(toInsert);
+      console.log("inserted to database: " + JSON.stringify(result));
+      res.send('succesfully inserted Cell Number');
+    }
+    catch(err){
+      console.log(err);
+      res.send('There was an error inserting.');
+    }
+    // MongoClient.connect(url, function(err, db) {
+    //     if (err) throw err;
+    //     var database = db.db("growing_gamers");
+    //     database.collection("user_data").insertOne(toInsert, function(err, res) {
+    //       if (err) throw err;
+    //       console.log("inserted to database: " + JSON.stringify(res));
+    //       db.close();
+    //     });
+    //   });
+  }
+  client.close();
 });
 
 
