@@ -5,6 +5,7 @@ var url = "mongodb://localhost:27017/";
 
 
 var express = require('express');  
+const { json } = require('body-parser');
 var app = express();  
 
 
@@ -87,7 +88,9 @@ app.post('/insert-cellNum', async function(req, res){
   const db = client.db("growing_gamers");
   let collection = db.collection("user_data");
 
-  var cellNumExists = await collection.exists(toInsert);
+  var cellNumExists = await collection.findOne(toInsert);
+
+  console.log("result: " + cellNumExists + "  " + JSON.stringify(cellNumExists));
 
   if(cellNumExists){
     console.log(JSON.stringify(toInsert) + " already exists in database. Not insertting.");
