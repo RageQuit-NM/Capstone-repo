@@ -85,7 +85,7 @@ app.post('/insert-cellNum', async function(req, res){
 
   const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
   const db = client.db("growing_gamers");
-  let collection = db.collection(user_data);
+  let collection = db.collection("user_data");
 
   var cellNumExists = await collection.exists(toInsert);
 
