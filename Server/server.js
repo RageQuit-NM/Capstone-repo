@@ -75,11 +75,17 @@ app.post('/get-stats', async function(req, res){
 
 //Send bedtime violation notification
 app.post('/bedtime-message', function(req, res){
-    var bedTime = req.body["bedTime"]; //req.body["cellNum"];
-    var smsScript = childProcess.fork('./sms-messages/bedtime-message.js');
-    smsScript.send(bedTime);
-    console.log("bedtime message sent with bedtime: " + bedTime);
-    res.send('Bedtime sms sent');
+    var cellNum = req.body["cellNum"]; //req.body["cellNum"];
+    result = await findOne(query, collection);
+    if(result["bedTimeToggle"] == "true"){
+      var smsScript = childProcess.fork('./sms-messages/bedtime-message.js');
+      smsScript.send(cellNum);
+      console.log("bedtime message sent to: " + cellNum);
+      res.send('Bedtime sms sent');
+    }else{
+      console.log("bedtime message not sent to: " + cellNum + ". BedTimeToggle is set to: " + result["bedTimeToggle"]);
+      res.send('Bedtime sms was not sent to parent.');
+    }
     console.log("---");
 });
 
