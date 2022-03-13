@@ -52,7 +52,7 @@ class Launcher extends AppWindow {
     public async run() {
     }
 
-    //Writes the cellNum ino cell_number.json and sends it to remote
+    //Writes the cellNum ino cell_number.json. Then sends the cellNum to remote. Then completes intialization and sets the launcher page back to normal functionality.
     public async submitCellNum(){
       let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
       await Launcher.instance()._writeFile(JSON.stringify(myData), `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
@@ -64,13 +64,13 @@ class Launcher extends AppWindow {
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
       xmlHttp.send(JSON.stringify(myData));
 
-      xmlHttp.onreadystatechange = function () {
-        if (this.readyState != 4) return;
-        if (this.status == 200) {
-          var parsed = JSON.parse(this.responseText);
-          document.getElementById("test_message2").innerHTML += " insert-cellNum response = " + parsed;
-        }
-      };
+      // xmlHttp.onreadystatechange = function () {
+      //   if (this.readyState != 4) return;
+      //   if (this.status == 200) {
+      //     var parsed = JSON.parse(this.responseText);
+      //     document.getElementById("test_message2").innerHTML += " insert-cellNum response = " + parsed;
+      //   }
+      // };
 
       document.getElementById("main").style.display = "inherit";
       document.getElementById("cellDisplay").style.display = "inherit";
@@ -222,8 +222,7 @@ class Launcher extends AppWindow {
           overwolf.io.enums.eEncoding.UTF8,
           resolve
         );
-      }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
-      //console.log("readFileData()", result["success"] + ", " + result["content"] + ", " +  result["error"]);
+      });
       return result["content"];
     }
 
