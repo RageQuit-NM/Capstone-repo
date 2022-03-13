@@ -15,7 +15,7 @@ app.use(express.static(__dirname+'/public'));//to know where the website assets 
 
 //listen for requests on port 5000
 app.listen(5000, function(){
-  console.log('Node.js web server at port 5000 is running..')
+  console.log('Node.js web server at port 5000 is running..');
 }); 
 
 
@@ -24,12 +24,14 @@ app.get('/', function(req, res){
     //var smsScript = childProcess.fork('./sms-messages/sms-test.js');
     console.log('Root directory accessed');
     res.send('Root directory accessed');
+    console.log("---");
 });
 
 
 app.get('/parentPortal', function(req, res){
     res.sendFile(__dirname+"/parent-portal/parentPortal.html");
     console.log('Sent file: parentPortal.html');
+    console.log("---");
 });
 
 
@@ -51,6 +53,7 @@ app.post('/get-settings', async function(req, res){
     //console.log("Returing parentPortal settings. id: "+ JSON.stringify(result["_id"]) + " cellNum: " + JSON.stringify(result["cellNum"]));
   }
   res.send(JSON.stringify(result));
+  //console.log("---");
 });
 
 
@@ -66,6 +69,7 @@ app.post('/get-stats', async function(req, res){
   }
   console.log("Returing parentPortal statistics: "+ JSON.stringify(result));
   res.send(JSON.stringify(result));
+  console.log("---");
 });
 
 
@@ -76,6 +80,7 @@ app.post('/bedtime-message', function(req, res){
     smsScript.send(bedTime);
     console.log("bedtime message sent with bedtime: " + bedTime);
     res.send('Bedtime sms sent');
+    console.log("---");
 });
 
 
@@ -89,9 +94,6 @@ app.post('/insert-cellNum', async function(req, res){
   let collection = db.collection("user_data");
 
   var cellNumExists = await collection.findOne(toInsert);
-
-  console.log("result: " + cellNumExists + "  " + JSON.stringify(cellNumExists));
-
   if(cellNumExists){
     console.log(JSON.stringify(toInsert) + " already exists in database. Not insertting.");
     res.send('This cell number already exists');
@@ -105,17 +107,9 @@ app.post('/insert-cellNum', async function(req, res){
       console.log(err);
       res.send('There was an error inserting.');
     }
-    // MongoClient.connect(url, function(err, db) {
-    //     if (err) throw err;
-    //     var database = db.db("growing_gamers");
-    //     database.collection("user_data").insertOne(toInsert, function(err, res) {
-    //       if (err) throw err;
-    //       console.log("inserted to database: " + JSON.stringify(res));
-    //       db.close();
-    //     });
-    //   });
   }
   client.close();
+  console.log("---");
 });
 
 
@@ -137,6 +131,7 @@ app.post('/update-settings', function(req, res){
       });
 
     res.send('settings succesfully updated');
+    console.log("---");
 });
 
 
@@ -155,6 +150,7 @@ app.post('/upload-game-data', function(req, res){
       });
   
     res.send('successfully uploaded user data');
+    console.log("---");
 });
 
 
@@ -172,6 +168,7 @@ app.post('/get-message', async function(req, res){
   }
   console.log("Returning app message: " + JSON.stringify(result));
   res.send(JSON.stringify(result));
+  console.log("---");
 });
   
 
