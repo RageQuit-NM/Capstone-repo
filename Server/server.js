@@ -81,6 +81,7 @@ app.post('/bedtime-message', function(req, res){
 //Insert a new cell num on itialization.
 app.post('/insert-cellNum', async function(req, res){
   var toInsert = {cellNum: req.body["cellNum"]};
+  console.log("trying to insert " + JSON.stringify(toInsert))
 
   const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
   const db = client.db("growing_gamers");
