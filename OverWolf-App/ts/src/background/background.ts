@@ -120,73 +120,61 @@ class BackgroundController {
     }
     let gameData = JSON.parse(fileData);
 
-    await this.setParentPrefences();
-
-    let cellNumUnparsed = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
-    let cellNum = JSON.parse(cellNumUnparsed)["cellNum"];
-    gameData["cellNum"] = cellNum;
-    gameData["timeStampTime"] = new Date().toLocaleTimeString();
-    gameData["timeStampDay"] = new Date().toDateString();
-
-    let date = new Date();
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    let bedtimeHours = parseInt(this.parentPreferenes["bedTimeRule"]);
-    let bedtimeMinutes = parseInt(this.parentPreferenes["bedTimeRule"].substring(3, 5))
-
-    let hourDiff = bedtimeHours - hours;
-    let minuteDiff = bedtimeMinutes - minutes;
-    let diff = (hourDiff*60) + minuteDiff;
-
-
-    let bedTimeViolated:boolean;
-    (diff < -5) ? bedTimeViolated = true : bedTimeViolated = false;
-    gameData["bedTimeViolated"] = bedTimeViolated;
-
-
-    let serverAction = "upload-game-data";  //
-    let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", remoteServer, true);
-    xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.send(JSON.stringify(gameData));
-
-    document.getElementById("test_message3").innerHTML += "Game end message(/upload-game-data): " + JSON.stringify(gameData) + "cellNum is " + cellNum;  //For debugging
-
-    xmlHttp.onreadystatechange = await function () {
-      if (this.readyState != 4) return;
-      if (this.status == 200) {
-        var response = (this.responseText); // we get the returned data
-        //document.getElementById("test_message").innerHTML += "reponse from /upload-game-data = " + response;
-        //console.log("reponse from /upload-game-data = " + response);
-      }
-      // end of state change: it can be after some time (async)
-    };
-  }
-
-  public async setParentPrefences(){
     let result = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
-      if(result == null){
-        console.log("setParentPrefences(); cell num not set");
-        return;
-      }
+    if(result == null){
+      console.log("setParentPrefences(); cell num not set");
+      return;
+    }
     var sendData = {cellNum:JSON.parse(result)["cellNum"]};
 
-    let serverAction = "get-settings";
-    let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+    let serverActionPreferences = "get-settings";
+    let remoteServerPreferences = "http://" +  this.remoteAddress + ":5000/" + serverActionPreferences;
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", remoteServer, true);
+    xmlHttp.open("POST", remoteServerPreferences, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send(JSON.stringify(sendData));
 
-    xmlHttp.onreadystatechange = await function () {
+    xmlHttp.onreadystatechange = async function () {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var parsed = JSON.parse(this.responseText);
         BackgroundController.instance().parentPreferenes = parsed;
+        console.log(JSON.stringify(parsed));
+
+        let cellNumUnparsed = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+        let cellNum = JSON.parse(cellNumUnparsed)["cellNum"];
+        gameData["cellNum"] = cellNum;
+        gameData["timeStampTime"] = new Date().toLocaleTimeString();
+        gameData["timeStampDay"] = new Date().toDateString();
+
+        if(BackgroundController.instance().parentPreferenes["bedTimeRule"] == null){
+          gameData["bedTimeViolated"] = false; //No bedtime set
+        }else{
+          let date = new Date();
+          let hours = date.getHours();
+          let minutes = date.getMinutes();
+          let bedtimeHours = parseInt(BackgroundController.instance().parentPreferenes["bedTimeRule"]);
+          let bedtimeMinutes = parseInt(BackgroundController.instance().parentPreferenes["bedTimeRule"].substring(3, 5))
+
+          let hourDiff = bedtimeHours - hours;
+          let minuteDiff = bedtimeMinutes - minutes;
+          let diff = (hourDiff*60) + minuteDiff;
+
+
+          let bedTimeViolated:boolean;
+          (diff < -5) ? bedTimeViolated = true : bedTimeViolated = false;
+          gameData["bedTimeViolated"] = bedTimeViolated;
+        }
+
+
+        let serverAction = "upload-game-data";  //
+        let remoteServer = "http://" +  BackgroundController.instance().remoteAddress + ":5000/" + serverAction;
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("POST", remoteServer, true);
+        xmlHttp.setRequestHeader('Content-Type', 'application/json');
+        xmlHttp.send(JSON.stringify(gameData));
       }
     };
-    return;
   }
 
 

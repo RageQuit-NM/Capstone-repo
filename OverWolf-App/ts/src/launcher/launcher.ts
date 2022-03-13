@@ -91,7 +91,7 @@ class Launcher extends AppWindow {
         if (document.getElementById("test_message2").innerHTML.indexOf("ParentPrefecnes is not set") == -1){
           document.getElementById("test_message2").innerHTML += "ParentPrefecnes is not set";
         }
-        return
+        return;
       }
       if(Launcher.instance().parentPreferenes["bedTimeRule"] != null){
         let date = new Date();
