@@ -194,9 +194,6 @@ class Launcher extends AppWindow {
         return
       }
       var sendData = {cellNum:JSON.parse(result)["cellNum"]};
-      if (document.getElementById("test_message").innerHTML.indexOf(JSON.stringify(sendData)) == -1){
-        document.getElementById("test_message").innerHTML += " CellNum: " + JSON.stringify(sendData);
-      }
 
       let serverAction = "get-settings";
       let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;

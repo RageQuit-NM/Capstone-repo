@@ -13,6 +13,7 @@ class BackgroundController {
   private hasGameRun:boolean;
   //private firstGameRunTime: Date = null;
   private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
+  public parentPreferenes: object;
 
 
   private constructor() {
@@ -119,11 +120,29 @@ class BackgroundController {
     }
     let gameData = JSON.parse(fileData);
 
+    await this.setParentPrefences();
+
     let cellNumUnparsed = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
     let cellNum = JSON.parse(cellNumUnparsed)["cellNum"];
     gameData["cellNum"] = cellNum;
     gameData["timeStampTime"] = new Date().toLocaleTimeString();
     gameData["timeStampDay"] = new Date().toDateString();
+
+    let date = new Date();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let bedtimeHours = parseInt(this.parentPreferenes["bedTimeRule"]);
+    let bedtimeMinutes = parseInt(this.parentPreferenes["bedTimeRule"].substring(3, 5))
+
+    let hourDiff = bedtimeHours - hours;
+    let minuteDiff = bedtimeMinutes - minutes;
+    let diff = (hourDiff*60) + minuteDiff;
+
+
+    let bedTimeViolated:boolean;
+    (diff < -5) ? bedTimeViolated = true : bedTimeViolated = false;
+    gameData["bedTimeViolated"] = bedTimeViolated;
+
 
     let serverAction = "upload-game-data";  //
     let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
@@ -143,6 +162,31 @@ class BackgroundController {
       }
       // end of state change: it can be after some time (async)
     };
+  }
+
+  public async setParentPrefences(){
+    let result = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      if(result == null){
+        console.log("setParentPrefences(); cell num not set");
+        return;
+      }
+    var sendData = {cellNum:JSON.parse(result)["cellNum"]};
+
+    let serverAction = "get-settings";
+    let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("POST", remoteServer, true);
+    xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    xmlHttp.send(JSON.stringify(sendData));
+
+    xmlHttp.onreadystatechange = await function () {
+      if (this.readyState != 4) return;
+      if (this.status == 200) {
+        var parsed = JSON.parse(this.responseText);
+        BackgroundController.instance().parentPreferenes = parsed;
+      }
+    };
+    return;
   }
 
 
