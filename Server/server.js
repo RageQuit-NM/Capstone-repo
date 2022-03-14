@@ -53,12 +53,11 @@ app.post('/get-settings', async function(req, res){
     //console.log("Returing parentPortal settings. id: "+ JSON.stringify(result["_id"]) + " cellNum: " + JSON.stringify(result["cellNum"]));
   }
   res.send(JSON.stringify(result));
-  //console.log("---");
+  // console.log("---");
 });
 
 
 //Collect the child performance stats for a given cell number
-//***************************This is problematic, the collection to use is never specified nor is the database, it is relying on values set by other functions which may not always match*************************************
 app.post('/get-stats', async function(req, res){
   var query = {cellNum: req.body["cellNum"]};
   var result;
@@ -164,31 +163,26 @@ app.post('/upload-game-data', function(req, res){
 //Returns message based on message ID to the app
 app.post('/get-message', async function(req, res){
   //1. get the cell number from the http request
-  //var query = {cellNum: req.body["cellNum"]};
-  var query = {cellNum: "3331234"};
+  var query = {cellNum: req.body["cellNum"]};
   console.log(JSON.stringify(query));
 
   //2. find most recent game played
-  
+  var sortCriteria = { timeStampDay: -1, timeStampTime: -1 };
   var result;
-  
-  result = await MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    var database = db.db("growing_gamers");
-    var collection = "player_records"
-    var sortCriteria = { timeStampDay: -1, timeStampTime: -1 };
-    database.collection(collection).find().sort(sortCriteria).toArray(function(err, res) {
-      if (err) throw err;
-      console.log(res);
-      db.close();
-    });
-  });
-
-  if(result) {
-    console.log("Sorted List: " + JSON.stringify(result));
-    res.send(JSON.stringify(result));
-    console.log("---");
+  try {
+    result = await sort(query, sortCriteria, "player_records", "growing_gamers");
+  } catch (error){
+    console.log(error);
   }
+  if(result == null){
+    console.log("there was an error");
+  }else{
+    //console.log("Returing parentPortal settings. id: "+ JSON.stringify(result["_id"]) + " cellNum: " + JSON.stringify(result["cellNum"]));
+  }
+
+  console.log("Sorted List: " + JSON.stringify(result));
+  res.send(JSON.stringify(result));
+  console.log("---");
 });
   
 
@@ -214,7 +208,7 @@ async function findOne(query, collectionName){
 
 
 //get all matching items from player_records collection
-async function findAll(query){
+async function findAll(query, collectionSelected="player_records", database="growing_gamers"){
   console.log("finding all");
   const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
   if (!client) {
@@ -222,9 +216,32 @@ async function findAll(query){
     return;
   }
   try {
-    const db = client.db("growing_gamers");
-    let collection = db.collection('player_records');
+    const db = client.db(database);
+    let collection = db.collection(collectionSelected);
     let result = await collection.find(query).toArray();
+    console.log("returning: " + JSON.stringify(result));
+    return result;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
+}
+
+
+//get all matching items from a collection and sort by sortCriteria
+async function sort(query, sortCriteria, collectionSelected="player_records", database="growing_gamers"){
+  console.log("sorting");
+  const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
+  if (!client) {
+    console.log("No client");
+    return;
+  }
+
+  try {
+    const db = client.db(database);
+    let collection = db.collection(collectionSelected);
+    let result = await collection.find(query).sort(sortCriteria).toArray();
     console.log("returning: " + JSON.stringify(result));
     return result;
   } catch (err) {
