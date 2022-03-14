@@ -175,11 +175,11 @@ app.post('/upload-game-data', function(req, res){
 
 //Returns message based on message ID to the app
 app.post('/get-message', async function(req, res){
-  //1. get the cell number from the http request
+  //1. get the cell number from the http request______________________________________
   var query = { cellNum: req.body["cellNum"] };
-  console.log(JSON.stringify(query));
+  console.log("The query is: " + JSON.stringify(query));
 
-  //2. collect players games ordered by most recent
+  //2. collect players games ordered by most recent___________________________________
   var sortCriteria = { timeStampDay: -1, timeStampTime: -1 };
   var games;
   try {
@@ -192,13 +192,16 @@ app.post('/get-message', async function(req, res){
   }
   console.log("Sorted List: " + JSON.stringify(games));
 
-  //3. Check if the bedtime is violated
-  console.log("The query is: " + JSON.stringify(query));
+  //3. Check if the bedtime rule is violated__________________________________________
   var rules = await findOne(query, "user_data", "growing_gamers");
-  console.log("The rules are: \n" + JSON.stringify(rules));
-
-  var bedTimeViolation = await isBedtimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+2));
+  // console.log("The rules are: \n" + JSON.stringify(rules));
+  var bedTimeViolation = await isBedTimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+2));
   console.log("Bedtime Violation Staus: " + bedTimeViolation);
+
+  
+  //4. Check if playTime rule is violated_____________________________________________
+  var playTime = 60;
+  var playTimeViolation = await isPlayTimeViolated(parseInt(rules["playTimeRule"])*60, playTime)
  
 
   console.log("---");
@@ -271,13 +274,19 @@ async function sort(query, sortCriteria, collectionSelected="player_records", da
 }
 
 
-//Checks if bedtime is violated  bedtimeRule: string, time: string
-async function isBedtimeViolated(bedTimeRule, time){
-  if (time == null || bedTimeRule == null) {return "RULE_OR_TIMESTAMP_MISSING";}
-  console.log(bedTimeRule + "         " + time);
-
+//Checks if bedtime rule is violated  bedtimeRule: string, time: string
+async function isBedTimeViolated(bedTimeRule, time){
+  if (time == null || bedTimeRule == null) {return "RULE_OR_TIMESTAMP_ERROR";}
+  // console.log(bedTimeRule + "         " + time);
   if(time < bedTimeRule) {return "NO_VIOLATION";}
   else {return "VIOLATION";}
 }
 
+//Checks if playTime rule is violated  playTimeRule: number, playTime: number
+async function isPlayTimeViolated(playTimeRule, playTime){
+  if (time == null || bedTimeRule == null) {return "RULE_OR_TIME_ERROR";}
+  console.log(playTimeRule + "         " + playTime);
 
+  if(playTime < playTimeRule) {return "NO_VIOLATION";}
+  else {return "VIOLATION";}
+}
