@@ -284,7 +284,7 @@ async function isBedTimeViolated(bedTimeRule, time){
 
 //Checks if playTime rule is violated  playTimeRule: number, playTime: number
 async function isPlayTimeViolated(playTimeRule, playTime){
-  if (playTime == null || bedTimeRule == null) {return "RULE_OR_PLAYTIME_ERROR";}
+  if (playTime == null || playTimeRule == null) {return "RULE_OR_PLAYTIME_ERROR";}
   console.log(playTimeRule + "         " + playTime);
 
   if(playTime < playTimeRule) {return "NO_VIOLATION";}
