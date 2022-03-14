@@ -281,6 +281,9 @@ async function sort(query, sortCriteria, collectionSelected="player_records", da
 //Checks if bedtime is violated or nearly violated
 async function isBedtimeViolated(bedTimeRule, lastGame){
   console.log(JSON.stringify(bedTimeRule) + "         " + JSON.stringify(lastGame));
+  console.log(lastGame["timeStamp"] + "         " + bedTimeRule);
+  if(JSON.parse(lastGame["timeStamp"]) < JSON.parse(bedTimeRule)) { return "NO_VIOLATION";}
+ // else if(JSON.parse(lastGame["timeStamp"]) < JSON.parse(bedTimeRule))
 }
 
 
