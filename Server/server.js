@@ -235,7 +235,6 @@ app.post('/get-message', async function(req, res){
 
 
 
-
   //X. Submit message ________________________________________________________________
   if(bedTimeViolation == "VIOLATION"){query = { messageID: "bedtimeviolated" };}
   else if(playTimeViolation == "VIOLATION"){query = { messageID: "playtimeviolated" };}
@@ -366,3 +365,26 @@ async function ratio(num, denom) {
   }
   return ratio;
 }
+
+
+
+
+//*****************************Digests**************************************************************************************************
+async function dailyDigest(){
+  var query = { dailyDigest: "true" };
+  var dailyDigestSubscribers = findAll(query, "user_data", "growing_gamers");
+  var date = new Date().toISOString.slice(0,10);
+  console.log("date is: " + date);
+  //Generate a daily digest for each subscriber
+  var cellNum;
+  for (i in dailyDigestSubscribers) {
+    cellNum=i["cellNum"];
+    console.log("cellNum is: " + cellNum);
+  }
+}
+
+app.post('/test-daily-digest', function(req, res){
+  console.log("Running daily digest generator");
+  var run = await dailyDigest();
+  console.log("---");
+});
