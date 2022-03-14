@@ -61,10 +61,11 @@ class Launcher extends AppWindow {
     public async submitCellNum(){
       let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
       if(!Launcher.instance().validatePhoneNumber(myData["cellNum"])){
-        document.getElementById("cellTitle").innerHTML += "<br/> Invalid cellphone # format!";
+        if(document.getElementById("cellTitle").innerHTML.indexOf("Invalid cellphone # format!") == -1){
+          document.getElementById("cellTitle").innerHTML += "<br/> Invalid cellphone # format!";
+        }
         return;
       }
-
 
       await Launcher.instance().writeFile(JSON.stringify(myData), `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
