@@ -176,9 +176,9 @@ app.post('/get-message', async function(req, res){
     var database = db.db("growing_gamers");
     var collection = "player_records"
     var sortCriteria = { timeStampDay: -1, timeStampTime: -1 };
-    result = database.collection(collection).find().sort(sortCriteria).toArray(function(err, result) {
+    result = database.collection(collection).find().sort(sortCriteria).toArray(function(err, res) {
       if (err) throw err;
-      console.log(result);
+      console.log(res);
       db.close();
     });
   });
