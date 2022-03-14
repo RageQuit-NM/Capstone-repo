@@ -319,7 +319,7 @@ async function isPlayTimeViolated(playTimeRule, playTime){
 }
 
 //Checks if gameLimit rule is violated  gameLimitRule: number, gamesPlayed: number
-async function isPlayTimeViolated(gameLimitRule, gamesPlayed){
+async function isGameLimitViolated(gameLimitRule, gamesPlayed){
   if (gamesPlayed == null || gameLimitRule == null) {return "RULE_OR_GAMESPLAYED_ERROR";}
   console.log(gameLimitRule + "         " + gamesPlayed);
 
