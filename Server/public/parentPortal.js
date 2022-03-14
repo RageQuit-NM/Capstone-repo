@@ -262,10 +262,25 @@ function isFormValid(){
         document.getElementById("cellNumText").innerHTML = document.getElementById("cellNumText").innerHTML.substring(0, document.getElementById("cellNumText").innerHTML.indexOf(". Invalid phone # format"));
       }
     }
+    var regexTime = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/im;
+    var bedTimeRule = document.getElementById("bedTimeRule").value
+    if(!regexTime.test(bedTimeRule)){
+      if(document.getElementById("bedTimeRuleText").innerHTML.indexOf(" Invalid number enetered.") == -1){
+        document.getElementById("bedTimeRuleText").innerHTML += " Invalid number enetered.";
+      }
+      return false;
+    }else{
+      if(document.getElementById("bedTimeRuleText").innerHTML.indexOf(" Please enter a bedtime.") != -1){
+        document.getElementById("bedTimeRuleText").innerHTML = document.getElementById("bedTimeRuleText").innerHTML.substring(0, document.getElementById("bedTimeRuleText").innerHTML.indexOf(" Please enter a bedtime."));
+      }
+    }
 
-    var regex = /^[1-9][0-9]*$/im;
+
+
+    var regexNumber = /^[1-9][0-9]*$/im;
+
     var timeLimitRule = document.getElementById("timeLimitRule").value
-    if(!regex.test(timeLimitRule)){
+    if(!regexNumber.test(timeLimitRule)){
       if(document.getElementById("timeLimitRuleText").innerHTML.indexOf(" Invalid number enetered.") == -1){
         document.getElementById("timeLimitRuleText").innerHTML += " Invalid number enetered.";
       }
@@ -277,7 +292,7 @@ function isFormValid(){
     }
 
     var gameLimitRule = document.getElementById("gameLimitRule").value
-    if(!regex.test(gameLimitRule)){
+    if(!regexNumber.test(gameLimitRule)){
       if(document.getElementById("gameLimitRuleText").innerHTML.indexOf("Invalid number enetered.") == -1){
         document.getElementById("gameLimitRuleText").innerHTML += " Invalid number enetered.";
       }
