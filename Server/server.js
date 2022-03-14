@@ -194,7 +194,7 @@ app.post('/get-message', async function(req, res){
   console.log("Single Element List: " + JSON.stringify(latestGameDate));
 
   latestGameDate = latestGameDate[0]["timeStamp"].substring(0, latestGameDate[0]["timeStamp"].indexOf(","));
-  console.log("latest Game date is: " + latestGameDate);
+  console.log("Latest Game Date is: " + latestGameDate);
 
   //find all games played on the most recent date
   query = { cellNum: req.body["cellNum"], timeStamp: new RegExp(latestGameDate) }
@@ -219,7 +219,7 @@ app.post('/get-message', async function(req, res){
 
   
   //4. Check if playTime rule is violated_____________________________________________
-  var playTime = await sumStringField();
+  var playTime = await sumStringField("game_time", games);
   var playTimeViolation = await isPlayTimeViolated(parseInt(rules["timeLimitRule"])*60, playTime)
  
 
@@ -310,11 +310,11 @@ async function isPlayTimeViolated(playTimeRule, playTime){
   else {return "VIOLATION";}
 }
 
-
-async function returnRegex(regexBody, flags){
-  return new RegExp(regexBody, flags);
-}
-
 async function sumStringField(field, array){
-
+  var totalPlayTime = 0;
+  for (i in array){
+    if(array[i][field]){ totalPlayTime+=array[i][field]; }
+  }
+  console.log("total play time is: " + totalPlayTime);
+  return totalPlayTime;
 }
