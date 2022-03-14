@@ -2,6 +2,7 @@ var remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
 
 //listener for parent preference submission
 document.getElementById("parent_control_submit").addEventListener("click", parentFormHandler);
+document.getElementById("choose_cellNum_submit").addEventListener("click", setCellNum);
 
 //Initialize tooltips
 createToolTips();
@@ -232,6 +233,12 @@ function buildPreferences(preferences) {
   }
 }
 
+
+function setCellNum(){
+  var cellNum = document.getElementById("cellInput").value
+  setCookie("cellNum", cellNum);
+  location.reload();
+}
 
 //Collect data from parent preferences and ...
 function parentFormHandler() {

@@ -74,7 +74,7 @@ app.post('/get-stats', async function(req, res){
 
 
 //Send bedtime violation notification
-app.post('/bedtime-message', function(req, res){
+app.post('/bedtime-message', async function(req, res){
     var cellNum = req.body["cellNum"]; //req.body["cellNum"];
     result = await findOne(query, collection);
     if(result["bedTimeToggle"] == "true"){
