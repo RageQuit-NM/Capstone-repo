@@ -181,7 +181,7 @@ app.post('/get-message', async function(req, res){
 
   //2. collect players last day games ordered by most recent___________________________________
   //Find date of most recent game
-  var sortCriteria = { timeStampDay: -1, timeStampTime: -1 };
+  var sortCriteria = { timeStamp: -1 };//sort by descending date and time
   var latestGameDate;
   try {
     latestGameDate = await sort(query, sortCriteria, "player_records", "growing_gamers", 1);
@@ -195,8 +195,9 @@ app.post('/get-message', async function(req, res){
 
   latestGameDate = latestGameDate[0]["timeStamp"].substring(0, latestGameDate[0]["timeStamp"].indexOf(","));
   console.log("latest Game date is: " + latestGameDate);
-  
+
   var regex = "/\A" + latestGameDate + "/i";
+  console.log("regex is: " +  regex);
   query = { cellNum: req.body["cellNum"], timeStamp: regex }
   var games;
   try {
