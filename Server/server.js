@@ -172,12 +172,12 @@ app.post('/get-message', async function(req, res){
   
   var result;
   
-  MongoClient.connect(url, function(err, db) {
+  result = await MongoClient.connect(url, function(err, db) {
     if (err) throw err;
     var database = db.db("growing_gamers");
     var collection = "player_records"
     var sortCriteria = { timeStampDay: -1, timeStampTime: -1 };
-    result = await database.collection(collection).find().sort(sortCriteria).toArray(function(err, res) {
+    database.collection(collection).find().sort(sortCriteria).toArray(function(err, res) {
       if (err) throw err;
       console.log(res);
       db.close();
