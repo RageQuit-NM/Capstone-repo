@@ -96,8 +96,17 @@ app.post('/bedtime-message', async function(req, res){
 
 //Insert a new cell num on itialization.
 app.post('/insert-cellNum', async function(req, res){
-  var toInsert = {cellNum: req.body["cellNum"]};
-  console.log("trying to insert " + JSON.stringify(toInsert))
+  var toInsert = {cellNum: req.body["cellNum"],
+                  bedTimeRule: '20:30',
+                  bedTimeToggle: 'true',
+                  dailyDigest: 'true',
+                  gameLimitRule: '10',
+                  gameLimitToggle: 'false',
+                  monthlyDigest: 'false',
+                  timeLimitRule: '180',
+                  timeLimitToggle: 'false',
+                  weeklyDigest: 'false'};
+  console.log("trying to insert new cellNum: " + JSON.stringify(toInsert))
 
   const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
   const db = client.db("growing_gamers");
