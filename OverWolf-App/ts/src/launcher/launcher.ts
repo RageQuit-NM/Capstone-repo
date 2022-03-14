@@ -18,8 +18,7 @@ class Launcher extends AppWindow {
         if(overwolf.windows.getMainWindow().document.getElementById("isCellNumSet").innerHTML == "false"){
           document.getElementById("main").style.display = "none";
           document.getElementById("initalization").style.display = "inline";
-        }
-        if(overwolf.windows.getMainWindow().document.getElementById("isCellNumSet").innerHTML == "true"){
+        }else{
           document.getElementById("initalization").style.display = "none";
           Launcher.instance().collectPreferences();
           Launcher.instance().setContent();
@@ -33,7 +32,7 @@ class Launcher extends AppWindow {
     }
 
     public async displayCellNum(){
-      let fileData = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      let fileData = await Launcher.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
       fileData = JSON.parse(fileData);
       document.getElementById("cellDisplay").innerHTML = fileData["cellNum"].substring(0, 3) + "-" + fileData["cellNum"].substring(3);
     }
@@ -55,7 +54,7 @@ class Launcher extends AppWindow {
     //Writes the cellNum ino cell_number.json. Then sends the cellNum to remote. Then completes intialization and sets the launcher page back to normal functionality.
     public async submitCellNum(){
       let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
-      await Launcher.instance()._writeFile(JSON.stringify(myData), `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      await Launcher.instance().writeFile(JSON.stringify(myData), `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
       let serverAction = "insert-cellNum";
       let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
@@ -186,7 +185,7 @@ class Launcher extends AppWindow {
     //Collect parental preferences at an interval
     private async collectPreferences(){
       //document.getElementById("test_message3").innerHTML += "Collecting preferneces" + new Date();
-      let result = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      let result = await Launcher.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
       if(result == null){
         if (document.getElementById("test_message2").innerHTML.indexOf("cell_number.json does not exist") == -1){
           document.getElementById("test_message2").innerHTML += "cell_number.json does not exist";
@@ -212,7 +211,7 @@ class Launcher extends AppWindow {
     }
 
   
-    private async _readFileData(file_path:string){
+    private async readFileData(file_path:string){
       const result = await new Promise(resolve => {
         overwolf.io.readFileContents(
           file_path,
@@ -224,7 +223,7 @@ class Launcher extends AppWindow {
     }
 
     //Writes data into a file specified in file_path, returns the result
-    private async _writeFile(data:string, file_path:string){
+    private async writeFile(data:string, file_path:string){
       let result = await new Promise((resolve, reject) => {
         overwolf.io.writeFileContents(
           file_path,
