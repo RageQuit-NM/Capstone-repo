@@ -242,9 +242,8 @@ app.post('/get-message', async function(req, res){
   else if(gameLimitViolation == "VIOLATION"){query = { messageID: "gamelimitviolated" };}
   else if(killDeathRatio > 1){query = { messageID: "doinggreat" };}
   else if(killDeathRatio < 0.5){query = { messageID: "takebreak" };}
+  console.log(JSON.stringify(query));
   res.send(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
-
- 
 
   console.log("---");
 });
