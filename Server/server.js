@@ -168,14 +168,15 @@ app.post('/get-message', async function(req, res){
   console.log(JSON.stringify(query));
 
   //2. find most recent game played
-  var collection = "player_records"
+  
   var result;
   
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
     var database = db.db("growing_gamers");
+    var collection = "player_records"
     var sortCriteria = { timeStampDay: -1, timeStampTime: -1 };
-    database.collection("customers").find().sort(sortCriteria).toArray(function(err, result) {
+    result = database.collection(collection).find().sort(sortCriteria).toArray(function(err, result) {
       if (err) throw err;
       console.log(result);
       db.close();
