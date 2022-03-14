@@ -253,14 +253,14 @@ function setCellNum(){
 function isFormValid(){
   var cellNum = document.getElementById("cellNum").value
     if(!validatePhoneNumber(cellNum)){
-      if(document.getElementById("cellNumText").innerHTML.indexOf(". Invalid phone # format") == -1){
-        document.getElementById("cellNumText").innerHTML += ". Invalid phone # format";
-      }
+      document.getElementById("timeLimitFeedback").innerHTML = "Please enter a valid number. Ex. 5551231234";
+      document.getElementById("timeLimitRule").classList.add("is-invalid");
+      document.getElementById("timeLimitRule").classList.remove("is-vaild");
       return false;
     }else{
-      if(document.getElementById("cellNumText").innerHTML.indexOf(". Invalid phone # format") != -1){
-        document.getElementById("cellNumText").innerHTML = document.getElementById("cellNumText").innerHTML.substring(0, document.getElementById("cellNumText").innerHTML.indexOf(". Invalid phone # format"));
-      }
+      document.getElementById("timeLimitFeedback").innerHTML = "";
+      document.getElementById("timeLimitRule").classList.remove("is-invaild");
+      document.getElementById("timeLimitRule").classList.add("is-valid");
     }
     
     var regexTime = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/im;
