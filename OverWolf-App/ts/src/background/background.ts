@@ -74,31 +74,32 @@ class BackgroundController {
   //Updates primary_message on bus
   private async sendMessageToLauncher(){
     //console.log("sendMessageToLauncher(). Primary is: " +  document.getElementById("primary_message").innerHTML);
-    let messageID = "welcomeback";
-    if(this.hasGameRun){
-      document.getElementById("test_message2").innerHTML += "game has run..."
-      messageID = "homework"; //if the player did not have a positive or negative KD deafault to homework
+    // let messageID = "welcomeback";
+    // if(this.hasGameRun){
+    //   document.getElementById("test_message2").innerHTML += "game has run..."
+    //   messageID = "homework"; //if the player did not have a positive or negative KD deafault to homework
 
-      let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
-      if (fileData == null){
-        document.getElementById("test_message2").innerHTML += "No data stored in game_data.json. This should never occur.";
-        return;
-      }
-      let killDeath = JSON.parse(fileData);
-      if(killDeath["kills"] > killDeath["deaths"]){
-        messageID = "doinggreat"; //positiveKD
-      }
-      if(killDeath["deaths"] > killDeath["kills"]){
-        messageID = "takebreak";  //negativeKD
-      }
-    }
+    //   let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
+    //   if (fileData == null){
+    //     document.getElementById("test_message2").innerHTML += "No data stored in game_data.json. This should never occur.";
+    //     return;
+    //   }
+    //   let killDeath = JSON.parse(fileData);
+    //   if(killDeath["kills"] > killDeath["deaths"]){
+    //     messageID = "doinggreat"; //positiveKD
+    //   }
+    //   if(killDeath["deaths"] > killDeath["kills"]){
+    //     messageID = "takebreak";  //negativeKD
+    //   }
+    // }
+    let cellNumString = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
     let serverAction = "get-message";
     let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.send(JSON.stringify({"messageID":messageID}));
+    xmlHttp.send(cellNumString);
 
     xmlHttp.onreadystatechange = function () {
       if (this.readyState != 4) return;
@@ -110,6 +111,7 @@ class BackgroundController {
   }
 
 
+  //First gets the parent preferences fora  cell num
   //Called when a games ends. Sends all data in game_data.json, along with a cellnum and a timeStamp to /upload-game-data
   private async sendGameInfoToRemote(){
     //console.log("Sending Game info to remote");

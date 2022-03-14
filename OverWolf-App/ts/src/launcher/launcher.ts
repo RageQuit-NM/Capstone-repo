@@ -178,7 +178,7 @@ class Launcher extends AppWindow {
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open("POST", remoteServer, true);
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
-      xmlHttp.send(JSON.stringify(messageData));
+      xmlHttp.send(messageData);
       // xmlHttp.onreadystatechange = function(){
       //   if (this.readyState != 4) return; //---------What is response code '4'?--------------------------------------------||
       //   if (this.status == 200) {
