@@ -32,7 +32,7 @@
         <form id="parent_control_form">
           <p class="h1" data-bs-toggle="tooltip" data-bs-placement="left" title="Set the limits you find appropriate for your child.">Set the Rules: </p>
           <div class="mb-3 mt-3">
-            <label for="timeLimitRule" class="form-label h4">Daily Time Limit (minutes):</label>
+            <label for="timeLimitRule" id="timeLimitRuleText" class="form-label h4">Daily Time Limit (minutes):</label>
             <input type="number" class="form-control" id="timeLimitRule" value="180" placeholder="120" name="timeLimitRule" data-bs-toggle="tooltip" data-bs-placement="left" title="Set the maximum daily time that should be spent on games. (In minutes)">
           </div>
           <div class="mb-3 mt-3">
@@ -40,7 +40,7 @@
             <input type="time" class="form-control" id="bedTimeRule" value="20:30" name="bedTimeRule" data-bs-toggle="tooltip" data-bs-placement="left" title="Set the latest time games should be played. (hh:mm-AM/PM)">
           </div>
           <div class="mb-3 mt-3">
-            <label for="gameLimitRule" class="form-label h4">Game Limit:</label>
+            <label for="gameLimitRule" id="gameLimitRuleText" class="form-label h4">Game Limit:</label>
             <input type="number" class="form-control" id="gameLimitRule" value="5" placeholder="4" name="gameLimitRule" data-bs-toggle="tooltip" data-bs-placement="left" title="Set the maximum number of games that should be played in a day.">
           </div>
           <br/>
@@ -73,7 +73,7 @@
           </div>
           <br/>
           <div class="mb-3 mt-3">
-            <label for="cellNum" class="form-label h1">Cell Phone Number:</label>
+            <label for="cellNum" id="cellNumText" class="form-label h1">Cell Phone Number:</label>
             <input type="text" class="form-control" id="cellNum" name="cellNum" data-bs-toggle="tooltip" data-bs-placement="left" title="Cell phone number linked to your account, you will receive digests and notifications to this number.">
           </div>
         </form>

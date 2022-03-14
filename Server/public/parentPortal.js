@@ -250,9 +250,40 @@ function setCellNum(){
   location.reload();
 }
 
+function isFormValid(){
+  var cellNum = document.getElementById("cellNum").value
+    if(!validatePhoneNumber(cellNum)){
+      if(document.getElementById("cellNumText").innerHTML.indexOf("Invalid phone # format") == -1){
+        document.getElementById("cellNumText").innerHTML += ". Invalid phone # format";
+      }
+      return false;
+    }
+    var regex = /^[1-9][0-9]*$/im;
+    var timeLimitRule = document.getElementById("timeLimitRule").value
+    if(regex.test(timeLimitRule)){
+      if(document.getElementById("timeLimitRuleText").innerHTML.indexOf("Invalid number enetered.") == -1){
+        document.getElementById("timeLimitRuleText").innerHTML += " Invalid number enetered.";
+      }
+      return false;
+    }
+    var gameLimitRule = document.getElementById("gameLimitRule").value
+    if(regex.test(gameLimitRule)){
+      if(document.getElementById("gameLimitRuleText").innerHTML.indexOf("Invalid number enetered.") == -1){
+        document.getElementById("gameLimitRuleText").innerHTML += " Invalid number enetered.";
+      }
+      return false;
+    }
+    return true;
+}
+
 //Collect data from parent preferences and ...
 function parentFormHandler() {
     var formData = Array.from(document.querySelectorAll('#parent_control_form input')).reduce((acc, input)=>({ ...acc, [input.id]: input.value }), {});
+
+    if(!isFormValid()){
+      return;
+    }
+
 
     setCookie("cellNum", formData["cellNum"]);
 
