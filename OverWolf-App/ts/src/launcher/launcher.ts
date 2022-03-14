@@ -49,6 +49,15 @@ class Launcher extends AppWindow {
 
     //Called once to build the class
     public async run() {
+      // let fullDate = new Date().toLocaleString('en-CA', {hour12:false})
+      // let mmddyyy = fullDate.substring(0, fullDate.indexOf(","));
+      // let time = fullDate.substring(fullDate.indexOf(",")+1);
+      // document.getElementById("test_message").innerHTML += time  + " __ " + mmddyyy + " _ ";
+
+      // let yourDate = new Date()
+      // const offset = yourDate.getTimezoneOffset()
+      // yourDate = new Date(yourDate.getTime() - (offset*60*1000))
+      // document.getElementById("test_message2").innerHTML += yourDate.toISOString().split('T')[0]
     }
 
 

@@ -144,8 +144,7 @@ class BackgroundController {
         let cellNumUnparsed = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
         let cellNum = JSON.parse(cellNumUnparsed)["cellNum"];
         gameData["cellNum"] = cellNum;
-        gameData["timeStampTime"] = new Date().toLocaleTimeString();
-        gameData["timeStampDay"] = new Date().toDateString();
+        gameData["timeStamp"] = new Date().toLocaleString('en-CA', {hour12:false});
 
         if(BackgroundController.instance().parentPreferenes["bedTimeRule"] == null){
           gameData["bedTimeViolated"] = false; //No bedtime set
