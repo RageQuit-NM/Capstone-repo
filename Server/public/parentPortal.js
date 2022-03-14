@@ -262,9 +262,10 @@ function isFormValid(){
         document.getElementById("cellNumText").innerHTML = document.getElementById("cellNumText").innerHTML.substring(0, document.getElementById("cellNumText").innerHTML.indexOf(". Invalid phone # format"));
       }
     }
+
     var regex = /^[1-9][0-9]*$/im;
     var timeLimitRule = document.getElementById("timeLimitRule").value
-    if(regex.test(timeLimitRule)){
+    if(!regex.test(timeLimitRule)){
       if(document.getElementById("timeLimitRuleText").innerHTML.indexOf(" Invalid number enetered.") == -1){
         document.getElementById("timeLimitRuleText").innerHTML += " Invalid number enetered.";
       }
@@ -274,8 +275,9 @@ function isFormValid(){
         document.getElementById("timeLimitRuleText").innerHTML = document.getElementById("timeLimitRuleText").innerHTML.substring(0, document.getElementById("timeLimitRuleText").innerHTML.indexOf(" Invalid number enetered."));
       }
     }
+
     var gameLimitRule = document.getElementById("gameLimitRule").value
-    if(regex.test(gameLimitRule)){
+    if(!regex.test(gameLimitRule)){
       if(document.getElementById("gameLimitRuleText").innerHTML.indexOf("Invalid number enetered.") == -1){
         document.getElementById("gameLimitRuleText").innerHTML += " Invalid number enetered.";
       }
