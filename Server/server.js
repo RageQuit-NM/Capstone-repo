@@ -58,6 +58,7 @@ app.post('/get-settings', async function(req, res){
 
 
 //Collect the child performance stats for a given cell number
+//***************************This is problematic, the collection to use is never specified nor is the database, it is relying on values set by other functions which may not always match*************************************
 app.post('/get-stats', async function(req, res){
   var query = {cellNum: req.body["cellNum"]};
   var result;
@@ -75,7 +76,7 @@ app.post('/get-stats', async function(req, res){
 
 //Send bedtime violation notification
 app.post('/bedtime-message', async function(req, res){
-    var cellNum = req.body["cellNum"]; //req.body["cellNum"];
+    var cellNum = req.body["cellNum"];
     result = await findOne(query, collection);
     if(result["bedTimeToggle"] == "true"){
       var smsScript = childProcess.fork('./sms-messages/bedtime-message.js');
@@ -176,12 +177,14 @@ app.post('/get-message', async function(req, res){
     var database = db.db("growing_gamers");
     var collection = "player_records"
     var sortCriteria = { timeStampDay: -1, timeStampTime: -1 };
-    result = database.collection(collection).find().sort(sortCriteria).toArray(function(err, res) {
+    result = await database.collection(collection).find().sort(sortCriteria).toArray(function(err, res) {
       if (err) throw err;
       console.log(res);
       db.close();
     });
   });
+
+  
 
 
   console.log("Sorted List: " + JSON.stringify(result));
