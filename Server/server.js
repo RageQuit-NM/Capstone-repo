@@ -311,11 +311,13 @@ async function isPlayTimeViolated(playTimeRule, playTime){
   else {return "VIOLATION";}
 }
 
+
+//Sums up the total value of a field, field may be a string or a number
 async function sumStringField(field, array){
   var sum = 0;
   for (i in array){
-    if(array[i][field]){ sum+=array[i][field]; }
+    if(array[i][field]){ sum+=parseInt(array[i][field]); }
   }
-  console.log("sum is: " + totalPlayTime);
+  console.log("sum is: " + sum);
   return sum;
 }
