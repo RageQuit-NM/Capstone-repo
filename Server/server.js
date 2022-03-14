@@ -162,17 +162,20 @@ app.post('/upload-game-data', function(req, res){
 
 //Returns message based on message ID to the app
 app.post('/get-message', async function(req, res){
-  var query = {messageID: req.body["messageID"]};
+  //1. get the cell number from the http request
+  //var query = {cellNum: req.body["cellNum"]};
+  var query = {cellNum: "3331234"};
   console.log(JSON.stringify(query));
-  var collection = "app_messages"
-  var result;
 
+  //2. find most recent game played
+  var collection = "player_records"
+  var result;
   try {
-    result = await findOne(query, collection);
+    result = await find(query, collection).sort({timeStampDay: -1, timeStampTime: -1});
   } catch (error){
     console.log(error);
   }
-  console.log("Returning app message: " + JSON.stringify(result));
+  console.log("Sorted List: " + JSON.stringify(result));
   res.send(JSON.stringify(result));
   console.log("---");
 });
