@@ -242,7 +242,7 @@ function setCellNum(){
   var cellNum = document.getElementById("cellInput").value
   var regexCellNum = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
   if(!regexCellNum.test(cellNum)){
-    document.getElementById("cellChangeFeedback").innerHTML = "Please enter a valid phone numberr.";
+    document.getElementById("cellChangeFeedback").innerHTML = "Please enter a valid phone number.";
     document.getElementById("cellInput").classList.add("is-invalid");
     return;
   }
@@ -312,14 +312,10 @@ function parentFormHandler() {
     var formData = Array.from(document.querySelectorAll('#parent_control_form input')).reduce((acc, input)=>({ ...acc, [input.id]: input.value }), {});
 
     if(!isFormValid()){
-      if(document.getElementById("parent_control_submit").innerHTML.indexOf(" Please fix problems") == -1){
-        document.getElementById("parent_control_submit").innerHTML += " Please fix problems";
-      }
+      document.getElementById("forumFeedback").innerHTML = "Please correct the marked fields above.";
       return;
     }else{
-      if(document.getElementById("parent_control_submit").innerHTML.indexOf(" Please fix problems") != -1){
-        document.getElementById("parent_control_submit").innerHTML =  document.getElementById("parent_control_submit").innerHTML.substring(0, document.getElementById("parent_control_submit").innerHTML.indexOf(" Please fix problems"));
-      }
+      document.getElementById("forumFeedback").innerHTML = "";
     }
 
 
