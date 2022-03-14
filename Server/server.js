@@ -197,12 +197,9 @@ app.post('/get-message', async function(req, res){
   var rules = await findOne(query, "user_data", "growing_gamers");
   console.log("The rules are: \n" + JSON.stringify(rules));
 
-  var bedTimeViolation = await isBedtimeViolated(rules["bedTimeRule"], games[0]["timeStamp"]);
-  if (bedTimeViolation == "NO_VIOLATION") {
-
-  } else if (bedTimeViolation == "VIOLATION") {
-
-  }
+  var bedTimeViolation = await isBedtimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+2));
+  console.log("Bedtime Violation Staus: " + bedTimeViolation);
+ 
 
   console.log("---");
 });
@@ -274,16 +271,13 @@ async function sort(query, sortCriteria, collectionSelected="player_records", da
 }
 
 
-//Checks if bedtime is violated or nearly violated
-async function isBedtimeViolated(bedTimeRule, lastGameTimeStamp){
-  if (lastGameTimeStamp == null || bedTimeRule == null) {return "RULE_OR_TIMESTAMP_MISSING";}
-  console.log(bedTimeRule + "         " + lastGameTimeStamp);
-  var time = lastGameTimeStamp.substring(lastGameTimeStamp.indexOf(",")+2);
-  console.log("time of timestamp is: " + time);
+//Checks if bedtime is violated  bedtimeRule: string, time: string
+async function isBedtimeViolated(bedTimeRule, time){
+  if (time == null || bedTimeRule == null) {return "RULE_OR_TIMESTAMP_MISSING";}
+  console.log(bedTimeRule + "         " + time);
 
-  if(lastGameTimeStamp < bedTimeRule) {return "NO_VIOLATION";}
+  if(time < bedTimeRule) {return "NO_VIOLATION";}
   else {return "VIOLATION";}
-
 }
 
 
