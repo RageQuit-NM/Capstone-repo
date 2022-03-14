@@ -173,7 +173,7 @@ class Launcher extends AppWindow {
 
     private async sendBedtimeMessage(){
       let cellNum = await Launcher.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
-      let messageData = {"cellNum": cellNum};  //{cellNum: "#######"};
+      let messageData = cellNum;
       let serverAction = "bedtime-message";
       let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
       var xmlHttp = new XMLHttpRequest();
