@@ -215,12 +215,13 @@ app.post('/get-message', async function(req, res){
   var rules = await findOne(query, "user_data", "growing_gamers");
   console.log("The rules are: \n" + JSON.stringify(rules));
   var bedTimeViolation = await isBedTimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+2));
-  console.log("Bedtime Violation Staus: " + bedTimeViolation);
+  console.log("BedTime Violation Staus: " + bedTimeViolation);
 
   
   //4. Check if playTime rule is violated_____________________________________________
   var playTime = await sumStringField("game_time", games);
   var playTimeViolation = await isPlayTimeViolated(parseInt(rules["timeLimitRule"])*60, playTime)
+  console.log("PlayTime Violation Staus: " + playTimeViolation);
  
 
   console.log("---");
@@ -311,10 +312,10 @@ async function isPlayTimeViolated(playTimeRule, playTime){
 }
 
 async function sumStringField(field, array){
-  var totalPlayTime = 0;
+  var sum = 0;
   for (i in array){
-    if(array[i][field]){ totalPlayTime+=array[i][field]; }
+    if(array[i][field]){ sum+=array[i][field]; }
   }
-  console.log("total play time is: " + totalPlayTime);
-  return totalPlayTime;
+  console.log("sum is: " + totalPlayTime);
+  return sum;
 }
