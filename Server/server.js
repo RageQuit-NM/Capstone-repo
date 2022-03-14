@@ -199,7 +199,7 @@ app.post('/get-message', async function(req, res){
   //find all games played on the most recent date
   var regex = new RegExp("/\A" + latestGameDate, "i");
   console.log("regex is: " +  regex);
-  query = { cellNum: req.body["cellNum"], timeStamp: {$regex: regex} }
+  query = { cellNum: req.body["cellNum"], timeStamp: new RegExp("/\A" + latestGameDate, 'i') }
   console.log("query is: " +  JSON.stringify(query));
   var games;
   try {
