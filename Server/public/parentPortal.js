@@ -266,7 +266,7 @@ function isFormValid(){
     var bedTimeRule = document.getElementById("bedTimeRule").value
     if(!regexTime.test(bedTimeRule)){
       if(document.getElementById("bedTimeRuleText").innerHTML.indexOf(" Invalid number enetered.") == -1){
-        document.getElementById("bedTimeRuleText").innerHTML += " Invalid number enetered.";
+        document.getElementById("bedTimeRuleText").innerHTML += " Invalid number enetered." + bedTimeRule;
       }
       return false;
     }else{
