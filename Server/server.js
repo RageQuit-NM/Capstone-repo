@@ -179,8 +179,19 @@ app.post('/get-message', async function(req, res){
   var query = { cellNum: req.body["cellNum"] };
   console.log("The query is: " + JSON.stringify(query));
 
-  //2. collect players games ordered by most recent___________________________________
+  //2. collect players last day games ordered by most recent___________________________________
   var sortCriteria = { timeStampDay: -1, timeStampTime: -1 };
+  var latestGameDate;
+  try {
+    latestGameDate = await sort(query, sortCriteria, "player_records", "growing_gamers", 1);
+  } catch (error){
+    console.log(error);
+  }
+  if(latestGameDate == null){
+    console.log("ERROR: NULL RESULT 1");
+  }
+  console.log("Single Element List: " + JSON.stringify(latestGameDate));
+
   var games;
   try {
     games = await sort(query, sortCriteria, "player_records", "growing_gamers");
@@ -200,9 +211,7 @@ app.post('/get-message', async function(req, res){
 
   
   //4. Check if playTime rule is violated_____________________________________________
-  var playTime = 60;
-  console.log(rules["timeLimitRule"]);
-  console.log("timeLimitRule as a number is: " + parseInt(rules["timeLimitRule"]));
+  var playTime = await sumStringField();
   var playTimeViolation = await isPlayTimeViolated(parseInt(rules["timeLimitRule"])*60, playTime)
  
 
@@ -254,7 +263,7 @@ async function findAll(query, collectionSelected="player_records", database="gro
 
 
 //get all matching items from a collection and sort by sortCriteria
-async function sort(query, sortCriteria, collectionSelected="player_records", database="growing_gamers"){
+async function sort(query, sortCriteria, collectionSelected="player_records", database="growing_gamers", limit=20){
   console.log("sorting");
   const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
   if (!client) {
@@ -265,7 +274,7 @@ async function sort(query, sortCriteria, collectionSelected="player_records", da
   try {
     const db = client.db(database);
     let collection = db.collection(collectionSelected);
-    let result = await collection.find(query).sort(sortCriteria).toArray();
+    let result = await collection.find(query).sort(sortCriteria).limit(limit).toArray();
     console.log("returning: " + JSON.stringify(result));
     return result;
   } catch (err) {
@@ -291,4 +300,9 @@ async function isPlayTimeViolated(playTimeRule, playTime){
 
   if(playTime < playTimeRule) {return "NO_VIOLATION";}
   else {return "VIOLATION";}
+}
+
+
+async function sumStringField(field, array){
+
 }
