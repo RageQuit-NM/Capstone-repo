@@ -172,19 +172,23 @@ app.post('/get-message', async function(req, res){
 
   //2. collect players games ordered by most recent
   var sortCriteria = { timeStampDay: -1, timeStampTime: -1 };
-  var result;
+  var games;
   try {
-    result = await sort(query, sortCriteria, "player_records", "growing_gamers");
+    games = await sort(query, sortCriteria, "player_records", "growing_gamers");
   } catch (error){
     console.log(error);
   }
-  if(result == null){
+  if(games == null){
     console.log("ERROR: NULL RESULT");
   }
-  console.log("Sorted List: " + JSON.stringify(result));
+  console.log("Sorted List: " + JSON.stringify(games));
 
   //3. Check if the bedtime is violated
-  var bedTimeViolation = await isBedtimeViolated(query);
+  console.log("The query is: " + JSON.stringify(query));
+  var rules = await findOne(query, "user_data", "growing_gamers");
+  console.log("The rules are: \n" + JSON.stringify(rules));
+
+  var bedTimeViolation = await isBedtimeViolated(rules["bedTimeRule"], games[0]);
   if (bedTimeViolation == "NO_VIOLATION") {
 
   } else if (bedTimeViolation == "NEAR_VIOLATION_PRE") {
@@ -266,10 +270,8 @@ async function sort(query, sortCriteria, collectionSelected="player_records", da
 
 
 //Checks if bedtime is violated or nearly violated
-async function isBedtimeViolated(query){
-  console.log("The query is: " + JSON.stringify(query));
-  var rules = await findOne(query, "user_data", "growing_gamers");
-  console.log("The rules are: \n" + JSON.stringify(rules));
+async function isBedtimeViolated(bedTimeRule, lastGame){
+  console.log(JSON.stringify(bedTimeRule) + "         " + JSON.stringify(lastGame));
 }
 
 
