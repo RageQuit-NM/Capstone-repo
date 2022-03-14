@@ -184,10 +184,11 @@ app.post('/get-message', async function(req, res){
     });
   });
 
-  await result;
-  console.log("Sorted List: " + JSON.stringify(result));
-  res.send(JSON.stringify(result));
-  console.log("---");
+  if(result) {
+    console.log("Sorted List: " + JSON.stringify(result));
+    res.send(JSON.stringify(result));
+    console.log("---");
+  }
 });
   
 
