@@ -2,26 +2,22 @@ var remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
 
 //listener for parent preference submission
 document.getElementById("parent_control_submit").addEventListener("click", parentFormHandler);
+document.getElementById("choose_cellNum_submit").addEventListener("click", setCellNum);
 
 //Initialize tooltips
 createToolTips();
 
 //if the cellNum cookie is set then populate the parent portal with corresponding data from server
 if(checkCookie()){
-  //document.getElementById("test2").innerHTML = "cookie is set to: " + document.cookie + " checkCookie() is " + checkCookie();
-  //document.getElementById("test").innerHTML = "cookie SET: " + getCookie("cellNum");
   var sendData = {cellNum:0};
   sendData["cellNum"] = getCookie("cellNum");
 
-  // let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
   let serverAction = "get-settings";
   let remoteServer = "http://" +  remoteAddress + ":5000/" + serverAction;
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open("POST", remoteServer, true);
   xmlHttp.setRequestHeader('Content-Type', 'application/json');
   xmlHttp.send(JSON.stringify(sendData));
-
-  // document.getElementById("test").innerHTML = "sent = " + JSON.stringify(sendData);
 
   xmlHttp.onreadystatechange = function () {
     if (this.readyState != 4) return;
@@ -232,6 +228,12 @@ function buildPreferences(preferences) {
   }
 }
 
+
+function setCellNum(){
+  var cellNum = document.getElementById("cellInput").value
+  setCookie("cellNum", cellNum);
+  location.reload();
+}
 
 //Collect data from parent preferences and ...
 function parentFormHandler() {
