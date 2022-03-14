@@ -262,7 +262,9 @@ function isFormValid(){
         document.getElementById("cellNumText").innerHTML = document.getElementById("cellNumText").innerHTML.substring(0, document.getElementById("cellNumText").innerHTML.indexOf(". Invalid phone # format"));
       }
     }
+    
     var regexTime = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/im;
+
     var bedTimeRule = document.getElementById("bedTimeRule").value
     if(!regexTime.test(bedTimeRule)){
       if(document.getElementById("bedTimeRuleText").innerHTML.indexOf(" Please enter a bedtime.") == -1){
@@ -274,8 +276,6 @@ function isFormValid(){
         document.getElementById("bedTimeRuleText").innerHTML = document.getElementById("bedTimeRuleText").innerHTML.substring(0, document.getElementById("bedTimeRuleText").innerHTML.indexOf(" Please enter a bedtime."));
       }
     }
-
-
 
     var regexNumber = /^[1-9][0-9]*$/im;
 
