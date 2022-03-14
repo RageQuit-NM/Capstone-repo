@@ -281,7 +281,7 @@ async function findAll(query, collectionSelected="player_records", database="gro
     const db = client.db(database);
     let collection = db.collection(collectionSelected);
     let result = await collection.find(query).toArray();
-    console.log("returning: " + JSON.stringify(result));
+    // console.log("returning: " + JSON.stringify(result));
     return result;
   } catch (err) {
     console.log(err);
@@ -304,7 +304,7 @@ async function sort(query, sortCriteria, collectionSelected="player_records", da
     const db = client.db(database);
     let collection = db.collection(collectionSelected);
     let result = await collection.find(query).sort(sortCriteria).limit(limit).toArray();
-    console.log("returning: " + JSON.stringify(result));
+    // console.log("returning: " + JSON.stringify(result));
     return result;
   } catch (err) {
     console.log(err);
@@ -372,7 +372,7 @@ async function ratio(num, denom) {
 //*****************************Digests**************************************************************************************************
 async function dailyDigest(){
   var query = { dailyDigest: "true" };
-  var dailyDigestSubscribers = findAll(query, "user_data", "growing_gamers");
+  var dailyDigestSubscribers = await findAll(query, "user_data", "growing_gamers");
   var date = new Date().toISOString().slice(0,10);
   console.log("date is: " + date);
   //Generate a daily digest for each subscriber
