@@ -180,6 +180,7 @@ app.post('/get-message', async function(req, res){
   console.log("The query is: " + JSON.stringify(query));
 
   //2. collect players last day games ordered by most recent___________________________________
+  //Find date of most recent game
   var sortCriteria = { timeStampDay: -1, timeStampTime: -1 };
   var latestGameDate;
   try {
@@ -191,6 +192,9 @@ app.post('/get-message', async function(req, res){
     console.log("ERROR: NULL RESULT 1");
   }
   console.log("Single Element List: " + JSON.stringify(latestGameDate));
+
+  latestGameDate = latestGameDate[0]["timeStamp"].substring(0, latestGameDate[0]["timeStamp"].indexOf(","));
+  console.log("latest Game date is: " + latestGameDate);
 
   var games;
   try {
