@@ -77,6 +77,8 @@ app.post('/get-stats', async function(req, res){
 app.post('/bedtime-message', async function(req, res){
     var cellNum = req.body["cellNum"];
     var query = {cellNum: req.body["cellNum"]};
+    var collection = "user_data";
+    
     result = await findOne(query, collection);
     if(result["bedTimeToggle"] == "true"){
       var smsScript = childProcess.fork('./sms-messages/bedtime-message.js');
@@ -264,7 +266,7 @@ async function sort(query, sortCriteria, collectionSelected="player_records", da
 
 //Checks if bedtime is violated or nearly violated
 async function isBedtimeViolated(query){
-  var rules = findOne(query, );
+  var rules = findOne(query, "user_data");
 }
 
 
