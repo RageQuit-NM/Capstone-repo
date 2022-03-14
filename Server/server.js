@@ -378,6 +378,7 @@ async function dailyDigest(){
   //Generate a daily digest for each subscriber
   var cellNum;
   for (i in dailyDigestSubscribers) {
+    console.log(i["cellNum"] + "     " + i + "     " + JSON.parse(i));
     cellNum=i["cellNum"];
     console.log("cellNum is: " + cellNum);
   }
