@@ -265,8 +265,8 @@ function isFormValid(){
     var regexTime = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/im;
     var bedTimeRule = document.getElementById("bedTimeRule").value
     if(!regexTime.test(bedTimeRule)){
-      if(document.getElementById("bedTimeRuleText").innerHTML.indexOf(" Invalid number enetered.") == -1){
-        document.getElementById("bedTimeRuleText").innerHTML += " Invalid number enetered." + bedTimeRule;
+      if(document.getElementById("bedTimeRuleText").innerHTML.indexOf(" Please enter a bedtime.") == -1){
+        document.getElementById("bedTimeRuleText").innerHTML += " Please enter a bedtime.";
       }
       return false;
     }else{
