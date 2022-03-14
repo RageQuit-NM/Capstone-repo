@@ -233,9 +233,19 @@ function buildPreferences(preferences) {
   }
 }
 
+function validatePhoneNumber(input_str) {
+  var regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+  return regex.test(input_str);
+}
 
 function setCellNum(){
   var cellNum = document.getElementById("cellInput").value
+  if(!validatePhoneNumber(cellNum)){
+    if(document.getElementById("cellInputText").innerHTML.indexOf("Invalid phone # format") == -1){
+      document.getElementById("cellInputText").innerHTML += ". Invalid phone # format";
+    }
+    return;
+  }
   setCookie("cellNum", cellNum);
   location.reload();
 }
