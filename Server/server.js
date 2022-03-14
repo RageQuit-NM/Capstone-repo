@@ -195,7 +195,9 @@ app.post('/get-message', async function(req, res){
 
   latestGameDate = latestGameDate[0]["timeStamp"].substring(0, latestGameDate[0]["timeStamp"].indexOf(","));
   console.log("latest Game date is: " + latestGameDate);
-
+  
+  var regex = "/\A" + latestGameDate + "/i";
+  query = { cellNum: req.body["cellNum"], timeStamp: regex }
   var games;
   try {
     games = await sort(query, sortCriteria, "player_records", "growing_gamers");
