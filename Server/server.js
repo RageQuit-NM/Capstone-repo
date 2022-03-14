@@ -76,6 +76,7 @@ app.post('/get-stats', async function(req, res){
 //Send bedtime violation notification
 app.post('/bedtime-message', async function(req, res){
     var cellNum = req.body["cellNum"];
+    var query = {cellNum: req.body["cellNum"]};
     result = await findOne(query, collection);
     if(result["bedTimeToggle"] == "true"){
       var smsScript = childProcess.fork('./sms-messages/bedtime-message.js');
@@ -163,10 +164,10 @@ app.post('/upload-game-data', function(req, res){
 //Returns message based on message ID to the app
 app.post('/get-message', async function(req, res){
   //1. get the cell number from the http request
-  var query = {cellNum: req.body["cellNum"]};
+  var query = { cellNum: req.body["cellNum"] };
   console.log(JSON.stringify(query));
 
-  //2. find most recent game played
+  //2. collect players games ordered by most recent
   var sortCriteria = { timeStampDay: -1, timeStampTime: -1 };
   var result;
   try {
@@ -175,28 +176,37 @@ app.post('/get-message', async function(req, res){
     console.log(error);
   }
   if(result == null){
-    console.log("there was an error");
-  }else{
-    //console.log("Returing parentPortal settings. id: "+ JSON.stringify(result["_id"]) + " cellNum: " + JSON.stringify(result["cellNum"]));
+    console.log("ERROR: NULL RESULT");
+  }
+  console.log("Sorted List: " + JSON.stringify(result));
+
+  //3. Check if the bedtime is violated
+  var bedTimeViolation = await isBedtimeViolated(query);
+  if (bedTimeViolation == "NO_VIOLATION") {
+
+  } else if (bedTimeViolation == "NEAR_VIOLATION_PRE") {
+
+  } else if (bedTimeViolation == "NEAR_VIOLATION_POST") {
+  
+  } else {
+
   }
 
-  console.log("Sorted List: " + JSON.stringify(result));
-  res.send(JSON.stringify(result));
   console.log("---");
 });
   
 
 //*****************************Functions*****************************************************************************************
 //Get one item from the user_data collection  
-async function findOne(query, collectionName){
+async function findOne(query, collectionSelected="user_data", database="growing_gamers"){
   const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
   if (!client) {
     console.log("No client");
     return;
   } 
   try {
-    const db = client.db("growing_gamers");
-    let collection = db.collection(collectionName);
+    const db = client.db(database);
+    let collection = db.collection(collectionSelected);
     let result = await collection.findOne(query);
     return result;
   } catch (err) {
@@ -250,3 +260,11 @@ async function sort(query, sortCriteria, collectionSelected="player_records", da
     client.close();
   }
 }
+
+
+//Checks if bedtime is violated or nearly violated
+async function isBedtimeViolated(query){
+  var rules = findOne(query, );
+}
+
+
