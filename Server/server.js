@@ -268,7 +268,7 @@ async function sort(query, sortCriteria, collectionSelected="player_records", da
 //Checks if bedtime is violated or nearly violated
 async function isBedtimeViolated(query){
   console.log("The query is: " + JSON.stringify(query));
-  var rules = findOne(query, "user_data", "growing_gamers");
+  var rules = await findOne(query, "user_data", "growing_gamers");
   console.log("The rules are: \n" + JSON.stringify(rules));
 }
 
