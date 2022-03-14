@@ -6,6 +6,7 @@ var url = "mongodb://localhost:27017/";
 
 var express = require('express');  
 const { json } = require('body-parser');
+const { kill } = require('process');
 var app = express();  
 
 
@@ -227,6 +228,22 @@ app.post('/get-message', async function(req, res){
   var gameLimitViolation = await isGameLimitViolated(parseInt(rules["gameLimitRule"]), games.length);
   console.log("GameLimit Violation Status: " + gameLimitViolation);
 
+
+  //6. Check performance______________________________________________________________
+  var killDeathRatio = await ratio(games[0]["kills"], games[0]["deaths"]);
+  console.log("Kill death ratio is: " + killDeathRatio);
+
+
+
+
+  //X. Submit message ________________________________________________________________
+  if(bedTimeViolation == "VIOLATION"){query = { messageID: "bedtimeviolated" };}
+  else if(playTimeViolation == "VIOLATION"){query = { messageID: "playtimeviolated" };}
+  else if(gameLimitViolation == "VIOLATION"){query = { messageID: "gamelimitviolated" };}
+  else if(killDeathRatio > 1){query = { messageID: "doinggreat" };}
+  else if(killDeathRatio < 0.5){query = { messageID: "takebreak" };}
+  res.send(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
+
  
 
   console.log("---");
@@ -325,6 +342,8 @@ async function isGameLimitViolated(gameLimitRule, gamesPlayed){
   else {return "VIOLATION";}
 }
 
+
+//*****************************Utility_Functions*****************************************************************************************
 //Sums up the total value of a field, field may be a string or a number
 async function sumField(field, array){
   var sum = 0;
@@ -333,4 +352,18 @@ async function sumField(field, array){
   }
   // console.log("sum is: " + sum);
   return sum;
+}
+
+//Calculates ratio numerator/denominator
+async function ratio(num, denom) {
+  var ratio;
+  if (denom > 0){
+    ratio = num/denom;
+    if(ratio > 9){
+      ratio = 9;
+    }
+  } else {
+    ratio = 0;
+  }
+  return ratio;
 }

@@ -105,7 +105,7 @@ class Launcher extends AppWindow {
         if(diff < -5){  //it is past your betime.
           //myMessage = "You are " + -diff + " minutes past your bedtime."; //maybe delte this. We have the red stff popping up
           //send the bedtime text message here!!
-          document.getElementById("primary_message").innerHTML = "It is <span class='urgentText'>past your bedtime</span>, time to stop playing. <br/><br/>The time is: <span class='urgentText'>"  + localTime + " </span>";
+          document.getElementById("primary_message").innerHTML = "It is <span class='urgentText'>past your bedtime</span>, time to stop playing. <br/><br/>The time is: <span class='urgentText localTime'></span>";
           document.getElementById("minimizeButton").innerHTML = "See You Tomorrow";
           if (mainWindowObject.document.getElementById("attributes").getAttribute('bedTimeMessage') != 'true') {
             mainWindowObject.document.getElementById("attributes").setAttribute('bedTimeMessage', 'true');
