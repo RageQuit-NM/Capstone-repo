@@ -211,6 +211,7 @@ app.post('/get-message', async function(req, res){
   console.log("Sorted List: " + JSON.stringify(games));
 
   //3. Check if the bedtime rule is violated__________________________________________
+  query = { cellNum: req.body["cellNum"] };
   var rules = await findOne(query, "user_data", "growing_gamers");
   console.log("The rules are: \n" + JSON.stringify(rules));
   var bedTimeViolation = await isBedTimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+2));
