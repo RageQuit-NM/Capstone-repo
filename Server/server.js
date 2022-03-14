@@ -383,7 +383,7 @@ async function dailyDigest(){
   }
 }
 
-app.post('/test-daily-digest', function(req, res){
+app.post('/test-daily-digest', async function(req, res){
   console.log("Running daily digest generator");
   var run = await dailyDigest();
   console.log("---");
