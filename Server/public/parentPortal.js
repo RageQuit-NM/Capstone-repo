@@ -253,18 +253,26 @@ function setCellNum(){
 function isFormValid(){
   var cellNum = document.getElementById("cellNum").value
     if(!validatePhoneNumber(cellNum)){
-      if(document.getElementById("cellNumText").innerHTML.indexOf("Invalid phone # format") == -1){
+      if(document.getElementById("cellNumText").innerHTML.indexOf(". Invalid phone # format") == -1){
         document.getElementById("cellNumText").innerHTML += ". Invalid phone # format";
       }
       return false;
+    }else{
+      if(document.getElementById("cellNumText").innerHTML.indexOf(". Invalid phone # format") != -1){
+        document.getElementById("cellNumText").innerHTML = document.getElementById("cellNumText").innerHTML.substring(0, document.getElementById("cellNumText").innerHTML.indexOf(". Invalid phone # format"));
+      }
     }
     var regex = /^[1-9][0-9]*$/im;
     var timeLimitRule = document.getElementById("timeLimitRule").value
     if(regex.test(timeLimitRule)){
-      if(document.getElementById("timeLimitRuleText").innerHTML.indexOf("Invalid number enetered.") == -1){
+      if(document.getElementById("timeLimitRuleText").innerHTML.indexOf(" Invalid number enetered.") == -1){
         document.getElementById("timeLimitRuleText").innerHTML += " Invalid number enetered.";
       }
       return false;
+    }else{
+      if(document.getElementById("timeLimitRuleText").innerHTML.indexOf(" Invalid number enetered.") != -1){
+        document.getElementById("timeLimitRuleText").innerHTML = document.getElementById("timeLimitRuleText").innerHTML.substring(0, document.getElementById("timeLimitRuleText").innerHTML.indexOf(" Invalid number enetered."));
+      }
     }
     var gameLimitRule = document.getElementById("gameLimitRule").value
     if(regex.test(gameLimitRule)){
@@ -272,6 +280,10 @@ function isFormValid(){
         document.getElementById("gameLimitRuleText").innerHTML += " Invalid number enetered.";
       }
       return false;
+    }else{
+      if(document.getElementById("gameLimitRuleText").innerHTML.indexOf(" Invalid number enetered.") != -1){
+        document.getElementById("gameLimitRuleText").innerHTML = document.getElementById("gameLimitRuleText").innerHTML.substring(0, document.getElementById("gameLimitRuleText").innerHTML.indexOf(" Invalid number enetered."));
+      }
     }
     return true;
 }
