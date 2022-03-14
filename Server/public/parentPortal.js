@@ -310,7 +310,14 @@ function parentFormHandler() {
     var formData = Array.from(document.querySelectorAll('#parent_control_form input')).reduce((acc, input)=>({ ...acc, [input.id]: input.value }), {});
 
     if(!isFormValid()){
+      if(document.getElementById("parent_control_submit").innerHTML.indexOf(" Please fix problems") == -1){
+        document.getElementById("parent_control_submit").innerHTML += " Please fix problems";
+      }
       return;
+    }else{
+      if(document.getElementById("parent_control_submit").innerHTML.indexOf(" Please fix problems") != -1){
+        document.getElementById("parent_control_submit").innerHTML =  document.getElementById("parent_control_submit").innerHTML.substring(0, document.getElementById("parent_control_submit").innerHTML.indexOf(" Please fix problems"));
+      }
     }
 
 
