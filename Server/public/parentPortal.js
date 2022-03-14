@@ -233,17 +233,17 @@ function buildPreferences(preferences) {
   }
 }
 
-function validatePhoneNumber(input_str) {
-  var regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-  return regex.test(input_str);
-}
+// function validatePhoneNumber(input_str) {
+//   var regexCellNum = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+//   return regex.test(input_str);
+// }
 
 function setCellNum(){
   var cellNum = document.getElementById("cellInput").value
-  if(!validatePhoneNumber(cellNum)){
-    if(document.getElementById("cellInputText").innerHTML.indexOf("Invalid phone # format") == -1){
-      document.getElementById("cellInputText").innerHTML += ". Invalid phone # format";
-    }
+  var regexCellNum = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+  if(!regexCellNum.test(cellNum)){
+    document.getElementById("cellChangeFeedback").innerHTML = "Please enter a valid phone numberr.";
+    document.getElementById("cellInput").classList.add("is-invalid");
     return;
   }
   setCookie("cellNum", cellNum);
@@ -257,11 +257,11 @@ function isFormValid(){
   if(!regexNumber.test(timeLimitRule)){
     document.getElementById("timeLimitFeedback").innerHTML = "Please enter a valid number.";
     document.getElementById("timeLimitRule").classList.add("is-invalid");
-    document.getElementById("timeLimitRule").classList.remove("is-vaild");
+    document.getElementById("timeLimitRule").classList.remove("is-valid");
     return false;
   }else{
     document.getElementById("timeLimitFeedback").innerHTML = "";
-    document.getElementById("timeLimitRule").classList.remove("is-invaild");
+    document.getElementById("timeLimitRule").classList.remove("is-invalid");
     document.getElementById("timeLimitRule").classList.add("is-valid");
   }
 
@@ -269,40 +269,41 @@ function isFormValid(){
 
   var bedTimeRule = document.getElementById("bedTimeRule").value
   if(!regexTime.test(bedTimeRule)){
-    if(document.getElementById("bedTimeRuleText").innerHTML.indexOf(" Please enter a bedtime.") == -1){
-      document.getElementById("bedTimeRuleText").innerHTML += " Please enter a bedtime.";
-    }
+    document.getElementById("bedTimeFeedback").innerHTML = "Please enter a valid time.";
+    document.getElementById("bedTimeRule").classList.add("is-invalid");
+    document.getElementById("bedTimeRule").classList.remove("is-valid");
     return false;
   }else{
-    if(document.getElementById("bedTimeRuleText").innerHTML.indexOf(" Please enter a bedtime.") != -1){
-      document.getElementById("bedTimeRuleText").innerHTML = document.getElementById("bedTimeRuleText").innerHTML.substring(0, document.getElementById("bedTimeRuleText").innerHTML.indexOf(" Please enter a bedtime."));
-    }
+    document.getElementById("bedTimeFeedback").innerHTML = "";
+    document.getElementById("bedTimeRule").classList.remove("is-invalid");
+    document.getElementById("bedTimeRule").classList.add("is-valid");
   }
 
   var gameLimitRule = document.getElementById("gameLimitRule").value
   if(!regexNumber.test(gameLimitRule)){
-    if(document.getElementById("gameLimitRuleText").innerHTML.indexOf("Invalid number enetered.") == -1){
-      document.getElementById("gameLimitRuleText").innerHTML += " Invalid number enetered.";
-    }
+    document.getElementById("gameLimitFeedback").innerHTML = "Please enter a valid number.";
+    document.getElementById("gameLimitRule").classList.add("is-invalid");
+    document.getElementById("gameLimitRule").classList.remove("is-valid");
     return false;
   }else{
-    if(document.getElementById("gameLimitRuleText").innerHTML.indexOf(" Invalid number enetered.") != -1){
-      document.getElementById("gameLimitRuleText").innerHTML = document.getElementById("gameLimitRuleText").innerHTML.substring(0, document.getElementById("gameLimitRuleText").innerHTML.indexOf(" Invalid number enetered."));
-    }
+    document.getElementById("gameLimitFeedback").innerHTML = "";
+    document.getElementById("gameLimitRule").classList.remove("is-invalid");
+    document.getElementById("gameLimitRule").classList.add("is-valid");
   }
 
+  var regexCellNum = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+
   var cellNum = document.getElementById("cellNum").value
-  if(!validatePhoneNumber(cellNum)){
+  if(!regexCellNum.test(cellNum)){
     document.getElementById("cellNumFeedback").innerHTML = "Please enter a valid phone number.";
     document.getElementById("cellNum").classList.add("is-invalid");
-    document.getElementById("cellNum").classList.remove("is-vaild");
+    document.getElementById("cellNum").classList.remove("is-valid");
     return false;
   }else{
     document.getElementById("cellNumFeedback").innerHTML = "";
-    document.getElementById("cellNum").classList.remove("is-invaild");
+    document.getElementById("cellNum").classList.remove("is-invalid");
     document.getElementById("cellNum").classList.add("is-valid");
   }
-
   return true;
 }
 
