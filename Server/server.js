@@ -201,9 +201,9 @@ app.post('/get-message', async function(req, res){
   
   //4. Check if playTime rule is violated_____________________________________________
   var playTime = 60;
-  console.log(rules["playTimeRule"]);
-  console.log("playTimeRule as a number is: " + parseInt(rules["playTimeRule"]));
-  var playTimeViolation = await isPlayTimeViolated(parseInt(rules["playTimeRule"])*60, playTime)
+  console.log(rules["timeLimitRule"]);
+  console.log("timeLimitRule as a number is: " + parseInt(rules["timeLimitRule"]));
+  var playTimeViolation = await isPlayTimeViolated(parseInt(rules["timeLimitRule"])*60, playTime)
  
 
   console.log("---");
