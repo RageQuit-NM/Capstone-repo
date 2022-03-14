@@ -196,6 +196,7 @@ app.post('/get-message', async function(req, res){
   latestGameDate = latestGameDate[0]["timeStamp"].substring(0, latestGameDate[0]["timeStamp"].indexOf(","));
   console.log("latest Game date is: " + latestGameDate);
 
+  //find all games played on the most recent date
   var regex = "/\A" + latestGameDate + "/i";
   console.log("regex is: " +  regex);
   query = { cellNum: req.body["cellNum"], timeStamp: regex }
@@ -212,7 +213,7 @@ app.post('/get-message', async function(req, res){
 
   //3. Check if the bedtime rule is violated__________________________________________
   var rules = await findOne(query, "user_data", "growing_gamers");
-  // console.log("The rules are: \n" + JSON.stringify(rules));
+  console.log("The rules are: \n" + JSON.stringify(rules));
   var bedTimeViolation = await isBedTimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+2));
   console.log("Bedtime Violation Staus: " + bedTimeViolation);
 
