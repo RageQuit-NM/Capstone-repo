@@ -170,11 +170,19 @@ app.post('/get-message', async function(req, res){
   //2. find most recent game played
   var collection = "player_records"
   var result;
-  try {
-    result = await find(query, collection).sort({timeStampDay: -1, timeStampTime: -1});
-  } catch (error){
-    console.log(error);
-  }
+  
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var database = db.db("growing_gamers");
+    var sortCriteria = { timeStampDay: -1, timeStampTime: -1 };
+    database.collection("customers").find().sort(sortCriteria).toArray(function(err, result) {
+      if (err) throw err;
+      console.log(result);
+      db.close();
+    });
+  });
+
+
   console.log("Sorted List: " + JSON.stringify(result));
   res.send(JSON.stringify(result));
   console.log("---");
