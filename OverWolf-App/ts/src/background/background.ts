@@ -13,7 +13,7 @@ class BackgroundController {
   private hasGameRun:boolean;
   //private firstGameRunTime: Date = null;
   private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
-  public parentPreferenes: object;
+  //public parentPreferenes: object;
 
 
   private constructor() {
@@ -111,7 +111,6 @@ class BackgroundController {
   }
 
 
-  //First gets the parent preferences fora  cell num
   //Called when a games ends. Sends all data in game_data.json, along with a cellnum and a timeStamp to /upload-game-data
   private async sendGameInfoToRemote(){
     //console.log("Sending Game info to remote");
@@ -127,53 +126,65 @@ class BackgroundController {
       console.log("setParentPrefences(); cell num not set");
       return;
     }
-    var sendData = {cellNum:JSON.parse(result)["cellNum"]};
 
-    let serverActionPreferences = "get-settings";
-    let remoteServerPreferences = "http://" +  this.remoteAddress + ":5000/" + serverActionPreferences;
+    let cellNumUnparsed = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+    let cellNum = JSON.parse(cellNumUnparsed)["cellNum"];
+    gameData["cellNum"] = cellNum;
+    gameData["timeStamp"] = new Date().toLocaleString('en-CA', {hour12:false});
+
+    let serverAction = "upload-game-data";  
+    let remoteServer = "http://" +  BackgroundController.instance().remoteAddress + ":5000/" + serverAction;
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", remoteServerPreferences, true);
+    xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.send(JSON.stringify(sendData));
+    xmlHttp.send(JSON.stringify(gameData));
 
-    xmlHttp.onreadystatechange = async function () {
-      if (this.readyState != 4) return;
-      if (this.status == 200) {
-        var parsed = JSON.parse(this.responseText);
-        BackgroundController.instance().parentPreferenes = parsed;
-        //console.log(JSON.stringify(parsed));
+    //var sendData = {cellNum:JSON.parse(result)["cellNum"]};
+    // let serverActionPreferences = "get-settings";
+    // let remoteServerPreferences = "http://" +  this.remoteAddress + ":5000/" + serverActionPreferences;
+    // var xmlHttp = new XMLHttpRequest();
+    // xmlHttp.open("POST", remoteServerPreferences, true);
+    // xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    // xmlHttp.send(JSON.stringify(sendData));
 
-        let cellNumUnparsed = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
-        let cellNum = JSON.parse(cellNumUnparsed)["cellNum"];
-        gameData["cellNum"] = cellNum;
-        gameData["timeStamp"] = new Date().toLocaleString('en-CA', {hour12:false});
+    // xmlHttp.onreadystatechange = async function () {
+    //   if (this.readyState != 4) return;
+    //   if (this.status == 200) {
+    //     var parsed = JSON.parse(this.responseText);
+    //     BackgroundController.instance().parentPreferenes = parsed;
+    //     console.log(JSON.stringify(parsed));
 
-        if(BackgroundController.instance().parentPreferenes["bedTimeRule"] == null){
-          gameData["bedTimeViolated"] = false; //No bedtime set
-        }else{
-          let date = new Date();
-          let hours = date.getHours();
-          let minutes = date.getMinutes();
-          let bedtimeHours = parseInt(BackgroundController.instance().parentPreferenes["bedTimeRule"]);
-          let bedtimeMinutes = parseInt(BackgroundController.instance().parentPreferenes["bedTimeRule"].substring(3, 5))
+    //     let cellNumUnparsed = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+    //     let cellNum = JSON.parse(cellNumUnparsed)["cellNum"];
+    //     gameData["cellNum"] = cellNum;
+    //     gameData["timeStamp"] = new Date().toLocaleString('en-CA', {hour12:false});
 
-          let hourDiff = bedtimeHours - hours;
-          let minuteDiff = bedtimeMinutes - minutes;
-          let diff = (hourDiff*60) + minuteDiff;
+    //     if(BackgroundController.instance().parentPreferenes["bedTimeRule"] == null){
+    //       gameData["bedTimeViolated"] = false; //No bedtime set
+    //     }else{
+    //       let date = new Date();
+    //       let hours = date.getHours();
+    //       let minutes = date.getMinutes();
+    //       let bedtimeHours = parseInt(BackgroundController.instance().parentPreferenes["bedTimeRule"]);
+    //       let bedtimeMinutes = parseInt(BackgroundController.instance().parentPreferenes["bedTimeRule"].substring(3, 5))
+
+    //       let hourDiff = bedtimeHours - hours;
+    //       let minuteDiff = bedtimeMinutes - minutes;
+    //       let diff = (hourDiff*60) + minuteDiff;
 
 
-          let bedTimeViolated:boolean;
-          (diff < -5) ? bedTimeViolated = true : bedTimeViolated = false;
-          gameData["bedTimeViolated"] = bedTimeViolated;
-        }
-        let serverAction = "upload-game-data";  //
-        let remoteServer = "http://" +  BackgroundController.instance().remoteAddress + ":5000/" + serverAction;
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("POST", remoteServer, true);
-        xmlHttp.setRequestHeader('Content-Type', 'application/json');
-        xmlHttp.send(JSON.stringify(gameData));
-      }
-    };
+    //       let bedTimeViolated:boolean;
+    //       (diff < -5) ? bedTimeViolated = true : bedTimeViolated = false;
+    //       gameData["bedTimeViolated"] = bedTimeViolated;
+    //     }
+    //     let serverAction = "upload-game-data";  //
+    //     let remoteServer = "http://" +  BackgroundController.instance().remoteAddress + ":5000/" + serverAction;
+    //     var xmlHttp = new XMLHttpRequest();
+    //     xmlHttp.open("POST", remoteServer, true);
+    //     xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    //     xmlHttp.send(JSON.stringify(gameData));
+    //   }
+    // };
   }
 
 
