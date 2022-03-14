@@ -51,9 +51,21 @@ class Launcher extends AppWindow {
     public async run() {
     }
 
+
+    public validatePhoneNumber(input_str) {
+      var regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+      return regex.test(input_str);
+    }
+
     //Writes the cellNum ino cell_number.json. Then sends the cellNum to remote. Then completes intialization and sets the launcher page back to normal functionality.
     public async submitCellNum(){
       let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
+      if(!Launcher.instance().validatePhoneNumber(myData["cellNum"])){
+        document.getElementById("cellTitle").innerHTML += "<br/> Invalid cellphone # format!";
+        return;
+      }
+
+
       await Launcher.instance().writeFile(JSON.stringify(myData), `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
       let serverAction = "insert-cellNum";
@@ -233,8 +245,6 @@ class Launcher extends AppWindow {
           r => r.success ? resolve(r) : reject(r)
         );
       });
-      //console.log('writeFile()', JSON.stringify(result));
-      document.getElementById("test_message3").innerHTML += 'writeFile()' + JSON.stringify(result);
       return result;
     }
 }  
