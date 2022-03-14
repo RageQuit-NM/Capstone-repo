@@ -177,7 +177,7 @@ app.post('/upload-game-data', function(req, res){
 app.post('/get-message', async function(req, res){
   //1. get the cell number from the http request______________________________________
   var query = { cellNum: req.body["cellNum"] };
-  console.log("The query is: " + JSON.stringify(query));
+  // console.log("The query is: " + JSON.stringify(query));
 
   //2. collect players last day games ordered by most recent___________________________________
   //Find date of most recent game
@@ -189,13 +189,13 @@ app.post('/get-message', async function(req, res){
     console.log(error);
   }
   if(latestGameDate == null){
-    console.log("ERROR: NULL RESULT 1");
+    console.log("ERROR: NULL RESULT");
   }
-  console.log("Single Element List: " + JSON.stringify(latestGameDate));
+  // console.log("Single Element List: " + JSON.stringify(latestGameDate));
   latestGameDate = latestGameDate[0]["timeStamp"].substring(0, latestGameDate[0]["timeStamp"].indexOf(","));
   console.log("Latest Game Date is: " + latestGameDate);
   //find all games played on the most recent date
-  query = { cellNum: req.body["cellNum"], timeStamp: new RegExp(latestGameDate) }
+  query = { cellNum: req.body["cellNum"], timeStamp: new RegExp(latestGameDate) };
   console.log("query is: " +  JSON.stringify(query));
   var games;
   try {
@@ -206,7 +206,7 @@ app.post('/get-message', async function(req, res){
   if(games == null){
     console.log("ERROR: NULL RESULT");
   }
-  console.log("Sorted List: " + JSON.stringify(games));
+  // console.log("Sorted List: " + JSON.stringify(games));
 
 
   //3. Check if the bedtime rule is violated__________________________________________
@@ -225,7 +225,7 @@ app.post('/get-message', async function(req, res){
 
   //5. Check if gameLimit rule is violated____________________________________________
   var gameLimitViolation = await isGameLimitViolated(parseInt(rules["gameLimitRule"]), games.length);
-  console.log("GameLimit Violation Staus: " + gameLimitViolation);
+  console.log("GameLimit Violation Status: " + gameLimitViolation);
 
  
 
@@ -312,8 +312,7 @@ async function isBedTimeViolated(bedTimeRule, time){
 //Checks if playTime rule is violated  playTimeRule: number, playTime: number
 async function isPlayTimeViolated(playTimeRule, playTime){
   if (playTime == null || playTimeRule == null) {return "RULE_OR_PLAYTIME_ERROR";}
-  console.log(playTimeRule + "         " + playTime);
-
+  // console.log(playTimeRule + "         " + playTime);
   if(playTime < playTimeRule) {return "NO_VIOLATION";}
   else {return "VIOLATION";}
 }
@@ -321,8 +320,7 @@ async function isPlayTimeViolated(playTimeRule, playTime){
 //Checks if gameLimit rule is violated  gameLimitRule: number, gamesPlayed: number
 async function isGameLimitViolated(gameLimitRule, gamesPlayed){
   if (gamesPlayed == null || gameLimitRule == null) {return "RULE_OR_GAMESPLAYED_ERROR";}
-  console.log(gameLimitRule + "         " + gamesPlayed);
-
+  // console.log(gameLimitRule + "         " + gamesPlayed);
   if(gamesPlayed < gameLimitRule) {return "NO_VIOLATION";}
   else {return "VIOLATION";}
 }
@@ -333,6 +331,6 @@ async function sumField(field, array){
   for (i in array){
     if(array[i][field]){ sum+=parseInt(array[i][field]); }
   }
-  console.log("sum is: " + sum);
+  // console.log("sum is: " + sum);
   return sum;
 }
