@@ -197,7 +197,7 @@ app.post('/get-message', async function(req, res){
   console.log("latest Game date is: " + latestGameDate);
 
   //find all games played on the most recent date
-  var regex = "/\A" + latestGameDate;
+  var regex = await returnRegex("\A" + latestGameDate, flags);
   console.log("regex is: " +  regex);
   query = { cellNum: req.body["cellNum"], timeStamp: new RegExp(regex, 'i') }
   console.log("query is: " +  JSON.stringify(query));
@@ -311,6 +311,10 @@ async function isPlayTimeViolated(playTimeRule, playTime){
   else {return "VIOLATION";}
 }
 
+
+async function returnRegex(regexBody, flags){
+  return new RegExp(regexBody, flags);
+}
 
 async function sumStringField(field, array){
 
