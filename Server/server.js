@@ -224,7 +224,7 @@ app.post('/get-message', async function(req, res){
   var rules = await findOne(query, "user_data", "growing_gamers");
   // console.log("The rules are: \n" + JSON.stringify(rules));
   var bedTimeViolation = await isBedTimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+1).trim());
-  // console.log("BedTime Violation Status: " + bedTimeViolation);
+  console.log("BedTime Violation Status: " + bedTimeViolation);
   // console.log("cellNum is: " + query["cellNum"]);
   if(bedTimeViolation == "VIOLATION") { await logViolation(query["cellNum"], "bedTimeViolation", games[0]["timeStamp"]); }
 
@@ -254,6 +254,7 @@ app.post('/get-message', async function(req, res){
   else if(killDeathRatio < 0.5) { query = { messageID: "takebreak" }; }
   else {query = { messageID: "welcomeback" }; }
   console.log(JSON.stringify(query));
+  console.log(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
   res.send(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
 
   console.log("---");
@@ -385,7 +386,7 @@ async function logViolation(cellNum, violation, timeStamp) {
   console.log("query is: " + JSON.stringify(query));
 
   try {
-    var logged = await insertOne(query, "player_records", "growing_gamers");
+    var logged = await insertOne(query);
     return logged;
   } catch (error){
     console.log(error);
