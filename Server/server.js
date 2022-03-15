@@ -97,6 +97,11 @@ app.post('/get-info-for-child', async function(req, res){
   let timeLeft = "Time left: " + hoursLeft + ":" + minutesLeft;
   console.log(timeLeft);
 
+  sendObject = {timeLeft};
+
+  res.send(json.stringify(sendObject));
+
+
 });
 
 
