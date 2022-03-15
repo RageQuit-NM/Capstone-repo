@@ -4,9 +4,7 @@ import { kWindowNames } from "../consts";
 class Launcher extends AppWindow {
     private static _instance: Launcher;
     private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com"; //Move to the parent class, all app windows need this remote address
-    //public bedTime: string;
     public parentPreferenes;  //timeLimitRule bedTimeRule gameLimitRule
-  
 
     private constructor() {
       super(kWindowNames.launcher);
@@ -15,15 +13,29 @@ class Launcher extends AppWindow {
         overwolf.windows.getMainWindow().document.getElementById("attributes").setAttribute('listener', 'true');
        
         (document.getElementById("parent_portal_link") as HTMLAnchorElement).href="http://" + this.remoteAddress + ":5000/parentPortal";
-        // document.getElementById("cellInput").addEventListener("change", this.testFunction);
-        // document.getElementById("poo").addEventListener("click", this.poo);
+        document.getElementById("submitCellNum").addEventListener("click", this.submitCellNum);
 
-        this.collectPreferences();
-        this.setContent();
+        if(overwolf.windows.getMainWindow().document.getElementById("isCellNumSet").innerHTML == "false"){
+          document.getElementById("main").style.display = "none";
+          document.getElementById("initalization").style.display = "inline";
+        }
+        if(overwolf.windows.getMainWindow().document.getElementById("isCellNumSet").innerHTML == "true"){
+          document.getElementById("initalization").style.display = "none";
+          Launcher.instance().collectPreferences();
+          Launcher.instance().setContent();
 
-        setInterval(this.checkBedtime, 1000*2);
-        setInterval(this.collectPreferences, 1000*2);
+          setInterval(Launcher.instance().checkBedtime, 1000*2);
+          setInterval(Launcher.instance().collectPreferences, 1000*2);
+
+          Launcher.instance().displayCellNum();
+        }
       }
+    }
+
+    public async displayCellNum(){
+      let fileData = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      fileData = JSON.parse(fileData);
+      document.getElementById("cellDisplay").innerHTML = fileData["cellNum"].substring(0, 3) + "-" + fileData["cellNum"].substring(3);
     }
     
 
@@ -38,27 +50,49 @@ class Launcher extends AppWindow {
 
     //Called once to build the class
     public async run() {
-      //this.testFunction();
     }
-    // public async testFunction(){
-    //   //let myData = {cellNum: '5551234'}
-    //   //document.getElementById("test_message3").innerHTML += `${overwolf.io.paths.localAppData}\\Overwolf\\Log\\Apps\\RageQuit.NM\\game_data.json`;
-    //   let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
-      
-    //   Launcher.instance()._writeFile(JSON.stringify(myData),  `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
-    // }
-    // public async poo(){
-    //   let result = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
-    //   let cellNum = JSON.parse(result)["cellNum"];
-    //   var sendData = {"cellNum": cellNum, bedtime: "30"};
-    //   document.getElementById("test_message").innerHTML += "cellnum " + cellNum + "you wrote: " + sendData["cellNum"] + "bedtime si " + sendData["bedtime"];
-    // }
+    //Writes the cellNum ino cell_number.json and sends it to remote
+    public async submitCellNum(){
+      let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
+      await Launcher.instance()._writeFile(JSON.stringify(myData), `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+
+      let serverAction = "insert-cellNum";
+      let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("POST", remoteServer, true);
+      xmlHttp.setRequestHeader('Content-Type', 'application/json');
+      xmlHttp.send(JSON.stringify(myData));
+
+      xmlHttp.onreadystatechange = function () {
+        if (this.readyState != 4) return;
+        if (this.status == 200) {
+          var parsed = JSON.parse(this.responseText);
+          document.getElementById("test_message2").innerHTML += " insert-cellNum response = " + parsed;
+        }
+      };
+
+      document.getElementById("main").style.display = "inherit";
+      document.getElementById("cellDisplay").style.display = "inherit";
+      document.getElementById("initalization").style.display = "none";
+      Launcher.instance().collectPreferences();
+      Launcher.instance().setContent();
+
+      setInterval(Launcher.instance().checkBedtime, 1000*2);
+      setInterval(Launcher.instance().collectPreferences, 1000*2);
+
+      Launcher.instance().displayCellNum();
+    }
 
 
     //Check if bedtime rule is violated on an interval, display appropriate message, notify parent.
     public async checkBedtime(){
-      //if(Launcher.instance().bedTime != null){
+      if(Launcher.instance().parentPreferenes == null){
+        if (document.getElementById("test_message2").innerHTML.indexOf("ParentPrefecnes is not set") == -1){
+          document.getElementById("test_message2").innerHTML += "ParentPrefecnes is not set";
+        }
+        return
+      }
       if(Launcher.instance().parentPreferenes["bedTimeRule"] != null){
         //---------------------------------------------------------------------Make the time string foramtting into a functoin of its own?--||
         let date = new Date();
@@ -96,7 +130,7 @@ class Launcher extends AppWindow {
           myMessage = "You dont have enough time to play a game before bedtime."; //Playing a game will put you past your bedtime?
         }else if(diff < 5 && diff >=-5){
           myMessage = "Its time to stop playing and say good night.";
-          if(!(diff<0)){
+          if(diff<0){
             myMessage += " You are" + -diff + " minutes past your bedtime";
           }
         }
@@ -110,11 +144,12 @@ class Launcher extends AppWindow {
           if (mainWindowObject.document.getElementById("attributes").getAttribute('bedTimeMessage') != 'true') {
             mainWindowObject.document.getElementById("attributes").setAttribute('bedTimeMessage', 'true');
             //document.getElementById("test_message").innerHTML += "  text sms sent||"
-            //Launcher.instance().sendBedtimeMessage();
+            //Launcher.instance().sendBedtimeMessage(); <--------------------------------- sending bedtime text message
           }
         }else{  //It is not past your bedtime
           document.getElementById("minimizeButton").innerHTML = "Back to Game";//-----------staticly sets it to "back to game"
-          document.getElementById("primary_message").innerHTML = mainWindowObject.document.getElementById("primary_message").innerHTML;
+          //document.getElementById("primary_message").innerHTML = mainWindowObject.document.getElementById("primary_message").innerHTML;
+          Launcher.instance().setContent();
         }
       }
     }
@@ -132,7 +167,7 @@ class Launcher extends AppWindow {
         if (this.readyState != 4) return; //---------What is response code '4'?--------------------------------------------||
         if (this.status == 200) {
           var response = (this.responseText); // we get the returned data
-          //document.getElementById("test_message").innerHTML = "reponse from /upload-game-data = " + response;
+          //document.getElementById("test_message").innerHTML += "reponse from /upload-game-data = " + response;
           //console.log("reponse from /send-message1 = " + response);
         }
       };
@@ -143,18 +178,31 @@ class Launcher extends AppWindow {
     public setContent(){
       let mainWindowObject = overwolf.windows.getMainWindow(); //Gets the HTML Object of the main window for messaging
       document.getElementById("primary_message").innerHTML = mainWindowObject.document.getElementById("primary_message").innerHTML;
-      document.getElementById("test_message").innerHTML += mainWindowObject.document.getElementById("test_message").innerHTML;
-      document.getElementById("test_message2").innerHTML += mainWindowObject.document.getElementById("test_message2").innerHTML;
-      document.getElementById("test_message3").innerHTML += mainWindowObject.document.getElementById("test_message3").innerHTML;
+      if(document.getElementById("test_message").innerHTML.indexOf(mainWindowObject.document.getElementById("test_message").innerHTML) == -1){
+        document.getElementById("test_message").innerHTML += mainWindowObject.document.getElementById("test_message").innerHTML;
+      }
+      if(document.getElementById("test_message2").innerHTML.indexOf(mainWindowObject.document.getElementById("test_message2").innerHTML) == -1){
+        document.getElementById("test_message2").innerHTML += mainWindowObject.document.getElementById("test_message2").innerHTML;
+      }
+      if(document.getElementById("test_message3").innerHTML.indexOf(mainWindowObject.document.getElementById("test_message3").innerHTML) == -1){
+        document.getElementById("test_message3").innerHTML += mainWindowObject.document.getElementById("test_message3").innerHTML;
+      }
     }
 
 
     //Collect parental preferences at an interval
     private async collectPreferences(){
+      //document.getElementById("test_message3").innerHTML += "Collecting preferneces" + new Date();
       let result = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      if(result == null){
+        if (document.getElementById("test_message2").innerHTML.indexOf("cell_number.json does not exist") == -1){
+          document.getElementById("test_message2").innerHTML += "cell_number.json does not exist";
+        }
+        return
+      }
       var sendData = {cellNum:JSON.parse(result)["cellNum"]};
       if (document.getElementById("test_message").innerHTML.indexOf(JSON.stringify(sendData)) == -1){
-        document.getElementById("test_message").innerHTML += "sneding cell num " + JSON.stringify(sendData);
+        document.getElementById("test_message").innerHTML += " CellNum: " + JSON.stringify(sendData);
       }
 
       let serverAction = "get-settings";
