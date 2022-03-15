@@ -278,7 +278,6 @@ async function findOne(query, collectionSelected="user_data", database="growing_
     console.log(err);
   } finally {
     client.close();
-    return;
   }
 }
 
@@ -301,7 +300,6 @@ async function findAll(query, collectionSelected="player_records", database="gro
     console.log(err);
   } finally {
     client.close();
-    return;
   }
 }
 
@@ -325,7 +323,6 @@ async function sort(query, sortCriteria, collectionSelected="player_records", da
     console.log(err);
   } finally {
     client.close();
-    return;
   }
 }
 
