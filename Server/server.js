@@ -7,6 +7,7 @@ var url = "mongodb://localhost:27017/";
 var express = require('express');  
 const { json } = require('body-parser');
 const { kill } = require('process');
+const { time } = require('console');
 var app = express();  
 
 
@@ -422,7 +423,10 @@ async function dailyDigest(){
     var gamesPlayed = games.length;
     console.log("Games played is: " + gamesPlayed);
 
-    //Play Time
+    //Play Time (minutes)
+    var timePlayed = await sumField("game_time", games);
+    timePlayed = timePlayed/60;
+    console.log("time played is: " + timePlayed);
 
     //Time Stopped
   }
