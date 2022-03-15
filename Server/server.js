@@ -430,7 +430,7 @@ async function dailyDigest(){
     console.log("time played is: " + timePlayed);
 
     //Time Stopped
-    var timeStopped = games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(','));
+    var timeStopped = games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(',')+1).trim();
     console.log("Time stopped is: " + timeStopped);
   }
 }
