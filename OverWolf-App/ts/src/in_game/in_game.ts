@@ -21,9 +21,7 @@ class InGame extends AppWindow {
       "cellNum": 0,
       "kills": 0,
       "deaths": 0,
-      "game_time": 0,
-      "timeStampTime":"NULL",
-      "timeStampDay":"NULL"
+      "game_time": 0
     }
     let stringJson = JSON.stringify(inital_json);
     //${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json

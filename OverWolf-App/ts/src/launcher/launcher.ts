@@ -18,8 +18,7 @@ class Launcher extends AppWindow {
         if(overwolf.windows.getMainWindow().document.getElementById("isCellNumSet").innerHTML == "false"){
           document.getElementById("main").style.display = "none";
           document.getElementById("initalization").style.display = "inline";
-        }
-        if(overwolf.windows.getMainWindow().document.getElementById("isCellNumSet").innerHTML == "true"){
+        }else{
           document.getElementById("initalization").style.display = "none";
           Launcher.instance().collectPreferences();
           Launcher.instance().setContent();
@@ -33,7 +32,7 @@ class Launcher extends AppWindow {
     }
 
     public async displayCellNum(){
-      let fileData = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      let fileData = await Launcher.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
       fileData = JSON.parse(fileData);
       document.getElementById("cellDisplay").innerHTML = fileData["cellNum"].substring(0, 3) + "-" + fileData["cellNum"].substring(3);
     }
@@ -50,12 +49,33 @@ class Launcher extends AppWindow {
 
     //Called once to build the class
     public async run() {
+      // let fullDate = new Date().toLocaleString('en-CA', {hour12:false})
+      // let mmddyyy = fullDate.substring(0, fullDate.indexOf(","));
+      // let time = fullDate.substring(fullDate.indexOf(",")+1);
+      // document.getElementById("test_message").innerHTML += time  + " __ " + mmddyyy + " _ ";
+
+      // let yourDate = new Date()
+      // const offset = yourDate.getTimezoneOffset()
+      // yourDate = new Date(yourDate.getTime() - (offset*60*1000))
+      // document.getElementById("test_message2").innerHTML += yourDate.toISOString().split('T')[0]
     }
 
-    //Writes the cellNum ino cell_number.json and sends it to remote
+    public validatePhoneNumber(input_str) {
+      var regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+      return regex.test(input_str);
+    }
+
+    //Writes the cellNum ino cell_number.json. Then sends the cellNum to remote. Then completes intialization and sets the launcher page back to normal functionality.
     public async submitCellNum(){
       let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
-      await Launcher.instance()._writeFile(JSON.stringify(myData), `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      if(!Launcher.instance().validatePhoneNumber(myData["cellNum"])){
+        if(document.getElementById("cellTitle").innerHTML.indexOf("Invalid cellphone # format!") == -1){
+          document.getElementById("cellTitle").innerHTML += "<br/> Invalid cellphone # format!";
+        }
+        return;
+      }
+
+      await Launcher.instance().writeFile(JSON.stringify(myData), `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
       let serverAction = "insert-cellNum";
       let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
@@ -64,13 +84,13 @@ class Launcher extends AppWindow {
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
       xmlHttp.send(JSON.stringify(myData));
 
-      xmlHttp.onreadystatechange = function () {
-        if (this.readyState != 4) return;
-        if (this.status == 200) {
-          var parsed = JSON.parse(this.responseText);
-          document.getElementById("test_message2").innerHTML += " insert-cellNum response = " + parsed;
-        }
-      };
+      // xmlHttp.onreadystatechange = function () {
+      //   if (this.readyState != 4) return;
+      //   if (this.status == 200) {
+      //     var parsed = JSON.parse(this.responseText);
+      //     document.getElementById("test_message2").innerHTML += " insert-cellNum response = " + parsed;
+      //   }
+      // };
 
       document.getElementById("main").style.display = "inherit";
       document.getElementById("cellDisplay").style.display = "inherit";
@@ -91,10 +111,9 @@ class Launcher extends AppWindow {
         if (document.getElementById("test_message2").innerHTML.indexOf("ParentPrefecnes is not set") == -1){
           document.getElementById("test_message2").innerHTML += "ParentPrefecnes is not set";
         }
-        return
+        return;
       }
       if(Launcher.instance().parentPreferenes["bedTimeRule"] != null){
-        //---------------------------------------------------------------------Make the time string foramtting into a functoin of its own?--||
         let date = new Date();
         let hours = date.getHours();
         let minutes = date.getMinutes();
@@ -137,40 +156,34 @@ class Launcher extends AppWindow {
         document.getElementById("secondary_message").innerHTML = myMessage;   //send the secondary message
         
         if(diff < -5){  //it is past your betime.
-          //myMessage = "You are " + -diff + " minutes past your bedtime."; //maybe delte this. We have the red stff popping up
-          //send the bedtime text message here!!
-          document.getElementById("primary_message").innerHTML = "It is <span class='urgentText'>past your bedtime</span>, time to stop playing. <br/><br/>The time is: <span class='urgentText localTime'></span>";
+          document.getElementById("primary_message").innerHTML = "It is <span class='urgentText'>past your bedtime</span>, time to stop playing. <br/><br/>The time is: <span class='urgentText'>"  + localTime + " </span>";
           document.getElementById("minimizeButton").innerHTML = "See You Tomorrow";
           if (mainWindowObject.document.getElementById("attributes").getAttribute('bedTimeMessage') != 'true') {
             mainWindowObject.document.getElementById("attributes").setAttribute('bedTimeMessage', 'true');
-            //document.getElementById("test_message").innerHTML += "  text sms sent||"
-            //Launcher.instance().sendBedtimeMessage(); <--------------------------------- sending bedtime text message
+            //Launcher.instance().sendBedtimeMessage(); //<--------------------------------- sending bedtime text message
           }
         }else{  //It is not past your bedtime
           document.getElementById("minimizeButton").innerHTML = "Back to Game";//-----------staticly sets it to "back to game"
-          //document.getElementById("primary_message").innerHTML = mainWindowObject.document.getElementById("primary_message").innerHTML;
           Launcher.instance().setContent();
         }
       }
     }
 
 
-    private sendBedtimeMessage(){
-      let messageData = {bedTime: Launcher.instance().parentPreferenes["bedTimeRule"]};  //{cellNum: "#######"};
+    private async sendBedtimeMessage(){
+      let messageData = await Launcher.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
       let serverAction = "bedtime-message";
       let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open("POST", remoteServer, true);
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
-      xmlHttp.send(JSON.stringify(messageData));
-      xmlHttp.onreadystatechange = function(){
-        if (this.readyState != 4) return; //---------What is response code '4'?--------------------------------------------||
-        if (this.status == 200) {
-          var response = (this.responseText); // we get the returned data
-          //document.getElementById("test_message").innerHTML += "reponse from /upload-game-data = " + response;
-          //console.log("reponse from /send-message1 = " + response);
-        }
-      };
+      xmlHttp.send(messageData);
+      // xmlHttp.onreadystatechange = function(){
+      //   if (this.readyState != 4) return; //---------What is response code '4'?--------------------------------------------||
+      //   if (this.status == 200) {
+      //     var response = (this.responseText); // we get the returned data
+      //   }
+      // };
     }
 
 
@@ -193,7 +206,7 @@ class Launcher extends AppWindow {
     //Collect parental preferences at an interval
     private async collectPreferences(){
       //document.getElementById("test_message3").innerHTML += "Collecting preferneces" + new Date();
-      let result = await Launcher.instance()._readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      let result = await Launcher.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
       if(result == null){
         if (document.getElementById("test_message2").innerHTML.indexOf("cell_number.json does not exist") == -1){
           document.getElementById("test_message2").innerHTML += "cell_number.json does not exist";
@@ -201,9 +214,6 @@ class Launcher extends AppWindow {
         return
       }
       var sendData = {cellNum:JSON.parse(result)["cellNum"]};
-      if (document.getElementById("test_message").innerHTML.indexOf(JSON.stringify(sendData)) == -1){
-        document.getElementById("test_message").innerHTML += " CellNum: " + JSON.stringify(sendData);
-      }
 
       let serverAction = "get-settings";
       let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
@@ -216,27 +226,25 @@ class Launcher extends AppWindow {
         if (this.readyState != 4) return;
         if (this.status == 200) {
           var parsed = JSON.parse(this.responseText);
-          //Launcher.instance().bedTime = parsed["bedTimeRule"]; //---------------------------Set all of parsed not only bedTimeRule----------------||
           Launcher.instance().parentPreferenes = parsed;
         }
       };
     }
 
   
-    private async _readFileData(file_path:string){
+    private async readFileData(file_path:string){
       const result = await new Promise(resolve => {
         overwolf.io.readFileContents(
           file_path,
           overwolf.io.enums.eEncoding.UTF8,
           resolve
         );
-      }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
-      //console.log("readFileData()", result["success"] + ", " + result["content"] + ", " +  result["error"]);
+      });
       return result["content"];
     }
 
     //Writes data into a file specified in file_path, returns the result
-    private async _writeFile(data:string, file_path:string){
+    private async writeFile(data:string, file_path:string){
       let result = await new Promise((resolve, reject) => {
         overwolf.io.writeFileContents(
           file_path,
@@ -246,8 +254,6 @@ class Launcher extends AppWindow {
           r => r.success ? resolve(r) : reject(r)
         );
       });
-      //console.log('writeFile()', JSON.stringify(result));
-      document.getElementById("test_message3").innerHTML += 'writeFile()' + JSON.stringify(result);
       return result;
     }
 }  

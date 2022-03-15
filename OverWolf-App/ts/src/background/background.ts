@@ -13,6 +13,7 @@ class BackgroundController {
   private hasGameRun:boolean;
   //private firstGameRunTime: Date = null;
   private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
+  //public parentPreferenes: object;
 
 
   private constructor() {
@@ -48,7 +49,7 @@ class BackgroundController {
     if(document.getElementById("attributes").getAttribute('firstCellCheck') != 'true'){
       document.getElementById("attributes").setAttribute('firstCellCheck', 'true');
       document.getElementById("isCellNumSet").innerHTML = await BackgroundController.instance().checkCellNum();
-      console.log("isCellNumSet: " +  document.getElementById("isCellNumSet").innerHTML);
+     // console.log("isCellNumSet: " +  document.getElementById("isCellNumSet").innerHTML);
     }
 
     this._gameListener.start();
@@ -72,32 +73,33 @@ class BackgroundController {
   //----------------------------------------------------------implement all messages for kid----------------||
   //Updates primary_message on bus
   private async sendMessageToLauncher(){
-    console.log("sendMessageToLauncher(). Primary is: " +  document.getElementById("primary_message").innerHTML);
-    let messageID = "welcomeback";
-    if(this.hasGameRun){
-      document.getElementById("test_message2").innerHTML += "game has run..."
-      messageID = "homework"; //if the player did not have a positive or negative KD deafault to homework
+    //console.log("sendMessageToLauncher(). Primary is: " +  document.getElementById("primary_message").innerHTML);
+    // let messageID = "welcomeback";
+    // if(this.hasGameRun){
+    //   document.getElementById("test_message2").innerHTML += "game has run..."
+    //   messageID = "homework"; //if the player did not have a positive or negative KD deafault to homework
 
-      let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
-      if (fileData == null){
-        document.getElementById("test_message2").innerHTML += "No data stored in game_data.json. This should never occur.";
-        return;
-      }
-      let killDeath = JSON.parse(fileData);
-      if(killDeath["kills"] > killDeath["deaths"]){
-        messageID = "doinggreat"; //positiveKD
-      }
-      if(killDeath["deaths"] > killDeath["kills"]){
-        messageID = "takebreak";  //negativeKD
-      }
-    }
+    //   let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
+    //   if (fileData == null){
+    //     document.getElementById("test_message2").innerHTML += "No data stored in game_data.json. This should never occur.";
+    //     return;
+    //   }
+    //   let killDeath = JSON.parse(fileData);
+    //   if(killDeath["kills"] > killDeath["deaths"]){
+    //     messageID = "doinggreat"; //positiveKD
+    //   }
+    //   if(killDeath["deaths"] > killDeath["kills"]){
+    //     messageID = "takebreak";  //negativeKD
+    //   }
+    // }
+    let cellNumString = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
     let serverAction = "get-message";
     let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.send(JSON.stringify({"messageID":messageID}));
+    xmlHttp.send(cellNumString);
 
     xmlHttp.onreadystatechange = function () {
       if (this.readyState != 4) return;
@@ -111,7 +113,7 @@ class BackgroundController {
 
   //Called when a games ends. Sends all data in game_data.json, along with a cellnum and a timeStamp to /upload-game-data
   private async sendGameInfoToRemote(){
-    console.log("Sending Game info to remote");
+    //console.log("Sending Game info to remote");
     let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
     if (fileData == null){
       document.getElementById("test_message").innerHTML += "Couldnt collect info from game_data.json (sendGameInfoToRemote)";
@@ -119,30 +121,70 @@ class BackgroundController {
     }
     let gameData = JSON.parse(fileData);
 
+    let result = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+    if(result == null){
+      console.log("setParentPrefences(); cell num not set");
+      return;
+    }
+
     let cellNumUnparsed = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
     let cellNum = JSON.parse(cellNumUnparsed)["cellNum"];
     gameData["cellNum"] = cellNum;
-    gameData["timeStampTime"] = new Date().toLocaleTimeString();
-    gameData["timeStampDay"] = new Date().toDateString();
+    gameData["timeStamp"] = new Date().toLocaleString('en-CA', {hour12:false});
 
-    let serverAction = "upload-game-data";  //
-    let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+    let serverAction = "upload-game-data";  
+    let remoteServer = "http://" +  BackgroundController.instance().remoteAddress + ":5000/" + serverAction;
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send(JSON.stringify(gameData));
 
-    document.getElementById("test_message3").innerHTML += "Game end message(/upload-game-data): " + JSON.stringify(gameData) + "cellNum is " + cellNum;  //For debugging
+    //var sendData = {cellNum:JSON.parse(result)["cellNum"]};
+    // let serverActionPreferences = "get-settings";
+    // let remoteServerPreferences = "http://" +  this.remoteAddress + ":5000/" + serverActionPreferences;
+    // var xmlHttp = new XMLHttpRequest();
+    // xmlHttp.open("POST", remoteServerPreferences, true);
+    // xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    // xmlHttp.send(JSON.stringify(sendData));
 
-    xmlHttp.onreadystatechange = await function () {
-      if (this.readyState != 4) return;
-      if (this.status == 200) {
-        var response = (this.responseText); // we get the returned data
-        //document.getElementById("test_message").innerHTML += "reponse from /upload-game-data = " + response;
-        console.log("reponse from /upload-game-data = " + response);
-      }
-      // end of state change: it can be after some time (async)
-    };
+    // xmlHttp.onreadystatechange = async function () {
+    //   if (this.readyState != 4) return;
+    //   if (this.status == 200) {
+    //     var parsed = JSON.parse(this.responseText);
+    //     BackgroundController.instance().parentPreferenes = parsed;
+    //     console.log(JSON.stringify(parsed));
+
+    //     let cellNumUnparsed = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+    //     let cellNum = JSON.parse(cellNumUnparsed)["cellNum"];
+    //     gameData["cellNum"] = cellNum;
+    //     gameData["timeStamp"] = new Date().toLocaleString('en-CA', {hour12:false});
+
+    //     if(BackgroundController.instance().parentPreferenes["bedTimeRule"] == null){
+    //       gameData["bedTimeViolated"] = false; //No bedtime set
+    //     }else{
+    //       let date = new Date();
+    //       let hours = date.getHours();
+    //       let minutes = date.getMinutes();
+    //       let bedtimeHours = parseInt(BackgroundController.instance().parentPreferenes["bedTimeRule"]);
+    //       let bedtimeMinutes = parseInt(BackgroundController.instance().parentPreferenes["bedTimeRule"].substring(3, 5))
+
+    //       let hourDiff = bedtimeHours - hours;
+    //       let minuteDiff = bedtimeMinutes - minutes;
+    //       let diff = (hourDiff*60) + minuteDiff;
+
+
+    //       let bedTimeViolated:boolean;
+    //       (diff < -5) ? bedTimeViolated = true : bedTimeViolated = false;
+    //       gameData["bedTimeViolated"] = bedTimeViolated;
+    //     }
+    //     let serverAction = "upload-game-data";  //
+    //     let remoteServer = "http://" +  BackgroundController.instance().remoteAddress + ":5000/" + serverAction;
+    //     var xmlHttp = new XMLHttpRequest();
+    //     xmlHttp.open("POST", remoteServer, true);
+    //     xmlHttp.setRequestHeader('Content-Type', 'application/json');
+    //     xmlHttp.send(JSON.stringify(gameData));
+    //   }
+    // };
   }
 
 
@@ -190,10 +232,10 @@ class BackgroundController {
       this.hasGameRun = true;
     } else {
       //A game has just ended
-      console.log("game has ended. Primary is: " +  document.getElementById("primary_message").innerHTML);
+      //console.log("game has ended. Primary is: " +  document.getElementById("primary_message").innerHTML);
       this.sendGameInfoToRemote();
       //this.sendMessageToLauncher();
-      console.log("Finished updating message from launcher. Primary is: " +  document.getElementById("primary_message").innerHTML);
+      //console.log("Finished updating message from launcher. Primary is: " +  document.getElementById("primary_message").innerHTML);
       this._windows[kWindowNames.launcher].restore();
       setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 1500); //Brings the launcher window infront of the game launcher after 1.5s
       this._windows[kWindowNames.inGame].close();
