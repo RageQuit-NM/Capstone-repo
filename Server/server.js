@@ -327,7 +327,7 @@ async function sort(query, sortCriteria, collectionSelected="player_records", da
 
 
 //updateOne
-async function updateOne(query, options, newVals, collectionSelected="player_records", database="growing_gamers") {
+async function updateOne(query, newVals, options, collectionSelected="player_records", database="growing_gamers") {
     console.log("updatingOne");
     const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
     if (!client) {
