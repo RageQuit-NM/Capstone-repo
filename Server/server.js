@@ -226,7 +226,7 @@ app.post('/get-message', async function(req, res){
   var bedTimeViolation = await isBedTimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+1).trim());
   // console.log("BedTime Violation Status: " + bedTimeViolation);
   // console.log("cellNum is: " + query["cellNum"]);
-  if(bedTimeViolation == "VIOLATION") { logViolation(query["cellNum"], "bedTimeViolation", games[0]["timeStamp"]); }
+  if(bedTimeViolation == "VIOLATION") { await logViolation(query["cellNum"], "bedTimeViolation", games[0]["timeStamp"]); }
 
   
   //4. Check if playTime rule is violated_____________________________________________
