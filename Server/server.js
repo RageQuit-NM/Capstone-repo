@@ -393,7 +393,7 @@ async function dailyDigest(){
     console.log("cellNum is: " + cellNum);
 
     //Collect this players daily games
-    query = { cellNum: cellNum, timeStamp: new RegExp(latestGameDate) };
+    query = { cellNum: cellNum, timeStamp: new RegExp(date) };
     try {
       games = await findAll(query, "player_records", "growing_gamers");
     } catch (error){
