@@ -326,7 +326,31 @@ async function sort(query, sortCriteria, collectionSelected="player_records", da
 }
 
 
-//upsert
+//updateOne
+async function updateOne(query, options, newVals, collectionSelected="player_records", database="growing_gamers") {
+    console.log("updatingOne");
+    const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
+    if (!client) {
+      console.log("No client");
+      return;
+    }
+
+    console.log("Query is: " + JSON.stringify(query));
+    console.log("Options are: " + JSON.stringify(options));
+    try {
+      const db = client.db(database);
+      let collection = db.collection(collectionSelected);
+      let result = await collection.updateOne(query, newVals, options);
+      console.log("returning: " + JSON.stringify(result));
+      return result;
+    } catch (err) {
+      console.log(err);
+    } finally {
+      client.close();
+    }
+
+}
+
 //insertOne
 async function insertOne(query, collectionSelected="player_records", database="growing_gamers") {
   console.log("insertingOne");
@@ -335,7 +359,6 @@ async function insertOne(query, collectionSelected="player_records", database="g
     console.log("No client");
     return;
   }
-
   console.log("Query is: " + JSON.stringify(query));
   try {
     const db = client.db(database);
@@ -347,7 +370,6 @@ async function insertOne(query, collectionSelected="player_records", database="g
     console.log(err);
   } finally {
     client.close();
-    return;
   }
 }
 
@@ -381,10 +403,11 @@ async function isGameLimitViolated(gameLimitRule, gamesPlayed){
 
 async function logViolation(cellNum, violation, timeStamp) {
   var query = { cellNum: cellNum, violation: violation, timeStamp: timeStamp };
+  var options = { upsert: true };
   console.log("query is: " + JSON.stringify(query));
 
   try {
-    var logged = await insertOne(query);
+    var logged = await updateOne(query, query, options, "player_records", "growing_gamers");
     return logged;
   } catch (error){
     console.log(error);
