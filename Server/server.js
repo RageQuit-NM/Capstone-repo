@@ -385,7 +385,10 @@ async function dailyDigest(){
   
 
   //2. Generate a daily digest for each subscriber
-  var date = new Date().toISOString().slice(0,10);
+  // var date = new Date().toISOString().slice(0,10);//YYYY-MM-DD
+
+  var date = new Date().toLocaleString('en-CA', {hour12:false});
+  date = date.substring(0,10);
   console.log("date is: " + date);
   var cellNum;
   var games;
