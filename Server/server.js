@@ -253,7 +253,6 @@ app.post('/get-message', async function(req, res){
   else if(killDeathRatio > 1) { query = { messageID: "doinggreat" }; }
   else if(killDeathRatio < 0.5) { query = { messageID: "takebreak" }; }
   else {query = { messageID: "welcomeback" }; }
-  console.log(JSON.stringify(query));
   res.send(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
 
   console.log("---");
@@ -269,15 +268,10 @@ async function findOne(query, collectionSelected="user_data", database="growing_
     console.log("No client");
     return;
   } 
-  console.log("Finding 1");
-  console.log("Query is: " + JSON.stringify(query));
-  console.log("collection is: " + collectionSelected);
-  console.log("databse is: " + database);
   try {
     const db = client.db(database);
     let collection = db.collection(collectionSelected);
     let result = await collection.findOne(query);
-    console.log("Result is: " + result);
     return result;
   } catch (err) {
     console.log(err);
