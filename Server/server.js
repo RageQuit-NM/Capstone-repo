@@ -367,15 +367,6 @@ async function ratio(num, denom) {
 }
 
 
-//gets the current date as a string
-async function today(d=new Date().getDate()) {         
-
-  var yyyy = d.getFullYear().toString();                                    
-  var mm = (d.getMonth()+1).toString(); // getMonth() is zero-based         
-  var dd  = d.getDate().toString();             
-                       
-  return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
-};
 
 
 //*****************************Digests**************************************************************************************************
@@ -394,8 +385,7 @@ async function dailyDigest(){
   
 
   //2. Generate a daily digest for each subscriber
-  //var date = new Date().getUTCDate().toISOString().slice(0,10);
-  var date = await today();
+  var date = new Date().getUTCDate().toISOString().slice(0,10);
   console.log("date is: " + date);
   var cellNum;
   var games;
