@@ -190,7 +190,7 @@ app.post('/get-message', async function(req, res){
   } catch (error){
     console.log(error);
   }
-  if(latestGameDate == null || latestGameDate == []){
+  if(latestGameDate == null || latestGameDate.length == 0){
     console.log("ERROR: NULL RESULT");
     query = { messageID: "welcomeback" };
     console.log(JSON.stringify(query));
