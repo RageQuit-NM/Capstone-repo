@@ -216,13 +216,13 @@ app.post('/get-message', async function(req, res){
   var rules = await findOne(query, "user_data", "growing_gamers");
   console.log("The rules are: \n" + JSON.stringify(rules));
   var bedTimeViolation = await isBedTimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+2));
-  console.log("BedTime Violation Staus: " + bedTimeViolation);
+  console.log("BedTime Violation Status: " + bedTimeViolation);
 
   
   //4. Check if playTime rule is violated_____________________________________________
   var playTime = await sumField("game_time", games);
   var playTimeViolation = await isPlayTimeViolated(parseInt(rules["timeLimitRule"])*60, playTime)
-  console.log("PlayTime Violation Staus: " + playTimeViolation);
+  console.log("PlayTime Violation Status: " + playTimeViolation);
 
 
   //5. Check if gameLimit rule is violated____________________________________________
