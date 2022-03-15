@@ -254,8 +254,7 @@ app.post('/get-message', async function(req, res){
   else if(killDeathRatio < 0.5) { query = { messageID: "takebreak" }; }
   else {query = { messageID: "welcomeback" }; }
   console.log(JSON.stringify(query));
-  console.log(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
-  res.send(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
+  res.send(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
 
   console.log("---");
   return;
@@ -278,8 +277,7 @@ async function findOne(query, collectionSelected="user_data", database="growing_
     const db = client.db(database);
     let collection = db.collection(collectionSelected);
     let result = await collection.findOne(query);
-    console.log("Result is: " + result
-    );
+    console.log("Result is: " + result);
     return result;
   } catch (err) {
     console.log(err);
