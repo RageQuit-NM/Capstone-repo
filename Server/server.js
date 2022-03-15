@@ -365,9 +365,7 @@ async function ratio(num, denom) {
 //returns the number of true bools or strings for a given field in given array items
 async function sumBools(field, array) {
   var sum = 0;
-  console.log("BEginning summation, field is: " + field + " and array is: " + JSON.stringify(array));
   for (i in array) {
-    console.log("looking at item: " + array[i][field]);
     if (array[i][field]) {
       if (array[i][field] === true || array[i][field] == "true") { sum ++; }
     }
@@ -421,6 +419,8 @@ async function dailyDigest(){
     //Rule violations
 
     //Games Played
+    var gamesPlayed = games.length;
+    console.log("Games played is: " + gamesPlayed);
 
     //Play Time
 
