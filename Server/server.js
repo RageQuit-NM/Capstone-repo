@@ -99,7 +99,7 @@ app.post('/get-info-for-child', async function(req, res){
 
   sendObject = {timeLeft};
 
-  res.send(json.stringify(sendObject));
+  res.send(JSON.stringify(sendObject));
 
 
 });
