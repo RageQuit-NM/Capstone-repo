@@ -88,7 +88,7 @@ app.post('/get-info-for-child', async function(req, res){
   //document.getElementById("test_message").innerHTML += currentTime + " vs. " + Launcher.instance().parentPreferenes["bedTimeRule"];
   let hoursLeft = parseInt(result["bedTimeRule"]) - parseInt(currentTime);
   let minutesLeft = parseInt(result["bedTimeRule"].substring(result["bedTimeRule"].indexOf(":")+1)) - parseInt(currentTime.substring(currentTime.indexOf(":")+1));
-  document.getElementById("test_message2").innerHTML += "Hours left " + hoursLeft + "minutes elft " + minutesLeft;
+  //document.getElementById("test_message2").innerHTML += "Hours left " + hoursLeft + "minutes elft " + minutesLeft;
   
   if (minutesLeft < 0){
     hoursLeft -= 1;
