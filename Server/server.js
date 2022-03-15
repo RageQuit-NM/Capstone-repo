@@ -385,7 +385,7 @@ async function dailyDigest(){
   
 
   //2. Generate a daily digest for each subscriber
-  var date = new Date().toISOString().slice(0,10).getUTCDate();
+  var date = new Date().getUTCDate().toISOString().slice(0,10);
   console.log("date is: " + date);
   var cellNum;
   var games;
