@@ -492,10 +492,10 @@ async function dailyDigest(){
     //Time Stopped
     if (gamesPlayed > 0) {
       timeStopped = games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(',')+1).trim();
-      console.log("Time stopped is: " + timeStopped);
     } else {
       timeStopped = "NA";
     }
+    console.log("Time stopped is: " + timeStopped);
   }
 }
 
