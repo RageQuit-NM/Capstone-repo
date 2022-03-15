@@ -195,6 +195,7 @@ app.post('/get-message', async function(req, res){
     query = { messageID: "welcomeback" };
     console.log(JSON.stringify(query));
     res.send(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
+    return;
   }
   console.log("Single Element List: " + JSON.stringify(latestGameDate));
   latestGameDate = latestGameDate[0]["timeStamp"].substring(0, latestGameDate[0]["timeStamp"].indexOf(","));
@@ -250,6 +251,7 @@ app.post('/get-message', async function(req, res){
   res.send(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
 
   console.log("---");
+  return;
 });
   
 
