@@ -85,23 +85,24 @@ app.post('/get-info-for-child', async function(req, res){
   }
 
   let currentTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12:false});
-  //document.getElementById("test_message").innerHTML += currentTime + " vs. " + Launcher.instance().parentPreferenes["bedTimeRule"];
   let hoursLeft = parseInt(result["bedTimeRule"]) - parseInt(currentTime);
   let minutesLeft = parseInt(result["bedTimeRule"].substring(result["bedTimeRule"].indexOf(":")+1)) - parseInt(currentTime.substring(currentTime.indexOf(":")+1));
-  //document.getElementById("test_message2").innerHTML += "Hours left " + hoursLeft + "minutes elft " + minutesLeft;
-  
   if (minutesLeft < 0){
     hoursLeft -= 1;
     minutesLeft += 60;
   }
-  let timeLeft = "Time left: " + hoursLeft + ":" + minutesLeft;
-  console.log(timeLeft);
-
+  let timeLeft = hoursLeft + ":" + minutesLeft;
   sendObject = {timeLeft};
 
+  let maxGames = result["gameLimitRule"];
+  let gamesLeft;
+
+  let maxPlaySession = result["timeLimitRule"];
+  let playSessionLeft;
+
+  console.log("Info for child: " + JSON.stringify(sendObject));
   res.send(JSON.stringify(sendObject));
-
-
+  console.log("---");
 });
 
 
