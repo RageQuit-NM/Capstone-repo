@@ -431,6 +431,7 @@ async function dailyDigest(){
 
     //Time Stopped
     var timeStopped = games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(','));
+    console.log("Time stopped is: " + timeStopped);
   }
 }
 
