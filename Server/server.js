@@ -190,7 +190,7 @@ app.post('/get-message', async function(req, res){
   } catch (error){
     console.log(error);
   }
-  if(latestGameDate == null || latestGameDate.length == 0){
+  if(latestGameDate == null || latestGameDate.length == 0){//If there are no games found, return default message
     console.log("ERROR: NULL RESULT");
     query = { messageID: "welcomeback" };
     console.log(JSON.stringify(query));
@@ -221,8 +221,10 @@ app.post('/get-message', async function(req, res){
   query = { cellNum: req.body["cellNum"] };
   var rules = await findOne(query, "user_data", "growing_gamers");
   console.log("The rules are: \n" + JSON.stringify(rules));
-  var bedTimeViolation = await isBedTimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+2));
+  var bedTimeViolation = await isBedTimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+1).trim());
   console.log("BedTime Violation Status: " + bedTimeViolation);
+  console.log("cellNum is: " + query["cellNum"]);
+  if(bedTimeViolation == "VIOLATION") { logViolation(query["cellNum"], "bedTimeViolation", games[0]["timeStamp"]); }
 
   
   //4. Check if playTime rule is violated_____________________________________________
@@ -259,8 +261,8 @@ app.post('/get-message', async function(req, res){
 
 //*****************************MongoDB_Functions*****************************************************************************************
 //Get one item from the user_data collection  
-async function findOne(query, collectionSelected="user_data", database="growing_gamers"){
-  const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
+async function findOne(query, collectionSelected="user_data", database="growing_gamers") {
+  const client = await MongoClient.connect(url, { useNewUrlParser: true } ).catch(err => { console.log(err); });
   if (!client) {
     console.log("No client");
     return;
@@ -274,12 +276,13 @@ async function findOne(query, collectionSelected="user_data", database="growing_
     console.log(err);
   } finally {
     client.close();
+    return;
   }
 }
 
 
 //get all matching items from player_records collection
-async function findAll(query, collectionSelected="player_records", database="growing_gamers"){
+async function findAll(query, collectionSelected="player_records", database="growing_gamers") {
   console.log("finding all");
   const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
   if (!client) {
@@ -296,12 +299,13 @@ async function findAll(query, collectionSelected="player_records", database="gro
     console.log(err);
   } finally {
     client.close();
+    return;
   }
 }
 
 
 //get all matching items from a collection and sort by sortCriteria
-async function sort(query, sortCriteria, collectionSelected="player_records", database="growing_gamers", limit=30){
+async function sort(query, sortCriteria, collectionSelected="player_records", database="growing_gamers", limit=30) {
   console.log("sorting");
   const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
   if (!client) {
@@ -319,9 +323,34 @@ async function sort(query, sortCriteria, collectionSelected="player_records", da
     console.log(err);
   } finally {
     client.close();
+    return;
   }
 }
 
+
+//upsert
+//insertOne
+async function insertOne(query, collectionSelected="player_records", database="growing_gamers") {
+  console.log("insertingOne");
+  const client = await MongoClient.connect(url, { useNewUrlParser: true }).catch(err => { console.log(err); });
+  if (!client) {
+    console.log("No client");
+    return;
+  }
+
+  try {
+    const db = client.db(database);
+    let collection = db.collection(collectionSelected);
+    let result = await collection.insertOne(query);
+    console.log("returning: " + JSON.stringify(result));
+    return result;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+    return;
+  }
+}
 
 
 //*****************************Rule_Violation_Functions*****************************************************************************************
@@ -330,7 +359,9 @@ async function isBedTimeViolated(bedTimeRule, time){
   if (time == null || bedTimeRule == null) {return "RULE_OR_TIMESTAMP_ERROR";}
   // console.log(bedTimeRule + "         " + time);
   if(time < bedTimeRule) {return "NO_VIOLATION";}
-  else {return "VIOLATION";}
+  else {
+    return "VIOLATION";
+  }
 }
 
 //Checks if playTime rule is violated  playTimeRule: number, playTime: number
@@ -347,6 +378,21 @@ async function isGameLimitViolated(gameLimitRule, gamesPlayed){
   // console.log(gameLimitRule + "         " + gamesPlayed);
   if(gamesPlayed < gameLimitRule) {return "NO_VIOLATION";}
   else {return "VIOLATION";}
+}
+
+async function logViolation(cellNum, violation, timeStamp) {
+  var query = { cellNum: cellNum, violation: violation, timeStamp: timeStamp };
+  console.log("query is: " + JSON.stringify(query));
+
+  try {
+    var logged = await insertOne(query, "player_records", "growing_gamers");
+    return logged;
+  } catch (error){
+    console.log(error);
+  }
+  if(logged == null){
+    console.log("ERROR: NULL RESULT");
+  }
 }
 
 
@@ -390,6 +436,12 @@ async function dailyDigest(){
   var query = { dailyDigest: "true" };
   var sortCriteria = { timeStamp: -1 }; //sort by largest to smallest time stamp
   var dailyDigestSubscribers;
+  var wins;
+  var gamesPlayed;
+  var timePlayed;
+  var timeStopped;
+
+
   try {
     dailyDigestSubscribers = await findAll(query, "user_data", "growing_gamers");
   } catch (error){
@@ -417,28 +469,29 @@ async function dailyDigest(){
     } catch (error){
       console.log(error);
     }
-    if(dailyDigestSubscribers == null){
+    if(games == null){
       console.log("ERROR: NULL RESULT");
+      return;
     }
     console.log("games are: " + JSON.stringify(games));
     
     //Get win/loss ratio
-    var wins = await sumBools("win", games);
+    wins = await sumBools("win", games);
     console.log("Wins is: " + wins);
 
     //Rule violations
 
     //Games Played
-    var gamesPlayed = games.length;
+    gamesPlayed = games.length;
     console.log("Games played is: " + gamesPlayed);
 
     //Play Time (minutes)
-    var timePlayed = await sumField("game_time", games);
+    timePlayed = await sumField("game_time", games);
     timePlayed = timePlayed/60;
     console.log("time played is: " + timePlayed);
 
     //Time Stopped
-    var timeStopped = games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(',')+1).trim();
+    timeStopped = games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(',')+1).trim();
     console.log("Time stopped is: " + timeStopped);
   }
 }
