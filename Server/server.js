@@ -191,7 +191,7 @@ app.post('/get-message', async function(req, res){
     console.log(error);
   }
   if(latestGameDate == null || latestGameDate.length == 0){//If there are no games found, return default message
-    console.log("ERROR: NULL RESULT");
+    console.log("ERROR: NULL RESULT   LENGTH IS: " + latestGameDate.length);
     query = { messageID: "welcomeback" };
     console.log(JSON.stringify(query));
     res.send(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
