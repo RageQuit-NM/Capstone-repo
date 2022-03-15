@@ -195,6 +195,8 @@ app.post('/get-message', async function(req, res){
     query = { messageID: "welcomeback" };
     console.log(JSON.stringify(query));
     res.send(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
+
+    console.log("---");
     return;
   }
   console.log("Single Element List: " + JSON.stringify(latestGameDate));
