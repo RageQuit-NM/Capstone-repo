@@ -270,10 +270,16 @@ async function findOne(query, collectionSelected="user_data", database="growing_
     console.log("No client");
     return;
   } 
+  console.log("Finding 1");
+  console.log("Query is: " + JSON.stringify(query));
+  console.log("collection is: " + collectionSelected);
+  console.log("databse is: " + database);
   try {
     const db = client.db(database);
     let collection = db.collection(collectionSelected);
     let result = await collection.findOne(query);
+    console.log("Result is: " + result
+    );
     return result;
   } catch (err) {
     console.log(err);
