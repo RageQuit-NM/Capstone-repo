@@ -10,8 +10,9 @@ class BackgroundController {
   private static _instance: BackgroundController;
   private _windows: Record<string, OWWindow> = {};
   private _gameListener: OWGameListener;
-  private hasGameRun:boolean;
+  //private hasGameRun:boolean;
   //private firstGameRunTime: Date = null;
+  public messageInterval:number;
   private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
   //public parentPreferenes: object;
 
@@ -20,7 +21,7 @@ class BackgroundController {
     // Populating the background controller's window dictionary
     this._windows[kWindowNames.launcher] = new OWWindow(kWindowNames.launcher);
     this._windows[kWindowNames.inGame] = new OWWindow(kWindowNames.inGame);
-    this.hasGameRun = false;
+    //this.hasGameRun = false;
     
     // When a a supported game game is started or is ended, toggle the app's windows
     this._gameListener = new OWGameListener({
@@ -105,7 +106,9 @@ class BackgroundController {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var parsed = JSON.parse(this.responseText);
+        console.log(this.responseText);
         document.getElementById("primary_message").innerHTML = parsed["body"];
+        document.getElementById("dismiss_message").innerHTML = parsed["dismissButtonMesage"];
       }
     };
   }
@@ -210,9 +213,11 @@ class BackgroundController {
     if (await this.isSupportedGameRunning()) {
       this._windows[kWindowNames.launcher].close();
       document.getElementById("attributes").setAttribute('listener', 'false');
+      clearInterval(this.messageInterval);
       this._windows[kWindowNames.inGame].restore();
     } else {
       this._windows[kWindowNames.launcher].restore();
+      this.messageInterval = setInterval(this.sendMessageToLauncher, 1000*60);
       setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 3000); //So app layers over the league launcher
       this._windows[kWindowNames.inGame].close();
     }
@@ -228,14 +233,14 @@ class BackgroundController {
     if (info.isRunning) {
       this._windows[kWindowNames.launcher].close();
       document.getElementById("attributes").setAttribute('listener', 'false');
+      clearInterval(this.messageInterval);
       this._windows[kWindowNames.inGame].restore();
-      this.hasGameRun = true;
+      //this.hasGameRun = true;
     } else {
       //A game has just ended
       //console.log("game has ended. Primary is: " +  document.getElementById("primary_message").innerHTML);
       this.sendGameInfoToRemote();
-      //this.sendMessageToLauncher();
-      //console.log("Finished updating message from launcher. Primary is: " +  document.getElementById("primary_message").innerHTML);
+      this.messageInterval = setInterval(this.sendMessageToLauncher, 1000*60);
       this._windows[kWindowNames.launcher].restore();
       setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 1500); //Brings the launcher window infront of the game launcher after 1.5s
       this._windows[kWindowNames.inGame].close();

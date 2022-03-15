@@ -101,6 +101,11 @@ body {
   padding: 1%;
 }
 
+.invalid-feedback{
+  color: red;
+
+}
+
 #parent_portal_link:hover {
   color: #81BADB;
 }
