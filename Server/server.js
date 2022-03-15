@@ -371,15 +371,39 @@ async function ratio(num, denom) {
 
 //*****************************Digests**************************************************************************************************
 async function dailyDigest(){
+  //1. Find everyone who is subscribed to daily digests
   var query = { dailyDigest: "true" };
-  var dailyDigestSubscribers = await findAll(query, "user_data", "growing_gamers");
-  var date = new Date().toISOString().slice(0,10);
-  console.log("date is: " + date);
-  //Generate a daily digest for each subscriber
+  var dailyDigestSubscribers;
+  try {
+    dailyDigestSubscribers = await findAll(query, "user_data", "growing_gamers");
+  } catch (error){
+    console.log(error);
+  }
+  if(dailyDigestSubscribers == null){
+    console.log("ERROR: NULL RESULT");
+  }
+  
+
+  //2. Generate a daily digest for each subscriber
+  var date = new Date().toISOString().slice(0,10); // console.log("date is: " + date);
   var cellNum;
+  var games;
   for (i in dailyDigestSubscribers) {
     cellNum=dailyDigestSubscribers[i]["cellNum"];
     console.log("cellNum is: " + cellNum);
+
+    //Collect this players daily games
+    query = { cellNum: cellNum, timeStamp: new RegExp(latestGameDate) };
+    try {
+      games = await findAll(query, "player_records", "growing_gamers");
+    } catch (error){
+      console.log(error);
+    }
+    if(dailyDigestSubscribers == null){
+      console.log("ERROR: NULL RESULT");
+    }
+    console.log("games are: " + JSON.stringify(games));
+    
   }
 }
 
