@@ -50,7 +50,7 @@ app.post('/get-settings', async function(req, res){
     console.log(error);
   }
   if(result == null){
-    console.log("there was an error");
+    console.log("NO CELLNUM FOUND: " + JSON.stringify(query));
   }else{
     //console.log("Returing parentPortal settings. id: "+ JSON.stringify(result["_id"]) + " cellNum: " + JSON.stringify(result["cellNum"]));
   }
