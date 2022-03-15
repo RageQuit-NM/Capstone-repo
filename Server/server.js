@@ -382,11 +382,8 @@ async function dailyDigest(){
   if(dailyDigestSubscribers == null){
     console.log("ERROR: NULL RESULT");
   }
-  
 
   //2. Generate a daily digest for each subscriber
-  // var date = new Date().toISOString().slice(0,10);//YYYY-MM-DD
-
   var date = new Date().toLocaleString('en-CA', {hour12:false});
   date = date.substring(0,10);
   console.log("date is: " + date);
@@ -409,9 +406,19 @@ async function dailyDigest(){
     }
     console.log("games are: " + JSON.stringify(games));
     
+    //Get win/loss ratio
+
+    //Rule violations
+
+    //Games Played
+
+    //Play Time
+
+    //Time Stopped
   }
 }
 
+//Function to test digest distribution
 app.post('/test-daily-digest', async function(req, res){
   console.log("Running daily digest generator");
   var run = await dailyDigest();
