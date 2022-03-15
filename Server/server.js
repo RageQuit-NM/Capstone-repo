@@ -190,8 +190,11 @@ app.post('/get-message', async function(req, res){
   } catch (error){
     console.log(error);
   }
-  if(latestGameDate == null){
+  if(latestGameDate == null || latestGameDate == []){
     console.log("ERROR: NULL RESULT");
+    query = { messageID: "welcomeback" };
+    console.log(JSON.stringify(query));
+    res.send(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
   }
   console.log("Single Element List: " + JSON.stringify(latestGameDate));
   latestGameDate = latestGameDate[0]["timeStamp"].substring(0, latestGameDate[0]["timeStamp"].indexOf(","));
@@ -237,11 +240,12 @@ app.post('/get-message', async function(req, res){
 
 
   //X. Submit message ________________________________________________________________
-  if(bedTimeViolation == "VIOLATION"){query = { messageID: "bedtimeviolated" };}
-  else if(playTimeViolation == "VIOLATION"){query = { messageID: "playtimeviolated" };}
-  else if(gameLimitViolation == "VIOLATION"){query = { messageID: "gamelimitviolated" };}
-  else if(killDeathRatio > 1){query = { messageID: "doinggreat" };}
-  else if(killDeathRatio < 0.5){query = { messageID: "takebreak" };}
+  if(bedTimeViolation == "VIOLATION") { query = { messageID: "bedtimeviolated" }; }
+  else if(playTimeViolation == "VIOLATION") { query = { messageID: "playtimeviolated" }; }
+  else if(gameLimitViolation == "VIOLATION") { query = { messageID: "gamelimitviolated" }; }
+  else if(killDeathRatio > 1) { query = { messageID: "doinggreat" }; }
+  else if(killDeathRatio < 0.5) { query = { messageID: "takebreak" }; }
+  else {query = { messageID: "welcomeback" }; }
   console.log(JSON.stringify(query));
   res.send(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
 
