@@ -74,6 +74,31 @@ app.post('/get-stats', async function(req, res){
   console.log("---");
 });
 
+app.post('/get-info-for-child', async function(req, res){
+  var query = {cellNum: req.body["cellNum"]};
+  var collection = "user_data";
+  var result;
+  try {
+    result = await findOne(query, collection);
+  } catch (error){
+    console.log(error);
+  }
+
+  let currentTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12:false});
+  //document.getElementById("test_message").innerHTML += currentTime + " vs. " + Launcher.instance().parentPreferenes["bedTimeRule"];
+  let hoursLeft = parseInt(result["bedTimeRule"]) - parseInt(currentTime);
+  let minutesLeft = parseInt(result["bedTimeRule"].substring(result["bedTimeRule"].indexOf(":")+1)) - parseInt(currentTime.substring(currentTime.indexOf(":")+1));
+  document.getElementById("test_message2").innerHTML += "Hours left " + hoursLeft + "minutes elft " + minutesLeft;
+  
+  if (minutesLeft < 0){
+    hoursLeft -= 1;
+    minutesLeft += 60;
+  }
+  let timeLeft = "Time left: " + hoursLeft + ":" + minutesLeft;
+  console.log(timeLeft);
+
+});
+
 
 //Send bedtime violation notification
 app.post('/bedtime-message', async function(req, res){
