@@ -186,12 +186,14 @@ app.post('/get-message', async function(req, res){
   var sortCriteria = { timeStamp: -1 };//sort by descending date and time
   var latestGameDate;
   try {
+    console.log(JSON.stringify(query));
     latestGameDate = await sort(query, sortCriteria, "player_records", "growing_gamers", 1);
+    console.log(JSON.stringify(latestGameDate));
   } catch (error){
     console.log(error);
   }
   if(latestGameDate == null || typeof latestGameDate == 'undefined'){//If there are no games found, return default message
-    console.log("ERROR: NULL RESULT   LENGTH IS: " + typeof latestGameDate);
+    console.log("ERROR: NULL RESULT " + typeof latestGameDate);
     query = { messageID: "welcomeback" };
     console.log(JSON.stringify(query));
     res.send(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
