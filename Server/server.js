@@ -345,8 +345,8 @@ async function isGameLimitViolated(gameLimitRule, gamesPlayed){
 //Sums up the total value of a field, field may be a string or a number
 async function sumField(field, array){
   var sum = 0;
-  for (i in array){
-    if(array[i][field]){ sum+=parseInt(array[i][field]); }
+  for (i in array) {
+    if (array[i][field]) { sum+=parseInt(array[i][field]); }
   }
   // console.log("sum is: " + sum);
   return sum;
@@ -355,17 +355,23 @@ async function sumField(field, array){
 //Calculates ratio numerator/denominator
 async function ratio(num, denom) {
   var ratio;
-  if (denom > 0){
+  if (denom > 0) {
     ratio = num/denom;
-    if(ratio > 9){
-      ratio = 9;
-    }
-  } else {
-    ratio = 0;
-  }
+    if (ratio > 9) { ratio = 9; }
+  } else { ratio = 0; }
   return ratio;
 }
 
+//returns the number of true bools or strings for a given field in given array items
+async function sumBools(field, array) {
+  var sum = 0;
+  for (i in array) {
+    if (array[i][field]) {
+      if (array[i][field] === true || array[i][field] == "true") { sum ++; }
+    }
+  }
+  return sum;
+}
 
 
 
@@ -407,6 +413,8 @@ async function dailyDigest(){
     console.log("games are: " + JSON.stringify(games));
     
     //Get win/loss ratio
+    var wins = await sumBools("win", games);
+    console.log("Wins is: " + wins);
 
     //Rule violations
 
