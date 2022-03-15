@@ -407,7 +407,7 @@ async function logViolation(cellNum, violation, timeStamp) {
   console.log("query is: " + JSON.stringify(query));
 
   try {
-    var logged = await updateOne(query, query, options, "player_records", "growing_gamers");
+    var logged = await updateOne(query, { $set: query }, options, "player_records", "growing_gamers");
     return logged;
   } catch (error){
     console.log(error);
