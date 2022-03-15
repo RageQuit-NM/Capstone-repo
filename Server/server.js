@@ -380,6 +380,7 @@ async function sumBools(field, array) {
 async function dailyDigest(){
   //1. Find everyone who is subscribed to daily digests
   var query = { dailyDigest: "true" };
+  var sortCriteria = { timeStamp: -1 }; //sort by largest to smallest time stamp
   var dailyDigestSubscribers;
   try {
     dailyDigestSubscribers = await findAll(query, "user_data", "growing_gamers");
@@ -404,7 +405,7 @@ async function dailyDigest(){
     query = { cellNum: cellNum, timeStamp: new RegExp(date.toString()) };
     console.log("query is: " + JSON.stringify(query));
     try {
-      games = await findAll(query, "player_records", "growing_gamers");
+      games = await sort(query, sortCriteria,"player_records", "growing_gamers");
     } catch (error){
       console.log(error);
     }
@@ -429,6 +430,7 @@ async function dailyDigest(){
     console.log("time played is: " + timePlayed);
 
     //Time Stopped
+    var timeStopped = games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(','));
   }
 }
 
