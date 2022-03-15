@@ -186,9 +186,9 @@ app.post('/get-message', async function(req, res){
   var sortCriteria = { timeStamp: -1 };//sort by descending date and time
   var latestGameDate;
   try {
-    console.log(JSON.stringify(query));
+    console.log("Query is: " + JSON.stringify(query));
     latestGameDate = await sort(query, sortCriteria, "player_records", "growing_gamers", 1);
-    console.log(JSON.stringify(latestGameDate));
+    console.log("Response is: " + JSON.stringify(latestGameDate));
   } catch (error){
     console.log(error);
   }
@@ -222,10 +222,10 @@ app.post('/get-message', async function(req, res){
   //3. Check if the bedtime rule is violated__________________________________________
   query = { cellNum: req.body["cellNum"] };
   var rules = await findOne(query, "user_data", "growing_gamers");
-  console.log("The rules are: \n" + JSON.stringify(rules));
+  // console.log("The rules are: \n" + JSON.stringify(rules));
   var bedTimeViolation = await isBedTimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+1).trim());
-  console.log("BedTime Violation Status: " + bedTimeViolation);
-  console.log("cellNum is: " + query["cellNum"]);
+  // console.log("BedTime Violation Status: " + bedTimeViolation);
+  // console.log("cellNum is: " + query["cellNum"]);
   if(bedTimeViolation == "VIOLATION") { logViolation(query["cellNum"], "bedTimeViolation", games[0]["timeStamp"]); }
 
   
@@ -337,6 +337,7 @@ async function insertOne(query, collectionSelected="player_records", database="g
     return;
   }
 
+  console.log("Query is: " + JSON.stringify(query));
   try {
     const db = client.db(database);
     let collection = db.collection(collectionSelected);
