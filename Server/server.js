@@ -193,7 +193,7 @@ app.post('/get-message', async function(req, res){
   if(latestGameDate == null){
     console.log("ERROR: NULL RESULT");
   }
-  // console.log("Single Element List: " + JSON.stringify(latestGameDate));
+  console.log("Single Element List: " + JSON.stringify(latestGameDate));
   latestGameDate = latestGameDate[0]["timeStamp"].substring(0, latestGameDate[0]["timeStamp"].indexOf(","));
   console.log("Latest Game Date is: " + latestGameDate);
   //find all games played on the most recent date
