@@ -368,8 +368,8 @@ async function ratio(num, denom) {
 
 
 //gets the current date as a string
-async function today(d) {         
-                                 
+async function today(d=new Date().getDate()) {         
+
   var yyyy = d.getFullYear().toString();                                    
   var mm = (d.getMonth()+1).toString(); // getMonth() is zero-based         
   var dd  = d.getDate().toString();             
