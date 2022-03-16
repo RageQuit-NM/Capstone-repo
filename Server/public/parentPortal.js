@@ -236,11 +236,11 @@ function buildPreferences(preferences) {
 // }
 
 function setCellNum(){
-  var cellNum = document.getElementById("cellInput").value
+  var cellNum = document.getElementById("cellNum").value
   var regexCellNum = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
   if(!regexCellNum.test(cellNum)){
     document.getElementById("cellChangeFeedback").innerHTML = "Please enter a valid phone number.";
-    document.getElementById("cellInput").classList.add("is-invalid");
+    document.getElementById("cellNum").classList.add("is-invalid");
     return;
   }
   setCookie("cellNum", cellNum);
@@ -306,7 +306,7 @@ function isFormValid(){
 }
 
 function setCellNum(){
-  var cellNum = document.getElementById("cellInput").value
+  var cellNum = document.getElementById("cellNum").value
   setCookie("cellNum", cellNum);
   location.reload();
 }
@@ -315,6 +315,7 @@ function setCellNum(){
 function parentFormHandler() {
     var formData = Array.from(document.querySelectorAll('#parent_control_form input')).reduce((acc, input)=>({ ...acc, [input.id]: input.value }), {});
     formData["cellNum"] = document.getElementById("cellNum").value;
+
     if(!isFormValid()){
       document.getElementById("forumFeedback").innerHTML = "Please correct the marked fields above.";
       document.getElementById("forumFeedback").style.display = "inherit";
