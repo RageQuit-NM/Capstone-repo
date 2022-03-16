@@ -293,12 +293,12 @@ function isFormValid(){
   var cellNum = document.getElementById("cellNum").value
   if(!regexCellNum.test(cellNum)){
     document.getElementById("cellNumFeedback").innerHTML = "Please enter a valid phone number.";
+    document.getElementById("cellNumFeedback").style.display = "inherit";
     document.getElementById("cellNum").classList.add("is-invalid");
     document.getElementById("cellNum").classList.remove("is-valid");
     return false;
   }else{
-    document.getElementById("cellNumFeedback").innerHTML = cellNum + "is good";
-    //document.getElementById("cellNumFeedback").innerHTML = "";
+    document.getElementById("cellNumFeedback").innerHTML = "";
     document.getElementById("cellNum").classList.remove("is-invalid");
     document.getElementById("cellNum").classList.add("is-valid");
   }
@@ -317,6 +317,7 @@ function parentFormHandler() {
 
     if(!isFormValid()){
       document.getElementById("forumFeedback").innerHTML = "Please correct the marked fields above.";
+      document.getElementById("forumFeedback").style.display = "inherit";
       return;
     }else{
       document.getElementById("forumFeedback").innerHTML = "";
