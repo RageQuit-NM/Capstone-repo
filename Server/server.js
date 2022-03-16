@@ -7,6 +7,11 @@ var express = require('express');
 var https = require('https');
 var http = require('http');
 var app = express();  
+// var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
+// var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
+var privateKey;
+var certificate;
+var credentials = {key: privateKey, cert: certificate};
 
 const { json } = require('body-parser');
 const { kill } = require('process');
