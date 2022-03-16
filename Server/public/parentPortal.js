@@ -290,18 +290,18 @@ function isFormValid(){
 
   var regexCellNum = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 
-  var cellNum = document.getElementById("cellNum").value
-  if(!regexCellNum.test(cellNum)){
-    document.getElementById("cellNumFeedback").innerHTML = "Please enter a valid phone number.";
-    document.getElementById("cellNumFeedback").style.display = "inherit";
-    document.getElementById("cellNum").classList.add("is-invalid");
-    document.getElementById("cellNum").classList.remove("is-valid");
-    return false;
-  }else{
-    document.getElementById("cellNumFeedback").innerHTML = "";
-    document.getElementById("cellNum").classList.remove("is-invalid");
-    document.getElementById("cellNum").classList.add("is-valid");
-  }
+  // var cellNum = document.getElementById("cellNum").value
+  // if(!regexCellNum.test(cellNum)){
+  //   document.getElementById("cellNumFeedback").innerHTML = "Please enter a valid phone number.";
+  //   document.getElementById("cellNumFeedback").style.display = "inherit";
+  //   document.getElementById("cellNum").classList.add("is-invalid");
+  //   document.getElementById("cellNum").classList.remove("is-valid");
+  //   return false;
+  // }else{
+  //   document.getElementById("cellNumFeedback").innerHTML = "";
+  //   document.getElementById("cellNum").classList.remove("is-invalid");
+  //   document.getElementById("cellNum").classList.add("is-valid");
+  // }
   return true;
 }
 
@@ -314,7 +314,7 @@ function setCellNum(){
 //Collect data from parent preferences and ...
 function parentFormHandler() {
     var formData = Array.from(document.querySelectorAll('#parent_control_form input')).reduce((acc, input)=>({ ...acc, [input.id]: input.value }), {});
-
+    formData["cellNum"] = document.getElementById("cellNum").value;
     if(!isFormValid()){
       document.getElementById("forumFeedback").innerHTML = "Please correct the marked fields above.";
       document.getElementById("forumFeedback").style.display = "inherit";
