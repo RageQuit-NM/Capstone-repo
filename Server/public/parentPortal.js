@@ -297,6 +297,7 @@ function isFormValid(){
     document.getElementById("cellNum").classList.remove("is-valid");
     return false;
   }else{
+    document.getElementById("cellNumFeedback").innerHTML = cellNum + "is good";
     document.getElementById("cellNumFeedback").innerHTML = "";
     document.getElementById("cellNum").classList.remove("is-invalid");
     document.getElementById("cellNum").classList.add("is-valid");
