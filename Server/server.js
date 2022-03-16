@@ -7,11 +7,11 @@ var express = require('express');
 var https = require('https');
 var http = require('http');
 var app = express();  
-// var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
-// var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
-var privateKey;
-var certificate;
-var credentials = {key: privateKey, cert: certificate};
+
+const options = {
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem')
+};
 
 const { json } = require('body-parser');
 const { kill } = require('process');
@@ -22,7 +22,7 @@ app.use(express.static(__dirname+'/public'));//to know where the website assets 
 
 http.createServer(app).listen(5000);             //HTTP service
 console.log('Node.js HTTP web server at port 5000 is running..');
-https.createServer(credentials, app).listen(5001);  //HTTPS service
+https.createServer(options, app).listen(5001);  //HTTPS service
 console.log('Node.js HTTPS web server at port 5001 is running..');
 
 //httpServer.listen(5000);
