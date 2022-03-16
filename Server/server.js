@@ -20,10 +20,10 @@ const { time } = require('console');
 app.use(express.json());//So JSON data can be parsed from HTTP URL
 app.use(express.static(__dirname+'/public'));//to know where the website assets live
 
-var httpServer = http.createServer(app).listen(5000);             //HTTP service
-var httpsServer = https.createServer(credentials, app).listen(5001);  //HTTPS service
+http.createServer(app).listen(5000);             //HTTP service
+https.createServer(credentials, app).listen(5001);  //HTTPS service
 
-httpServer.listen(5000);
+//httpServer.listen(5000);
 //httpsServer.listen(5001);
 
 //listen for requests on port 5000
