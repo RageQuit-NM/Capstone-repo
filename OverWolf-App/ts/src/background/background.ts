@@ -106,7 +106,7 @@ class BackgroundController {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var parsed = JSON.parse(this.responseText);
-        console.log(this.responseText);
+        //console.log(this.responseText);
         document.getElementById("primary_message").innerHTML = parsed["body"];
         document.getElementById("dismiss_message").innerHTML = parsed["dismissButtonMesage"];
       }
