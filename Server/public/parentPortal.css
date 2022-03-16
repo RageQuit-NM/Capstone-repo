@@ -45,4 +45,19 @@
   box-shadow: none;
 }
 
+#choose_cellNum_submit {
+  color: #24343D;
+  background-color: #81BADB;
+  border: #81BADB;
+  outline: #81BADB;
+}
+
+#choose_cellNum_submit:hover {
+  color: #24343D;
+  background-color: #456475;
+  border: #456475;
+  outline: #456475;
+  box-shadow: none;
+}
+
 /* #81BADB #456475 #24343D */
