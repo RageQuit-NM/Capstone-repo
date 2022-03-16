@@ -13,8 +13,8 @@ class BackgroundController {
   //private hasGameRun:boolean;
   //private firstGameRunTime: Date = null;
   public messageInterval:number;
-  private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
-  //public parentPreferenes: object;
+  // private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
+  private remoteAddress: string = "https://ec2-35-183-27-150.ca-central-1.compute.amazonaws.com:5001";
 
 
   private constructor() {
@@ -95,8 +95,8 @@ class BackgroundController {
     // }
     let cellNumString = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
-    let serverAction = "get-message";
-    let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+    let serverAction = "/get-message";
+    let remoteServer = this.remoteAddress + serverAction;
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
@@ -135,8 +135,8 @@ class BackgroundController {
     gameData["cellNum"] = cellNum;
     gameData["timeStamp"] = new Date().toLocaleString('en-CA', {hour12:false});
 
-    let serverAction = "upload-game-data";  
-    let remoteServer = "http://" +  BackgroundController.instance().remoteAddress + ":5000/" + serverAction;
+    let serverAction = "/upload-game-data";  
+    let remoteServer = BackgroundController.instance().remoteAddress + serverAction;
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
