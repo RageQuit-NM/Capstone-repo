@@ -479,6 +479,7 @@ async function dailyDigest(){
   var timeStopped;//timestamp of last game
   var games;      //total number of games played today
   var violations; //list of violations incurred today by user
+  var sms;        //Final message to be sent out (The final digest)
 
   for (i in dailyDigestSubscribers) {
     cellNum=dailyDigestSubscribers[i]["cellNum"];
@@ -513,7 +514,7 @@ async function dailyDigest(){
       console.log("ERROR: NULL RESULT");
     }
     console.log("Violations are: " + JSON.stringify(violations));
-    
+     
     //Games Played_____________________________________________________________________________
     gamesPlayed = games.length;
     console.log("Games played is: " + gamesPlayed);
@@ -530,6 +531,15 @@ async function dailyDigest(){
       timeStopped = "NA";
     }
     console.log("Time stopped is: " + timeStopped);
+
+    //Send SMS_________________________________________________________________________________
+    sms = date + " Daily Digest: \n";
+    if(gamesPlayed == 0 || gamesPlayed == null) {
+      sms = sms + "No Activity Today.";
+    } else {
+
+
+    }
   }
 }
 
