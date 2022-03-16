@@ -30,6 +30,10 @@
   margin-right: 15%;
 }
 
+.top-spacer {
+  margin-top: 2%;
+}
+
 #parent_control_submit, #choose_cellNum_submit{
   color: #81BADB;
   background-color: #24343D;
