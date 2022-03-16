@@ -348,7 +348,6 @@ async function updateOne(query, newVals, options, collectionSelected="player_rec
     } finally {
       client.close();
     }
-
 }
 
 //insertOne
@@ -503,6 +502,7 @@ async function dailyDigest(){
 
     //Rule violations
 
+    
     //Games Played
     gamesPlayed = games.length;
     console.log("Games played is: " + gamesPlayed);
