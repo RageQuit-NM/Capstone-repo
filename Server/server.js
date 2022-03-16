@@ -466,7 +466,7 @@ async function dailyDigest(){
   try {
     dailyDigestSubscribers = await findAll(query, "user_data", "growing_gamers");
   } catch (error){
-    console.log(error);
+    console.log("ERROR 1: " + error);
   }
   if(dailyDigestSubscribers == null){
     console.log("ERROR: NULL RESULT");
