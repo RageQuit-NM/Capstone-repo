@@ -454,6 +454,7 @@ async function sumBools(field, array) {
 //*****************************Digests**************************************************************************************************
 async function dailyDigest(){
   //1. Find everyone who is subscribed to daily digests
+  console.log("Generating Digests");
   var query = { dailyDigest: "true" };
   var sortCriteria = { timeStamp: -1 }; //sort by largest to smallest time stamp
   var dailyDigestSubscribers;
@@ -466,7 +467,7 @@ async function dailyDigest(){
   try {
     dailyDigestSubscribers = await findAll(query, "user_data", "growing_gamers");
   } catch (error){
-    console.log("ERROR 1: " + error);
+    console.log(error);
   }
   if(dailyDigestSubscribers == null){
     console.log("ERROR: NULL RESULT");
