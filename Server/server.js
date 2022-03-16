@@ -484,7 +484,7 @@ async function dailyDigest(){
     console.log("cellNum is: " + cellNum);
 
     //Collect this players daily games
-    query = { cellNum: cellNum, timeStamp: new RegExp(date.toString()) };
+    query = { cellNum: cellNum, timeStamp: new RegExp(date.toString()), violation: null };
     console.log("query is: " + JSON.stringify(query));
     try {
       games = await sort(query, sortCriteria,"player_records", "growing_gamers");
