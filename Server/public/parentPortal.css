@@ -54,7 +54,7 @@
   background-color: #456475;
   border: #81BADB;
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
   outline: #456475;
 }
 
@@ -62,6 +62,8 @@
   color: #81BADB;
   background-color: #24343D;
   border: #81BADB;
+  border-style: solid;
+  border-width: 1px;
   outline: #24343D;
   box-shadow: none;
 }
