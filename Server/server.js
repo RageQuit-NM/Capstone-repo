@@ -2,13 +2,14 @@ var path = require('path');
 var childProcess = require('child_process');
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
+const fs = require('fs');
 
 var express = require('express');  
 var https = require('https');
 var http = require('http');
 var app = express();  
 
-const options = {
+var options = {
   key: fs.readFileSync('key.pem'),
   cert: fs.readFileSync('cert.pem')
 };
