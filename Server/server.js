@@ -458,11 +458,6 @@ async function dailyDigest(){
   var query = { dailyDigest: "true" };
   var sortCriteria = { timeStamp: -1 }; //sort by largest to smallest time stamp
   var dailyDigestSubscribers;
-  var wins;
-  var gamesPlayed;
-  var timePlayed;
-  var timeStopped;
-
 
   try {
     dailyDigestSubscribers = await findAll(query, "user_data", "growing_gamers");
@@ -474,16 +469,22 @@ async function dailyDigest(){
   }
 
   //2. Generate a daily digest for each subscriber
-  var date = new Date().toLocaleString('en-CA', {hour12:false});
+  var date = new Date().toLocaleString('en-CA', {hour12:false}); //todays date YYYY-MM-DD
   date = date.substring(0,10);
   console.log("date is: " + date);
-  var cellNum;
-  var games;
+  var cellNum;    //cellNum of current subscriber
+  var wins;       //number of wins of current subscriber
+  var gamesPlayed;//number of games played
+  var timePlayed; //time played today
+  var timeStopped;//timestamp of last game
+  var games;      //total number of games played today
+  var violations; //list of violations incurred today by user
+
   for (i in dailyDigestSubscribers) {
     cellNum=dailyDigestSubscribers[i]["cellNum"];
     console.log("cellNum is: " + cellNum);
 
-    //Collect this players daily games
+    //Collect this players daily games___________________________________________________________
     query = { cellNum: cellNum, timeStamp: new RegExp(date.toString()), violation: null };
     console.log("query is: " + JSON.stringify(query));
     try {
@@ -493,27 +494,36 @@ async function dailyDigest(){
     }
     if(games == null){
       console.log("ERROR: NULL RESULT");
-      return;
     }
     console.log("games are: " + JSON.stringify(games));
     
-    //Get win/loss ratio
+    //Get win/loss ratio________________________________________________________________________
     wins = await sumBools("win", games);
     console.log("Wins is: " + wins);
 
-    //Rule violations
-
+    //Rule violations___________________________________________________________________________
+    query = { cellNum: cellNum, timeStamp: new RegExp(date.toString()), violation: { $ne:null } };
+    console.log("query is: " + JSON.stringify(query));
+    try {
+      violations = await sort(query, sortCriteria,"player_records", "growing_gamers");
+    } catch (error){
+      console.log(error);
+    }
+    if(violations == null){
+      console.log("ERROR: NULL RESULT");
+    }
+    console.log("Violations are: " + JSON.stringify(violations));
     
-    //Games Played
+    //Games Played_____________________________________________________________________________
     gamesPlayed = games.length;
     console.log("Games played is: " + gamesPlayed);
 
-    //Play Time (minutes)
+    //Play Time (minutes)______________________________________________________________________
     timePlayed = await sumField("game_time", games);
     timePlayed = timePlayed/60;
     console.log("time played is: " + timePlayed);
 
-    //Time Stopped
+    //Time Stopped_____________________________________________________________________________
     if (gamesPlayed > 0) {
       timeStopped = games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(',')+1).trim();
     } else {
