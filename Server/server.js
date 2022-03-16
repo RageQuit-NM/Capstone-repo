@@ -10,8 +10,8 @@ var http = require('http');
 var app = express();  
 
 var options = {
-  key: fs.readFileSync('key.pem'),
-  cert: fs.readFileSync('cert.pem')
+  key: fs.readFileSync('client-key.pem'),
+  cert: fs.readFileSync('client-cert.pem')
 };
 
 const { json } = require('body-parser');
