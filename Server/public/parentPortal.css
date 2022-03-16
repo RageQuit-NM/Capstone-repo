@@ -25,6 +25,11 @@
   padding: 4%;
 }
 
+.header-div {
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
 #parent_control_submit {
   color: #81BADB;
   background-color: #24343D;

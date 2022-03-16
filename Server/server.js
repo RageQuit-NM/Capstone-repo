@@ -348,7 +348,6 @@ async function updateOne(query, newVals, options, collectionSelected="player_rec
     } finally {
       client.close();
     }
-
 }
 
 //insertOne
@@ -484,7 +483,7 @@ async function dailyDigest(){
     console.log("cellNum is: " + cellNum);
 
     //Collect this players daily games
-    query = { cellNum: cellNum, timeStamp: new RegExp(date.toString()) };
+    query = { cellNum: cellNum, timeStamp: new RegExp(date.toString()), violation: null };
     console.log("query is: " + JSON.stringify(query));
     try {
       games = await sort(query, sortCriteria,"player_records", "growing_gamers");
@@ -503,6 +502,7 @@ async function dailyDigest(){
 
     //Rule violations
 
+    
     //Games Played
     gamesPlayed = games.length;
     console.log("Games played is: " + gamesPlayed);
