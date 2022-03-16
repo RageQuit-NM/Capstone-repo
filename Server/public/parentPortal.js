@@ -210,7 +210,6 @@ function buildStats(statistics) {
 }
 
 
-
 //populate the parent portal preferences form
 function buildPreferences(preferences) {
   preferences = JSON.parse(preferences);
@@ -229,11 +228,6 @@ function buildPreferences(preferences) {
     }
   }
 }
-
-// function validatePhoneNumber(input_str) {
-//   var regexCellNum = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-//   return regex.test(input_str);
-// }
 
 function setCellNum(){
   var cellNum = document.getElementById("cellNum").value
@@ -287,21 +281,6 @@ function isFormValid(){
     document.getElementById("gameLimitRule").classList.remove("is-invalid");
     document.getElementById("gameLimitRule").classList.add("is-valid");
   }
-
-  var regexCellNum = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-
-  // var cellNum = document.getElementById("cellNum").value
-  // if(!regexCellNum.test(cellNum)){
-  //   document.getElementById("cellNumFeedback").innerHTML = "Please enter a valid phone number.";
-  //   document.getElementById("cellNumFeedback").style.display = "inherit";
-  //   document.getElementById("cellNum").classList.add("is-invalid");
-  //   document.getElementById("cellNum").classList.remove("is-valid");
-  //   return false;
-  // }else{
-  //   document.getElementById("cellNumFeedback").innerHTML = "";
-  //   document.getElementById("cellNum").classList.remove("is-invalid");
-  //   document.getElementById("cellNum").classList.add("is-valid");
-  // }
   return true;
 }
 
