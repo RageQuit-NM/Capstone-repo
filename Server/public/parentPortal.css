@@ -52,14 +52,16 @@
 #choose_cellNum_submit{
   color: #81BADB;
   background-color: #456475;
-  border: #456475;
+  border: #81BADB;
+  border-style: solid;
+  border-width: 2px;
   outline: #456475;
 }
 
 #choose_cellNum_submit:hover{
   color: #81BADB;
   background-color: #24343D;
-  border: #24343D;
+  border: #81BADB;
   outline: #24343D;
   box-shadow: none;
 }
