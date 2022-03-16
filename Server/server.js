@@ -24,7 +24,7 @@ var httpServer = http.createServer(app).listen(5000);             //HTTP service
 var httpsServer = https.createServer(credentials, app).listen(5001);  //HTTPS service
 
 httpServer.listen(5000);
-httpsServer.listen(5001);
+//httpsServer.listen(5001);
 
 //listen for requests on port 5000
 // app.listen(5000, function(){
