@@ -3,22 +3,28 @@ var childProcess = require('child_process');
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 
-
 var express = require('express');  
+var https = require('https');
+var http = require('http');
+var app = express();  
+
 const { json } = require('body-parser');
 const { kill } = require('process');
 const { time } = require('console');
-var app = express();  
 
-
-app.use(express.json())//So JSON data can be parsed from HTTP URL
+app.use(express.json());//So JSON data can be parsed from HTTP URL
 app.use(express.static(__dirname+'/public'));//to know where the website assets live
 
+var httpServer = http.createServer(app).listen(5000);             //HTTP service
+var httpsServer = https.createServer(options, app).listen(5001);  //HTTPS service
+
+httpServer.listen(5000);
+httpsServer.listen(5001);
 
 //listen for requests on port 5000
-app.listen(5000, function(){
-  console.log('Node.js web server at port 5000 is running..');
-}); 
+// app.listen(5000, function(){
+//   console.log('Node.js web server at port 5000 is running..');
+// }); 
 
 
 //********************************************GET Requests*************************************************
