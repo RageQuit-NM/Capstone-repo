@@ -16,7 +16,7 @@ app.use(express.json());//So JSON data can be parsed from HTTP URL
 app.use(express.static(__dirname+'/public'));//to know where the website assets live
 
 var httpServer = http.createServer(app).listen(5000);             //HTTP service
-var httpsServer = https.createServer(options, app).listen(5001);  //HTTPS service
+var httpsServer = https.createServer(credentials, app).listen(5001);  //HTTPS service
 
 httpServer.listen(5000);
 httpsServer.listen(5001);
