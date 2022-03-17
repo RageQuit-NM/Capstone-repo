@@ -15,7 +15,7 @@ if(checkCookie()){
   sendData["cellNum"] = getCookie("cellNum");
 
   let serverAction = "get-settings";
-  let remoteServer = "http://" +  remoteAddress + ":5000/" + serverAction;
+  let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open("POST", remoteServer, true);
   xmlHttp.setRequestHeader('Content-Type', 'application/json');
@@ -35,7 +35,7 @@ if(checkCookie()){
 //*************************************************************************************************************** */
 //*************************************************************************************************************** */
     let serverAction = "get-stats";
-    let remoteServer = "http://" +  remoteAddress + ":5000/" + serverAction;
+    let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
@@ -210,7 +210,6 @@ function buildStats(statistics) {
 }
 
 
-
 //populate the parent portal preferences form
 function buildPreferences(preferences) {
   preferences = JSON.parse(preferences);
@@ -230,17 +229,12 @@ function buildPreferences(preferences) {
   }
 }
 
-// function validatePhoneNumber(input_str) {
-//   var regexCellNum = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-//   return regex.test(input_str);
-// }
-
 function setCellNum(){
-  var cellNum = document.getElementById("cellInput").value
+  var cellNum = document.getElementById("cellNum").value
   var regexCellNum = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
   if(!regexCellNum.test(cellNum)){
     document.getElementById("cellChangeFeedback").innerHTML = "Please enter a valid phone number.";
-    document.getElementById("cellInput").classList.add("is-invalid");
+    document.getElementById("cellNum").classList.add("is-invalid");
     return;
   }
   setCookie("cellNum", cellNum);
@@ -287,25 +281,11 @@ function isFormValid(){
     document.getElementById("gameLimitRule").classList.remove("is-invalid");
     document.getElementById("gameLimitRule").classList.add("is-valid");
   }
-
-  var regexCellNum = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-
-  var cellNum = document.getElementById("cellNum").value
-  if(!regexCellNum.test(cellNum)){
-    document.getElementById("cellNumFeedback").innerHTML = "Please enter a valid phone number.";
-    document.getElementById("cellNum").classList.add("is-invalid");
-    document.getElementById("cellNum").classList.remove("is-valid");
-    return false;
-  }else{
-    document.getElementById("cellNumFeedback").innerHTML = "";
-    document.getElementById("cellNum").classList.remove("is-invalid");
-    document.getElementById("cellNum").classList.add("is-valid");
-  }
   return true;
 }
 
 function setCellNum(){
-  var cellNum = document.getElementById("cellInput").value
+  var cellNum = document.getElementById("cellNum").value
   setCookie("cellNum", cellNum);
   location.reload();
 }
@@ -313,9 +293,11 @@ function setCellNum(){
 //Collect data from parent preferences and ...
 function parentFormHandler() {
     var formData = Array.from(document.querySelectorAll('#parent_control_form input')).reduce((acc, input)=>({ ...acc, [input.id]: input.value }), {});
+    formData["cellNum"] = document.getElementById("cellNum").value;
 
     if(!isFormValid()){
       document.getElementById("forumFeedback").innerHTML = "Please correct the marked fields above.";
+      document.getElementById("forumFeedback").style.display = "inherit";
       return;
     }else{
       document.getElementById("forumFeedback").innerHTML = "";
@@ -326,7 +308,7 @@ function parentFormHandler() {
 
     let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
     let serverAction = "update-settings";
-    let remoteServer = "http://" +  remoteAddress + ":5000/" + serverAction;
+    let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
     var xmlHttp = new XMLHttpRequest();
 
     xmlHttp.open("POST", remoteServer, true);

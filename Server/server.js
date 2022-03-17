@@ -2,23 +2,37 @@ var path = require('path');
 var childProcess = require('child_process');
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
-
+const fs = require('fs');
 
 var express = require('express');  
+var https = require('https');
+var http = require('http');
+var app = express();  
+
+var options = {
+  key: fs.readFileSync('client-key.pem'),
+  cert: fs.readFileSync('client-cert.pem')
+};
+
 const { json } = require('body-parser');
 const { kill } = require('process');
 const { time } = require('console');
-var app = express();  
 
-
-app.use(express.json())//So JSON data can be parsed from HTTP URL
+app.use(express.json());//So JSON data can be parsed from HTTP URL
 app.use(express.static(__dirname+'/public'));//to know where the website assets live
 
+http.createServer(app).listen(5000);             //HTTP service
+console.log('Node.js HTTP web server at port 5000 is running..');
+https.createServer(options, app).listen(5001);  //HTTPS service
+console.log('Node.js HTTPS web server at port 5001 is running..');
+
+//httpServer.listen(5000);
+//httpsServer.listen(5001);
 
 //listen for requests on port 5000
-app.listen(5000, function(){
-  console.log('Node.js web server at port 5000 is running..');
-}); 
+// app.listen(5000, function(){
+//   console.log('Node.js web server at port 5000 is running..');
+// }); 
 
 
 //********************************************GET Requests*************************************************
@@ -103,27 +117,6 @@ app.post('/get-info-for-child', async function(req, res){
   console.log("Info for child: " + JSON.stringify(sendObject));
   res.send(JSON.stringify(sendObject));
   console.log("---");
-});
-
-
-//Send bedtime violation notification
-app.post('/bedtime-message', async function(req, res){
-    var cellNum = req.body["cellNum"];
-    var query = {cellNum: req.body["cellNum"]};
-    var collection = "user_data";
-
-    console.log(JSON.stringify(query) + "             " + cellNum);
-    result = await findOne(query, collection);
-    if(result["bedTimeToggle"] == "true"){
-      var smsScript = childProcess.fork('./sms-messages/bedtime-message.js');
-      smsScript.send(cellNum);
-      console.log("bedtime message sent to: " + cellNum);
-      res.send('Bedtime sms sent');
-    }else{
-      console.log("bedtime message not sent to: " + cellNum + ". BedTimeToggle is set to: " + result["bedTimeToggle"]);
-      res.send('Bedtime sms was not sent to parent.');
-    }
-    console.log("---");
 });
 
 
@@ -278,12 +271,22 @@ app.post('/get-message', async function(req, res){
 
 
   //X. Submit message ________________________________________________________________
-  if(bedTimeViolation == "VIOLATION") { query = { messageID: "bedtimeviolated" }; }
-  else if(playTimeViolation == "VIOLATION") { query = { messageID: "playtimeviolated" }; }
-  else if(gameLimitViolation == "VIOLATION") { query = { messageID: "gamelimitviolated" }; }
+  if(bedTimeViolation == "VIOLATION") { 
+    query = { messageID: "bedtimeviolated" };
+    await ruleSMS(req.body["cellNum"], "Your child has violated their bedtime.", "bedTimeToggle");
+ }
+  else if(playTimeViolation == "VIOLATION") { 
+    query = { messageID: "playtimeviolated" }; 
+    await ruleSMS(req.body["cellNum"], "Your child has violated their play time limit.", "timeLimitToggle");
+  }
+  else if(gameLimitViolation == "VIOLATION") { 
+    query = { messageID: "gamelimitviolated" }; 
+    await ruleSMS(req.body["cellNum"], "Your child has violated their game limit.", "gameLimitToggle");
+  }
   else if(killDeathRatio > 1) { query = { messageID: "doinggreat" }; }
   else if(killDeathRatio < 0.5) { query = { messageID: "takebreak" }; }
   else {query = { messageID: "welcomeback" }; }
+ 
   res.send(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
 
   console.log("---");
@@ -379,7 +382,6 @@ async function updateOne(query, newVals, options, collectionSelected="player_rec
     } finally {
       client.close();
     }
-
 }
 
 //insertOne
@@ -448,6 +450,22 @@ async function logViolation(cellNum, violation, timeStamp) {
   }
 }
 
+//Send a rule violation sms to parent
+async function ruleSMS(cellNum, body, rule) {
+  var query = {cellNum: cellNum};
+  var parentPreferences = await findOne(query, "user_data");
+  var message = { cellNum: cellNum, body: body};
+
+  if(parentPreferences[rule] == "true"){
+    var smsScript = childProcess.fork('./sms-messages/sendSMS.js');
+    smsScript.send(message);
+    console.log("ruleSMS sent: " + JSON.stringify(message));
+  }else{
+    console.log("ruleSMS not sent: " + rule + " " + parentPreferences[rule]);
+  }
+  console.log("---");
+}
+
 
 //*****************************Utility_Functions*****************************************************************************************
 //Sums up the total value of a field, field may be a string or a number
@@ -486,14 +504,10 @@ async function sumBools(field, array) {
 //*****************************Digests**************************************************************************************************
 async function dailyDigest(){
   //1. Find everyone who is subscribed to daily digests
+  console.log("Generating Digests");
   var query = { dailyDigest: "true" };
   var sortCriteria = { timeStamp: -1 }; //sort by largest to smallest time stamp
   var dailyDigestSubscribers;
-  var wins;
-  var gamesPlayed;
-  var timePlayed;
-  var timeStopped;
-
 
   try {
     dailyDigestSubscribers = await findAll(query, "user_data", "growing_gamers");
@@ -505,17 +519,24 @@ async function dailyDigest(){
   }
 
   //2. Generate a daily digest for each subscriber
-  var date = new Date().toLocaleString('en-CA', {hour12:false});
+  var date = new Date().toLocaleString('en-CA', {hour12:false}); //todays date YYYY-MM-DD
   date = date.substring(0,10);
   console.log("date is: " + date);
-  var cellNum;
-  var games;
+  var cellNum;    //cellNum of current subscriber
+  var wins;       //number of wins of current subscriber
+  var gamesPlayed;//number of games played
+  var timePlayed; //time played today
+  var timeStopped;//timestamp of last game
+  var games;      //total number of games played today
+  var violations; //list of violations incurred today by user
+  var body;        //Final message to be sent out (The final digest)
+
   for (i in dailyDigestSubscribers) {
     cellNum=dailyDigestSubscribers[i]["cellNum"];
     console.log("cellNum is: " + cellNum);
 
-    //Collect this players daily games
-    query = { cellNum: cellNum, timeStamp: new RegExp(date.toString()) };
+    //Collect this players daily games___________________________________________________________
+    query = { cellNum: cellNum, timeStamp: new RegExp(date.toString()), violation: null };
     console.log("query is: " + JSON.stringify(query));
     try {
       games = await sort(query, sortCriteria,"player_records", "growing_gamers");
@@ -524,32 +545,51 @@ async function dailyDigest(){
     }
     if(games == null){
       console.log("ERROR: NULL RESULT");
-      return;
     }
     console.log("games are: " + JSON.stringify(games));
     
-    //Get win/loss ratio
+    //Get win/loss ratio________________________________________________________________________
     wins = await sumBools("win", games);
     console.log("Wins is: " + wins);
 
-    //Rule violations
-
-    //Games Played
+    //Rule violations___________________________________________________________________________
+    query = { cellNum: cellNum, timeStamp: new RegExp(date.toString()), violation: { $ne:null } };
+    console.log("query is: " + JSON.stringify(query));
+    try {
+      violations = await sort(query, sortCriteria,"player_records", "growing_gamers");
+    } catch (error){
+      console.log(error);
+    }
+    if(violations == null){
+      console.log("ERROR: NULL RESULT");
+    }
+    console.log("Violations are: " + JSON.stringify(violations));
+     
+    //Games Played_____________________________________________________________________________
     gamesPlayed = games.length;
     console.log("Games played is: " + gamesPlayed);
 
-    //Play Time (minutes)
+    //Play Time (minutes)______________________________________________________________________
     timePlayed = await sumField("game_time", games);
     timePlayed = timePlayed/60;
     console.log("time played is: " + timePlayed);
 
-    //Time Stopped
+    //Time Stopped_____________________________________________________________________________
     if (gamesPlayed > 0) {
       timeStopped = games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(',')+1).trim();
     } else {
       timeStopped = "NA";
     }
     console.log("Time stopped is: " + timeStopped);
+
+    //Send SMS_________________________________________________________________________________
+    body = date + " Daily Digest: \n";
+    if(gamesPlayed == 0 || gamesPlayed == null) {
+      body = body + "No Activity Today.";
+    } else {
+
+
+    }
   }
 }
 

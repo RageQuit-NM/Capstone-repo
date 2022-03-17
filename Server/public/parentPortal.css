@@ -25,18 +25,46 @@
   padding: 4%;
 }
 
-#parent_control_submit {
+.header-div {
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+.top-spacer {
+  margin-top: 2%;
+}
+
+#parent_control_submit{
   color: #81BADB;
   background-color: #24343D;
   border: #24343D;
   outline: #24343D;
 }
 
-#parent_control_submit:hover {
+#parent_control_submit:hover{
   color: #81BADB;
   background-color: #456475;
   border: #456475;
   outline: #456475;
+  box-shadow: none;
+}
+
+#choose_cellNum_submit{
+  color: #24343D;
+  background-color: #456475;
+  /* border: #81BADB;
+  border-style: solid;
+  border-width: 1px; */
+  outline: #456475;
+}
+
+#choose_cellNum_submit:hover{
+  color: #24343D;
+  background-color: #81BADB;
+  /* border: #81BADB;
+  border-style: solid;
+  border-width: 1px; */
+  outline: #24343D;
   box-shadow: none;
 }
 
