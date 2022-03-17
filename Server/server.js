@@ -59,7 +59,7 @@ app.post('/send-code', async function(req, res){
   expirationDate.setDate(expirationDate.getDate() + 1)
   var expirationDate = new Date().getDate() + 1;  //Set the expiration date to 1 day later
   var crypto = require("crypto");
-  var code = crypto.randomBytes(2).toString(24);
+  var code = crypto.randomBytes(2).toString(32);
 
   var query = {cellNum: req.body["cellNum"], code: code, expirationDate: expirationDate};
   var collection = "codes";
