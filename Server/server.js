@@ -52,6 +52,34 @@ app.get('/parentPortal', function(req, res){
 
 
 //********************************************POST Requests*************************************************
+
+//Generate and send random code to a cell number
+app.post('/send-code', async function(req, res){
+  var expirationDate = new Date().getDate() + 1;  //Set the expiration date to 1 day later
+  var crypto = require("crypto");
+  var code = crypto.randomBytes(2).toString('hex');
+
+  var query = {cellNum: req.body["cellNum"], code: code, expirationDate: expirationDate};
+  var collection = "codes";
+
+  console.log("Inserting to " + collection + ": " + JSON.stringify(query));
+  // var result;
+  // //console.log("searching for: " + JSON.stringify(query));
+  // try {
+  //   result = await insertOne(query, collection);
+  // } catch (error){
+  //   console.log(error);
+  // }
+  // res.send("Code generated successfully");
+  // console.log("Result of new code inserted to database: " + result);
+
+  res.send("Code generated successfully");
+
+  console.log("---");
+});
+
+
+
 //Collect the parental settings for a given cell number
 app.post('/get-settings', async function(req, res){
   var query = {cellNum: req.body["cellNum"]};
@@ -288,6 +316,7 @@ app.post('/get-message', async function(req, res){
   else {query = { messageID: "welcomeback" }; }
  
   res.send(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
+  console.log("Overwolf message sent");
 
   console.log("---");
   return;
