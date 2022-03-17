@@ -55,14 +55,19 @@ app.get('/parentPortal', function(req, res){
 
 //Generate and send random code to a cell number
 app.post('/send-code', async function(req, res){
-  var expirationDate = new Date(new Date())
+  var expirationDate = new Date();
   expirationDate.setDate(expirationDate.getDate() + 1)
-  var expirationDate = new Date().getDate() + 1;  //Set the expiration date to 1 day later
+  //var expirationDate = new Date().getDate() + 1;  //Set the expiration date to 1 day later
   var crypto = require("crypto");
-  // var code = crypto.randomBytes(2).toString(32);
+  var possibleEntires = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+  var code = "";
+  for (var i; i<4; i++){
+    code += possibleEntires.charAt( crypto.randomInt(0, possibleEntires.length()));
+  }
+  //var code = crypto.randomBytes(2).toString(32);
 
-  var array = new Uint32Array(10);
-  code = crypto.getRandomValues(array).toString();
+  // var array = new Uint32Array(10);
+  // code = crypto.getRandomValues(array).toString();
 
   var query = {cellNum: req.body["cellNum"], code: code, expirationDate: expirationDate};
   var collection = "codes";
