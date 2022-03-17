@@ -61,7 +61,7 @@ app.post('/send-code', async function(req, res){
   var crypto = require("crypto");
   var possibleEntires = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
   var code = "";
-  for (var i; i<4; i++){
+  for (var i=0; i<4; i++){
     code += possibleEntires.charAt( crypto.randomInt(0, possibleEntires.length()));
   }
   //var code = crypto.randomBytes(2).toString(32);
