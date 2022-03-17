@@ -15,7 +15,7 @@ if(checkCookie()){
   sendData["cellNum"] = getCookie("cellNum");
 
   let serverAction = "get-settings";
-  let remoteServer = "http://" +  remoteAddress + ":5000/" + serverAction;
+  let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.open("POST", remoteServer, true);
   xmlHttp.setRequestHeader('Content-Type', 'application/json');
@@ -35,7 +35,7 @@ if(checkCookie()){
 //*************************************************************************************************************** */
 //*************************************************************************************************************** */
     let serverAction = "get-stats";
-    let remoteServer = "http://" +  remoteAddress + ":5000/" + serverAction;
+    let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
@@ -308,7 +308,7 @@ function parentFormHandler() {
 
     let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
     let serverAction = "update-settings";
-    let remoteServer = "http://" +  remoteAddress + ":5000/" + serverAction;
+    let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
     var xmlHttp = new XMLHttpRequest();
 
     xmlHttp.open("POST", remoteServer, true);
