@@ -76,6 +76,11 @@ app.post('/send-code', async function(req, res){
   } catch (error){
     console.log(error);
   }
+
+  var message = {cellNum: req.body["cellNum"], body: "Your access code is: " + code};
+  var smsScript = childProcess.fork('./sms-messages/sendSMS.js');
+  smsScript.send(message);
+
   res.send("Code generated successfully");
   console.log("Result of new code inserted to database: " + JSON.stringify(result));
 
