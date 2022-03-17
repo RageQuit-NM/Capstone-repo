@@ -62,7 +62,7 @@ app.post('/send-code', async function(req, res){
   var possibleEntires = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
   var code = "";
   for (var i=0; i<4; i++){
-    code += possibleEntires.charAt( crypto.randomInt(0, possibleEntires.length()));
+    code += possibleEntires.charAt( crypto.randomInt(0, possibleEntires.length));
   }
   //var code = crypto.randomBytes(2).toString(32);
 
