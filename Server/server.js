@@ -69,7 +69,6 @@ app.post('/send-code', async function(req, res){
   var query = {cellNum: req.body["cellNum"], code: code, expirationDate: enterDate};
   var collection = "codes";
 
-  console.log("Inserting to " + collection + ": " + JSON.stringify(query));
   var result;
   //console.log("searching for: " + JSON.stringify(query));
   try {
@@ -78,7 +77,7 @@ app.post('/send-code', async function(req, res){
     console.log(error);
   }
   res.send("Code generated successfully");
-  console.log("Result of new code inserted to database: " + result);
+  console.log("Result of new code inserted to database: " + JSON.stringify(result));
 
   console.log("---");
 });
