@@ -16,5 +16,5 @@ process.on("message", function (message) {
    })
     .then(message => console.log(message.sid));
 
-    console.log('Twilio bedtime message done sending.')
+    console.log('SMS done sending.')
 });
