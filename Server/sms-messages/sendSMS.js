@@ -6,8 +6,11 @@ console.log('Waiting for parent process to send cell# message')
 process.on("message", function (message) {
     console.log(`Message from main.js: ${message}`);
 
+    var cellNum = message["cellNum"];
+    var body = message["body"];
+
     client.messages.create({
-     body: 'Your child is playing past their bedtime. Message sent to: ' + message,
+     body: body + " " + cellNum,
      from: '+13069850604',
      to: '+13066202479'
    })

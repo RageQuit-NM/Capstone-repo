@@ -89,27 +89,6 @@ app.post('/get-stats', async function(req, res){
 });
 
 
-//Send bedtime violation notification
-app.post('/bedtime-message', async function(req, res){
-    var cellNum = req.body["cellNum"];
-    var query = {cellNum: req.body["cellNum"]};
-    var collection = "user_data";
-
-    console.log(JSON.stringify(query) + "             " + cellNum);
-    result = await findOne(query, collection);
-    if(result["bedTimeToggle"] == "true"){
-      var smsScript = childProcess.fork('./sms-messages/bedtime-message.js');
-      smsScript.send(cellNum);
-      console.log("bedtime message sent to: " + cellNum);
-      res.send('Bedtime sms sent');
-    }else{
-      console.log("bedtime message not sent to: " + cellNum + ". BedTimeToggle is set to: " + result["bedTimeToggle"]);
-      res.send('Bedtime sms was not sent to parent.');
-    }
-    console.log("---");
-});
-
-
 //Insert a new cell num on itialization.
 app.post('/insert-cellNum', async function(req, res){
   var toInsert = {cellNum: req.body["cellNum"],
@@ -261,12 +240,22 @@ app.post('/get-message', async function(req, res){
 
 
   //X. Submit message ________________________________________________________________
-  if(bedTimeViolation == "VIOLATION") { query = { messageID: "bedtimeviolated" }; }
-  else if(playTimeViolation == "VIOLATION") { query = { messageID: "playtimeviolated" }; }
-  else if(gameLimitViolation == "VIOLATION") { query = { messageID: "gamelimitviolated" }; }
+  if(bedTimeViolation == "VIOLATION") { 
+    query = { messageID: "bedtimeviolated" };
+    await ruleSMS(req.body["cellNum"], "Your child has violated their bedtime.", "bedTimeToggle");
+ }
+  else if(playTimeViolation == "VIOLATION") { 
+    query = { messageID: "playtimeviolated" }; 
+    await ruleSMS(req.body["cellNum"], "Your child has violated their play time limit.", "timeLimitToggle");
+  }
+  else if(gameLimitViolation == "VIOLATION") { 
+    query = { messageID: "gamelimitviolated" }; 
+    await ruleSMS(req.body["cellNum"], "Your child has violated their game limit.", "gameLimitToggle");
+  }
   else if(killDeathRatio > 1) { query = { messageID: "doinggreat" }; }
   else if(killDeathRatio < 0.5) { query = { messageID: "takebreak" }; }
   else {query = { messageID: "welcomeback" }; }
+ 
   res.send(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
 
   console.log("---");
@@ -428,6 +417,24 @@ async function logViolation(cellNum, violation, timeStamp) {
   if(logged == null){
     console.log("ERROR: NULL RESULT");
   }
+}
+
+//Send a rule violation sms to parent
+async function ruleSMS(cellNum, body, rule) {
+  var query = {cellNum: cellNum};
+  var parentPreferences = await findOne(query, "user_data");
+  var message = { cellNum: cellNum, body: body};
+
+  if(parentPreferences[rule] == "true"){
+    var smsScript = childProcess.fork('./sms-messages/sendSMS.js');
+    smsScript.send(message);
+    console.log("ruleSMS sent: " + JSON.stringify(message));
+    res.send('ruleSMS sent');
+  }else{
+    console.log("ruleSMS not sent: " + rule + " " + parentPreferences[rule]);
+    res.send('ruleSMS not sent');
+  }
+  console.log("---");
 }
 
 
