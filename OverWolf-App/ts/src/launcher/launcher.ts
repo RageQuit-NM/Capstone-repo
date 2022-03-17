@@ -12,7 +12,7 @@ class Launcher extends AppWindow {
       if(overwolf.windows.getMainWindow().document.getElementById("attributes").getAttribute('listener') != 'true'){
         overwolf.windows.getMainWindow().document.getElementById("attributes").setAttribute('listener', 'true');
        
-        (document.getElementById("parent_portal_link") as HTMLAnchorElement).href="http://" + this.remoteAddress + ":5000/parentPortal";
+        (document.getElementById("parent_portal_link") as HTMLAnchorElement).href="https://" + this.remoteAddress + ":5001/parentPortal";
         document.getElementById("submitCellNum").addEventListener("click", this.submitCellNum);
 
         if(overwolf.windows.getMainWindow().document.getElementById("isCellNumSet").innerHTML == "false"){
@@ -75,7 +75,7 @@ class Launcher extends AppWindow {
       await Launcher.instance().writeFile(JSON.stringify(myData), `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
       let serverAction = "insert-cellNum";
-      let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
+      let remoteServer = "https://" +  Launcher.instance().remoteAddress + ":5001/" + serverAction;
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open("POST", remoteServer, true);
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
@@ -107,7 +107,7 @@ class Launcher extends AppWindow {
     private async sendBedtimeMessage(){
       let messageData = await Launcher.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
       let serverAction = "bedtime-message";
-      let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+      let remoteServer = "https://" +  this.remoteAddress + ":5001/" + serverAction;
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open("POST", remoteServer, true);
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
@@ -160,7 +160,7 @@ class Launcher extends AppWindow {
       var sendData = {cellNum:JSON.parse(result)["cellNum"]};
 
       let serverAction = "get-settings";
-      let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
+      let remoteServer = "https://" +  Launcher.instance().remoteAddress + ":5001/" + serverAction;
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open("POST", remoteServer, true);
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
