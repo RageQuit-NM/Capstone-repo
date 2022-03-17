@@ -55,6 +55,8 @@ app.get('/parentPortal', function(req, res){
 
 //Generate and send random code to a cell number
 app.post('/send-code', async function(req, res){
+  var expirationDate = new Date()
+  expirationDate.setDate(expirationDate.getDate() + 1)
   var expirationDate = new Date().getDate() + 1;  //Set the expiration date to 1 day later
   var crypto = require("crypto");
   var code = crypto.randomBytes(2).toString();
