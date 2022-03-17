@@ -62,7 +62,7 @@ app.post('/send-code', async function(req, res){
   // var code = crypto.randomBytes(2).toString(32);
 
   var array = new Uint32Array(10);
-  code = self.crypto.getRandomValues(array).toString();
+  code = crypto.getRandomValues(array).toString();
 
   var query = {cellNum: req.body["cellNum"], code: code, expirationDate: expirationDate};
   var collection = "codes";
