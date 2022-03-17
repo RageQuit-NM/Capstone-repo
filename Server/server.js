@@ -57,7 +57,7 @@ app.get('/parentPortal', function(req, res){
 app.post('/send-code', async function(req, res){
   var expirationDate = new Date();
   expirationDate.setDate(expirationDate.getDate() + 1);
-  var enterDate = expirationDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12:false});
+  var enterDate = expirationDate.toLocaleString('en-CA', {hour12:false});
   //var expirationDate = new Date().getDate() + 1;  //Set the expiration date to 1 day later
   var crypto = require("crypto");
   var possibleEntires = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
