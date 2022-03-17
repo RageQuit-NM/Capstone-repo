@@ -64,26 +64,20 @@ app.post('/send-code', async function(req, res){
   for (var i=0; i<4; i++){
     code += possibleEntires.charAt( crypto.randomInt(0, possibleEntires.length));
   }
-  //var code = crypto.randomBytes(2).toString(32);
-
-  // var array = new Uint32Array(10);
-  // code = crypto.getRandomValues(array).toString();
 
   var query = {cellNum: req.body["cellNum"], code: code, expirationDate: expirationDate};
   var collection = "codes";
 
   console.log("Inserting to " + collection + ": " + JSON.stringify(query));
-  // var result;
-  // //console.log("searching for: " + JSON.stringify(query));
-  // try {
-  //   result = await insertOne(query, collection);
-  // } catch (error){
-  //   console.log(error);
-  // }
-  // res.send("Code generated successfully");
-  // console.log("Result of new code inserted to database: " + result);
-
+  var result;
+  //console.log("searching for: " + JSON.stringify(query));
+  try {
+    result = await insertOne(query, collection);
+  } catch (error){
+    console.log(error);
+  }
   res.send("Code generated successfully");
+  console.log("Result of new code inserted to database: " + result);
 
   console.log("---");
 });
