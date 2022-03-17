@@ -429,10 +429,8 @@ async function ruleSMS(cellNum, body, rule) {
     var smsScript = childProcess.fork('./sms-messages/sendSMS.js');
     smsScript.send(message);
     console.log("ruleSMS sent: " + JSON.stringify(message));
-    res.send('ruleSMS sent');
   }else{
     console.log("ruleSMS not sent: " + rule + " " + parentPreferences[rule]);
-    res.send('ruleSMS not sent');
   }
   console.log("---");
 }
