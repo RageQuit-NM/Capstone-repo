@@ -87,6 +87,29 @@ app.post('/send-code', async function(req, res){
   console.log("---");
 });
 
+//Generate and send random code to a cell number
+app.post('/parentPortalS', async function(req, res){
+  var query = {cellNum: req.body["cellNum"], code: req.body["code"]};
+  var collection = "codes";
+
+  var result;
+  console.log("searching for: " + JSON.stringify(query));
+  try {
+    result = await findOne(query, collection);
+  } catch (error){
+    console.log(error);
+  }
+  if(result == null){
+    res.send("INVAILD_CODE");
+    console.log('A user attempte to access /parentPortalS with an invalid code');
+    console.log("---");
+  }else{
+    res.sendFile(__dirname+"/parent-portal/parentPortal.html");
+    console.log('Sent file: parentPortal.html to a verified user');
+    console.log("---");
+  }
+});
+
 
 
 //Collect the parental settings for a given cell number
