@@ -93,7 +93,7 @@ app.post('/parentPortalS', async function(req, res){
   var collection = "codes";
 
   var result;
-  console.log("searching for: " + JSON.stringify(query));
+  //console.log("searching for: " + JSON.stringify(query));
   try {
     result = await findOne(query, collection);
   } catch (error){
