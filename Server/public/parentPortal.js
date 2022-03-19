@@ -4,6 +4,51 @@ var remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
 document.getElementById("parent_control_submit").addEventListener("click", parentFormHandler);
 document.getElementById("choose_cellNum_submit").addEventListener("click", setCellNum);
 
+document.getElementById("first_cellNum_submit").addEventListener("click", sendCode);
+document.getElementById("code_submit").addEventListener("click", verifyCode);
+
+//
+function sendCode(){
+  var cellNum = document.getElementById("firstCellNum").value;
+  setCookie("cellNum", cellNum);
+  var sendData = {cellNum:cellNum};
+
+  let serverAction = "send-code";
+  let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.open("POST", remoteServer, true);
+  xmlHttp.setRequestHeader('Content-Type', 'application/json');
+  xmlHttp.send(JSON.stringify(sendData));
+}
+
+function verifyCode(){
+  var code = document.getElementById("codeInput").value;
+  var cellNum = getCookie("cellNum");
+  var sendData = {cellNum:cellNum, code:code};
+
+  let serverAction = "verify-code";
+  let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.open("POST", remoteServer, true);
+  xmlHttp.setRequestHeader('Content-Type', 'application/json');
+  xmlHttp.send(JSON.stringify(sendData));
+
+  xmlHttp.onreadystatechange = function () {
+    if (this.readyState != 4) return;
+    if (this.status == 200) {
+      var response = (this.responseText); // we get the returned data
+      document.getElementById("test").innerHTML = response;
+
+      if(resposne == "VAILD_CODE"){
+        setCookie("cellNum", cellNum, "code", code);
+        //Initalize the parent portal.
+      }else{
+        document.getElementById("codeFeedback").innerHTML = "Incorrect code.";
+      }
+    }
+  };
+}
+
 //Initialize tooltips
 createToolTips();
 
@@ -306,7 +351,7 @@ function parentFormHandler() {
 
     setCookie("cellNum", formData["cellNum"]);
 
-    let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
+    //let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
     let serverAction = "update-settings";
     let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
     var xmlHttp = new XMLHttpRequest();
@@ -339,12 +384,12 @@ function checkCookie() {
 
 
 //Set the cookie with an expiration date of t + 1 year
-function setCookie(paramName, value) {
+function setCookie(paramName, value, paramName2="", value2="") {
   //Create expiration date
   var expiration_date = new Date();
   expiration_date.setFullYear(expiration_date.getFullYear() + 1);
   //Create/update cookie
-  document.cookie = paramName + "=" + value + "; path=/; expires=" + expiration_date.toUTCString();
+  document.cookie = paramName + "=" + value + "; " + paramName2 + "=" + value2 + "; path=/; expires=" + expiration_date.toUTCString();
 }
 
 

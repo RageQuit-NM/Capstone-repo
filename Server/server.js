@@ -63,7 +63,7 @@ app.post('/send-code', async function(req, res){
   var possibleEntires = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
   var code = "";
   for (var i=0; i<4; i++){
-    code += possibleEntires.charAt( crypto.randomInt(0, possibleEntires.length));
+    code += possibleEntires.charAt(crypto.randomInt(0, possibleEntires.length));
   }
 
   var query = {cellNum: req.body["cellNum"], code: code, expirationDate: enterDate};
@@ -88,7 +88,7 @@ app.post('/send-code', async function(req, res){
 });
 
 //Generate and send random code to a cell number
-app.post('/parentPortalS', async function(req, res){
+app.post('/verify-code', async function(req, res){
   var query = {cellNum: req.body["cellNum"], code: req.body["code"]};
   var collection = "codes";
 
@@ -104,7 +104,7 @@ app.post('/parentPortalS', async function(req, res){
     console.log('A user attempte to access /parentPortalS with an invalid code');
     console.log("---");
   }else{
-    res.sendFile(__dirname+"/parent-portal/parentPortal.html");
+    res.send("VAILD_CODE");
     console.log('Sent file: parentPortal.html to a verified user');
     console.log("---");
   }
@@ -220,7 +220,23 @@ app.post('/insert-cellNum', async function(req, res){
 
 
 //Update the settings from the parent portal changes
-app.post('/update-settings', function(req, res){
+app.post('/update-settings', async function(req, res){
+  var verificationQuery = {cellNum: req.body["cellNum"], code: req.body["code"]};
+  var verificationCollection = "codes";
+
+  var result;
+  try {
+    result = await findOne(verificationQuery, verificationCollection);
+  } catch (error){
+    console.log(error);
+  }
+  if(result == null){
+    res.send("INVAILD_CODE");
+    console.log('A user attempte to submit update settings to ' + req.body["cellNum"] + ' with the invalid code: ' + req.body["code"]);
+    console.log("---");
+    return;
+  }
+
     var query = {cellNum: req.body["cellNum"]};
     var newVals = { $set: req.body };
     var options = { upsert: true };
