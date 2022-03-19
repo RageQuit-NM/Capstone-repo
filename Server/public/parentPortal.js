@@ -7,6 +7,7 @@ document.getElementById("choose_cellNum_submit").addEventListener("click", setCe
 document.getElementById("first_cellNum_submit").addEventListener("click", sendCode);
 document.getElementById("code_submit").addEventListener("click", submitCode);
 
+delCookie();
 setCookie("cellNum", "5551231234", "code", "ZDQu");
 //
 function sendCode(){
