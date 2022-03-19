@@ -34,6 +34,7 @@ function submitCode(){
   var cellNum = getCookie("cellNum");
 
   document.getElementById("codeFeedback").innerHTML += "You sumbitted " + code;
+  document.getElementById("test").innerHTML += "  Trying to set cookie = cellNum:" +cellNum + " code:"+ code;
   setCookie("cellNum", cellNum, "code", code);
   document.getElementById("codeFeedback").innerHTML += "which is " + getCookie("code");
   document.getElementById("codeFeedback").innerHTML += "Your cookie is " + document.cookie;
@@ -417,6 +418,9 @@ function setCookie(paramName, value, paramName2="", value2="") {
   expiration_date.setFullYear(expiration_date.getFullYear() + 1);
   //Create/update cookie
   document.cookie = paramName + "=" + value + "; " + paramName2 + "=" + value2 + "; path=/; expires=" + expiration_date.toUTCString();
+
+  document.getElementById("test").innerHTML += "  setting cookie: " + paramName + "=" + value + "; " + paramName2 + "=" + value2 + "; path=/; expires=" + expiration_date.toUTCString();
+  document.getElementById("test").innerHTML += "  set to " + document.cookie;
 }
 
 
