@@ -5,7 +5,7 @@ document.getElementById("parent_control_submit").addEventListener("click", paren
 document.getElementById("choose_cellNum_submit").addEventListener("click", setCellNum);
 
 document.getElementById("first_cellNum_submit").addEventListener("click", sendCode);
-document.getElementById("code_submit").addEventListener("click", verifyCode);
+document.getElementById("code_submit").addEventListener("click", submitCode);
 
 //
 function sendCode(){
@@ -19,10 +19,29 @@ function sendCode(){
   xmlHttp.open("POST", remoteServer, true);
   xmlHttp.setRequestHeader('Content-Type', 'application/json');
   xmlHttp.send(JSON.stringify(sendData));
+
+  xmlHttp.onreadystatechange = function () {
+    if (this.readyState != 4) return;
+    if (this.status == 200) {
+      var response = (this.responseText); // we get the returned data
+      //Open up the verify code option
+    }
+  };
 }
 
-function verifyCode(){
+function submitCode(){
   var code = document.getElementById("codeInput").value;
+  var cellNum = getCookie("cellNum");
+  setCookie("cellNum", cellNum, "code", code);
+
+  if (verifyCode()){
+    //Initalize the parent portal
+  }
+}
+
+
+function verifyCode(){
+  var code = getCookie("code");
   var cellNum = getCookie("cellNum");
   var sendData = {cellNum:cellNum, code:code};
 
@@ -41,9 +60,12 @@ function verifyCode(){
 
       if(resposne == "VAILD_CODE"){
         setCookie("cellNum", cellNum, "code", code);
-        //Initalize the parent portal.
+        return true;
       }else{
         document.getElementById("codeFeedback").innerHTML = "Incorrect code.";
+        delCookie();  //Remove the cookie. makes sure the code feild is not set
+        setCookie("cellNum", cellNum); 
+        return false;
       }
     }
   };
@@ -53,7 +75,8 @@ function verifyCode(){
 createToolTips();
 
 //if the cellNum cookie is set then populate the parent portal with corresponding data from server
-if(checkCookie()){
+///--------------Might not need to use checkCookie() anymore
+if(checkCookie() && verifyCode()){
   // document.getElementById("test2").innerHTML = "cookie is set to: " + document.cookie + " checkCookie() is " + checkCookie();
   // document.getElementById("test").innerHTML = "cookie SET: " + getCookie("cellNum");
   var sendData = {cellNum:0};
