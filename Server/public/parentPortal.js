@@ -417,28 +417,23 @@ function setCookie(paramName, value, paramName2="", value2="") {
   var expiration_date = new Date();
   expiration_date.setFullYear(expiration_date.getFullYear() + 1);
   //Create/update cookie
-  document.cookie = paramName + "=" + value + "; " + paramName2 + "=" + value2 + "; path=/; expires=" + expiration_date.toUTCString();
+  params = "values=" + JSON.stringify({"cellNum":value, "code":value2});
+  document.cookie = params + "; path=/; expires=" + expiration_date.toUTCString();
 
-  document.getElementById("test").innerHTML += "  setting cookie: " + paramName + "=" + value + "; " + paramName2 + "=" + value2 + "; path=/; expires=" + expiration_date.toUTCString();
+  document.getElementById("test").innerHTML += "  setting cookie: " + params + "; path=/; expires=" + expiration_date.toUTCString();
   document.getElementById("test").innerHTML += "  set to " + document.cookie;
 }
 
 
 //Get the cookie
 function getCookie(paramName) {
-  let name = paramName + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for(let i = 0; i <ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
+  document.getElementById("test").innerHTML += "  Get Cookie()= " + document.cookie;
+  var toParse = document.cookie.substring(document.cookie.indexOf("=")+1);
+  document.getElementById("test").innerHTML += "  toParse= " + toParse;
+  var parsed = JSON.parse(toParse);
+  document.getElementById("test").innerHTML += "  parsed= " + parsed;
+  document.getElementById("test").innerHTML += "  returning= " + parsed[paramName];
+  return parsed[paramName];
 }
 
 
