@@ -37,8 +37,30 @@
       <div class="d-grid header-div">
         <div class="form-label h4" id="cellInputText">Enter Cell Number:</div>
         <input type="text" class="form-control" id="cellNum" name="cellNum"><br/>
-        <button type="button" id="cellNum_submit" class="btn btn-block top-spacer" data-toggle="modal" data-target="#codeModal"><p class="display-5">Submit</p></button>
+        <button type="button" id="cellNum_submit" class="btn btn-block top-spacer" data-toggle="modal" data-target="#myModal"><p class="display-5">Submit</p></button>
         <div class="invalid-feedback" id="firstCellFeedback"></div>
+
+
+        <div class="modal fade" id="myModal" role="dialog">
+          <div class="modal-dialog">
+          
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+              </div>
+              <div class="modal-body">
+                <p>Some text in the modal.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
 
         <div class="modal fade" id="codeModal" role="dialog">
           <div class="modal-dialog modal-lg">
