@@ -34,6 +34,11 @@
   margin-top: 2%;
 }
 
+
+.modal-header {
+  color: #24343D;
+}
+
 #parent_control_submit{
   color: #81BADB;
   background-color: #24343D;
