@@ -9,7 +9,7 @@ document.getElementById("code_submit").addEventListener("click", submitCode);
 
 //delCookie();
 console.log("cookie: " + document.cookie);
-setCookie("cellNum", "5551231234", "code", "ZDQu");
+setCookie("cellNum", "55512312", "code", "ZDQu");
 console.log("cookie: " + document.cookie);
 //
 function sendCode(){
@@ -422,7 +422,9 @@ function setCookie(paramName, value, paramName2="", value2="") {
   expiration_date.setFullYear(expiration_date.getFullYear() + 1);
   //Create/update cookie
   params = "values=" + JSON.stringify({"cellNum":value, "code":value2});
+  console.log("changing cookie to: " + params + "; path=/; expires=" + expiration_date.toUTCString());
   document.cookie = params + "; path=/; expires=" + expiration_date.toUTCString();
+  console.log("Set to: " + document.cookie);
 
   document.getElementById("test").innerHTML += "  setting cookie: " + params + "; path=/; expires=" + expiration_date.toUTCString();
   document.getElementById("test").innerHTML += "  set to " + document.cookie;
