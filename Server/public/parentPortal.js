@@ -7,16 +7,12 @@ document.getElementById("choose_cellNum_submit").addEventListener("click", setCe
 document.getElementById("first_cellNum_submit").addEventListener("click", sendCode);
 document.getElementById("code_submit").addEventListener("click", submitCode);
 
+//Functions to run at the start of every page load
 //Initialize tooltips
 createToolTips();
+//Initalize security
+checkIfVerified();
 
-if(checkIfVerified()){
-  console.log("checkIfVerified building page")
-  buildPageData();
-}else{
-  console.log("checkIfVerified not verified")
-  showInit();
-}
 
 function showInit(){
   //dislay the First enter cell number field
