@@ -95,18 +95,19 @@ class BackgroundController {
     // }
     let cellNumString = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
-    let serverAction = "/get-message";
+    let serverAction = "get-message";
     let remoteServer = "https://" +  this.remoteAddress + ":5001/" + serverAction;
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send(cellNumString);
+    console.log("sending: " + cellNumString + " to " + remoteServer);
 
     xmlHttp.onreadystatechange = function () {
       if (this.readyState != 4) return;
       if (this.status == 200) {
         var parsed = JSON.parse(this.responseText);
-        //console.log(this.responseText);
+        console.log(this.responseText);
         document.getElementById("primary_message").innerHTML = parsed["body"];
         document.getElementById("dismiss_message").innerHTML = parsed["dismissButtonMesage"];
       }
@@ -135,7 +136,7 @@ class BackgroundController {
     gameData["cellNum"] = cellNum;
     gameData["timeStamp"] = new Date().toLocaleString('en-CA', {hour12:false});
 
-    let serverAction = "/upload-game-data";  
+    let serverAction = "upload-game-data";  
     let remoteServer = "https://" +  BackgroundController.instance().remoteAddress + ":5001/" + serverAction;
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open("POST", remoteServer, true);
