@@ -4,7 +4,7 @@ var remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
 document.getElementById("parent_control_submit").addEventListener("click", parentFormHandler);
 // document.getElementById("choose_cellNum_submit").addEventListener("click", setCellNum);
 
-document.getElementById("first_cellNum_submit").addEventListener("click", sendCode);
+document.getElementById("cellNum_submit").addEventListener("click", sendCode);
 document.getElementById("code_submit").addEventListener("click", submitCode);
 
 //Functions to run at the start of every page load
@@ -52,7 +52,7 @@ async function checkIfVerified(){
 
 //
 function sendCode(){
-  var cellNum = document.getElementById("firstCellNum").value;
+  var cellNum = document.getElementById("cellNum").value;
   setCookie("cellNum", cellNum);
   var sendData = {cellNum:cellNum};
 
@@ -312,7 +312,7 @@ function buildStats(statistics) {
 function buildPreferences(preferences) {
   console.log("building preferences with " + preferences);
   preferences = JSON.parse(preferences);
-  document.getElementById("cellNum").value = preferences["cellNum"];
+  // document.getElementById("cellNum").value = preferences["cellNum"];
   document.getElementById("timeLimitRule").value = preferences["timeLimitRule"];
   document.getElementById("bedTimeRule").value = preferences["bedTimeRule"];
   document.getElementById("gameLimitRule").value = preferences["gameLimitRule"];
@@ -387,7 +387,7 @@ function isFormValid(){
 //Collect data from parent preferences and ...
 function parentFormHandler() {
     var formData = Array.from(document.querySelectorAll('#parent_control_form input')).reduce((acc, input)=>({ ...acc, [input.id]: input.value }), {});
-    formData["cellNum"] = document.getElementById("cellNum").value;
+    formData["cellNum"] = getCookie("cellNum");
     formData["code"] = getCookie("code");
 
     if(!isFormValid()){
