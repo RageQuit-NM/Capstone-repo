@@ -8,7 +8,7 @@ document.getElementById("first_cellNum_submit").addEventListener("click", sendCo
 document.getElementById("code_submit").addEventListener("click", submitCode);
 
 delCookie();
-setCookie("cellNum", "5551231234", "code", "ZDQu");
+//setCookie("cellNum", "5551231234", "code", "ZDQu");
 //
 function sendCode(){
   var cellNum = document.getElementById("firstCellNum").value;
@@ -79,63 +79,63 @@ function verifyCode(){
 }
 
 //Initialize tooltips
-createToolTips();
+//createToolTips();
 
 //if the cellNum cookie is set then populate the parent portal with corresponding data from server
 ///--------------Might not need to use checkCookie() anymore
-if(checkCookie()){
-  // document.getElementById("test2").innerHTML = "cookie is set to: " + document.cookie + " checkCookie() is " + checkCookie();
-  // document.getElementById("test").innerHTML = "cookie SET: " + getCookie("cellNum");
-  var sendData = {cellNum:0};
-  sendData["cellNum"] = getCookie("cellNum");
+// if(checkCookie()){
+//   // document.getElementById("test2").innerHTML = "cookie is set to: " + document.cookie + " checkCookie() is " + checkCookie();
+//   // document.getElementById("test").innerHTML = "cookie SET: " + getCookie("cellNum");
+//   var sendData = {cellNum:0};
+//   sendData["cellNum"] = getCookie("cellNum");
 
-  let serverAction = "get-settings";
-  let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
-  var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open("POST", remoteServer, true);
-  xmlHttp.setRequestHeader('Content-Type', 'application/json');
-  xmlHttp.send(JSON.stringify(sendData));
+//   let serverAction = "get-settings";
+//   let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
+//   var xmlHttp = new XMLHttpRequest();
+//   xmlHttp.open("POST", remoteServer, true);
+//   xmlHttp.setRequestHeader('Content-Type', 'application/json');
+//   xmlHttp.send(JSON.stringify(sendData));
 
-  xmlHttp.onreadystatechange = function () {
-    if (this.readyState != 4) return;
-    if (this.status == 200) {
-      var response = (this.responseText); // we get the returned data
-      buildPreferences(response);
-    }
+//   xmlHttp.onreadystatechange = function () {
+//     if (this.readyState != 4) return;
+//     if (this.status == 200) {
+//       var response = (this.responseText); // we get the returned data
+//       buildPreferences(response);
+//     }
 
 
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-    let serverAction = "get-stats";
-    let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", remoteServer, true);
-    xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.send(JSON.stringify(sendData));
+// //*************************************************************************************************************** */
+// //*************************************************************************************************************** */
+// //*************************************************************************************************************** */
+// //*************************************************************************************************************** */
+// //*************************************************************************************************************** */
+//     let serverAction = "get-stats";
+//     let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
+//     var xmlHttp = new XMLHttpRequest();
+//     xmlHttp.open("POST", remoteServer, true);
+//     xmlHttp.setRequestHeader('Content-Type', 'application/json');
+//     xmlHttp.send(JSON.stringify(sendData));
   
-    // document.getElementById("test").innerHTML = "2" + JSON.stringify(sendData);
+//     // document.getElementById("test").innerHTML = "2" + JSON.stringify(sendData);
   
-    xmlHttp.onreadystatechange = function () {
-      if (this.readyState != 4) return;
-      if (this.status == 200) {
-        var response = (this.responseText); // we get the returned data
-        buildStats(response);
-      }
-    }
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-    // end of state change: it can be after some time (async)
-  };
-//If the cellNum cookie is not set, do not populate page.
-}else{
-  document.getElementById("test").innerHTML = "cookie not set: " + document.cookie;
-}
+//     xmlHttp.onreadystatechange = function () {
+//       if (this.readyState != 4) return;
+//       if (this.status == 200) {
+//         var response = (this.responseText); // we get the returned data
+//         buildStats(response);
+//       }
+//     }
+// //*************************************************************************************************************** */
+// //*************************************************************************************************************** */
+// //*************************************************************************************************************** */
+// //*************************************************************************************************************** */
+// //*************************************************************************************************************** */
+//     // end of state change: it can be after some time (async)
+//   };
+// //If the cellNum cookie is not set, do not populate page.
+// }else{
+//   document.getElementById("test").innerHTML = "cookie not set: " + document.cookie;
+// }
 
 
 
