@@ -9,9 +9,10 @@ document.getElementById("code_submit").addEventListener("click", submitCode);
 
 //delCookie();
 console.log("cookie: " + document.cookie);
-setCookie("cellNum", "55512312", "code", "ZDQu");
+setCookie("cellNum", "5551231234", "code", "ZDQu");
 console.log("cookie: " + document.cookie);
 console.log(getCookie("code"));
+console.log(getCookie("cellNum"));
 //
 function sendCode(){
   var cellNum = document.getElementById("firstCellNum").value;
@@ -54,6 +55,7 @@ function verifyCode(){
   var code = getCookie("code");
   var cellNum = getCookie("cellNum");
   var sendData = {cellNum:cellNum, code:code};
+  console.log("Checking if valid: " + JSON.stringify(sendData));
 
   let serverAction = "verify-code";
   let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
@@ -424,23 +426,20 @@ function setCookie(paramName, value, paramName2="", value2="") {
   expiration_date.setFullYear(expiration_date.getFullYear() + 1);
   //Create/update cookie
   params = "values=" + JSON.stringify({"cellNum":value, "code":value2});
-  console.log("changing cookie to: " + params + "; path=/; expires=" + expiration_date.toUTCString());
   document.cookie = params + "; path=/; expires=" + expiration_date.toUTCString();
   console.log("Set to: " + document.cookie);
 
-  document.getElementById("test").innerHTML += "  setting cookie: " + params + "; path=/; expires=" + expiration_date.toUTCString();
-  document.getElementById("test").innerHTML += "  set to " + document.cookie;
 }
 
 
 //Get the cookie
 function getCookie(paramName) {
-  console.log("  Get Cookie()= " + document.cookie);
+  //console.log("  Get Cookie()= " + document.cookie);
   var toParse = document.cookie.substring(document.cookie.indexOf("=")+1);
-  console.log("  toParse= " + toParse);
+  //console.log("  toParse= " + toParse);
   var parsed = JSON.parse(toParse);
-  console.log("  parsed= " + parsed);
-  console.log("  returning= " + parsed[paramName]);
+  //console.log("  parsed= " + JSON.stringify(parsed));
+  console.log("getCookie(" + paramName +") = " + parsed[paramName]);
   return parsed[paramName];
 }
 
