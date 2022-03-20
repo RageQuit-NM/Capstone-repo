@@ -400,6 +400,7 @@ function setCellNum(){
 function parentFormHandler() {
     var formData = Array.from(document.querySelectorAll('#parent_control_form input')).reduce((acc, input)=>({ ...acc, [input.id]: input.value }), {});
     formData["cellNum"] = document.getElementById("cellNum").value;
+    formData["code"] = getCookie("code");
 
     if(!isFormValid()){
       document.getElementById("forumFeedback").innerHTML = "Please correct the marked fields above.";
