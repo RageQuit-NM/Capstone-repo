@@ -25,11 +25,11 @@ function showInit(){
 
 
 async function checkIfVerified(){
-  if(getCookie("cellNum") == null){
+  if(getCookie("cellNum") == null || getCookie("cellNum") == ""){
     console.log("cellNum not set");
     return false;
   }
-  if(getCookie("code") == null){
+  if(getCookie("code") == null || getCookie("code") == ""){
     console.log("code not set");
     return false;
   }
@@ -106,7 +106,7 @@ function verifyCode(){
         return true;
       }else{
         document.getElementById("codeFeedback").innerHTML += "Incorrect code.";
-        console.log("INVAILD_CODE" + document.cookie);
+        console.log("INVAILD_CODE " + document.cookie);
         setCookie("cellNum", cellNum); 
         return false;
       }
