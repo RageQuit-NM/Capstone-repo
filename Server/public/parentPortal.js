@@ -350,7 +350,7 @@ function setCellNum(){
     document.getElementById("cellNum").classList.add("is-invalid");
     return;
   }
-  setCookie("cellNum", cellNum);
+  setCookie("cellNum", cellNum, "code", getCookie("code"));
   location.reload();
 }
 
@@ -397,11 +397,11 @@ function isFormValid(){
   return true;
 }
 
-function setCellNum(){
-  var cellNum = document.getElementById("cellNum").value
-  setCookie("cellNum", cellNum);
-  location.reload();
-}
+// function setCellNum(){
+//   var cellNum = document.getElementById("cellNum").value
+//   setCookie("cellNum", cellNum);
+//   location.reload();
+// }
 
 //Collect data from parent preferences and ...
 function parentFormHandler() {
@@ -418,7 +418,7 @@ function parentFormHandler() {
     }
 
 
-    setCookie("cellNum", formData["cellNum"]);
+    setCookie("cellNum", formData["cellNum"], "code", getCookie("code"));
 
     //let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
     let serverAction = "update-settings";
