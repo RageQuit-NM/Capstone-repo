@@ -24,7 +24,7 @@ function showInit(){
 }
 
 
-function checkIfVerified(){
+async function checkIfVerified(){
   if(getCookie("cellNum") == null){
     console.log("cellNum not set");
     return false;
@@ -33,7 +33,7 @@ function checkIfVerified(){
     console.log("code not set");
     return false;
   }
-  if(verifyCode()){
+  if(await verifyCode()){
     return true;
   }else{
     return false;
@@ -65,7 +65,7 @@ function sendCode(){
   };
 }
 
-function submitCode(){
+async function submitCode(){
   var code = document.getElementById("codeInput").value;
   var cellNum = getCookie("cellNum");
 
@@ -75,7 +75,7 @@ function submitCode(){
   document.getElementById("codeFeedback").innerHTML += "which is " + getCookie("code");
   document.getElementById("codeFeedback").innerHTML += "Your cookie is " + document.cookie;
 
-  if (verifyCode()){
+  if (await verifyCode()){
     //Initalize the parent portal
   }
 }
