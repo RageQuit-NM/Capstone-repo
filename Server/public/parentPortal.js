@@ -11,6 +11,7 @@ document.getElementById("code_submit").addEventListener("click", submitCode);
 console.log("cookie: " + document.cookie);
 setCookie("cellNum", "55512312", "code", "ZDQu");
 console.log("cookie: " + document.cookie);
+console.log(getCookie("code"));
 //
 function sendCode(){
   var cellNum = document.getElementById("firstCellNum").value;
@@ -69,10 +70,11 @@ function verifyCode(){
 
       if(response == "VAILD_CODE"){
         setCookie("cellNum", cellNum, "code", code);
+        console.log("VAILD_CODE");
         return true;
       }else{
         document.getElementById("codeFeedback").innerHTML += "Incorrect code.";
-        delCookie();  //Remove the cookie. makes sure the code feild is not set
+        console.log("INVAILD_CODE");
         setCookie("cellNum", cellNum); 
         return false;
       }
@@ -433,12 +435,12 @@ function setCookie(paramName, value, paramName2="", value2="") {
 
 //Get the cookie
 function getCookie(paramName) {
-  document.getElementById("test").innerHTML += "  Get Cookie()= " + document.cookie;
+  console.log("  Get Cookie()= " + document.cookie);
   var toParse = document.cookie.substring(document.cookie.indexOf("=")+1);
-  document.getElementById("test").innerHTML += "  toParse= " + toParse;
+  console.log("  toParse= " + toParse);
   var parsed = JSON.parse(toParse);
-  document.getElementById("test").innerHTML += "  parsed= " + parsed;
-  document.getElementById("test").innerHTML += "  returning= " + parsed[paramName];
+  console.log("  parsed= " + parsed);
+  console.log("  returning= " + parsed[paramName]);
   return parsed[paramName];
 }
 
