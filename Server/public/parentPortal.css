@@ -38,6 +38,13 @@
   color: #24343D;
 }
 
+#codeModalFooter {
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  margin: 0px;
+}
+
 #parent_control_submit{
   color: #81BADB;
   background-color: #24343D;
