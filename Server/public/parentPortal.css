@@ -65,6 +65,7 @@
   color: #24343D;
   background-color: #456475;
   outline: #456475;
+  vertical-align: middle;
 }
 
 #cellNum_submit:hover, #code_submit:hover{
