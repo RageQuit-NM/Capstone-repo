@@ -49,7 +49,7 @@
   box-shadow: none;
 }
 
-#choose_cellNum_submit{
+#first_cellNum_submit{
   color: #24343D;
   background-color: #456475;
   /* border: #81BADB;
@@ -58,7 +58,7 @@
   outline: #456475;
 }
 
-#choose_cellNum_submit:hover{
+#first_cellNum_submit:hover{
   color: #24343D;
   background-color: #81BADB;
   /* border: #81BADB;
