@@ -38,7 +38,7 @@
   color: #24343D;
 }
 
-#codeModalFooter {
+#codeModalFooter,  #codeModalFooter p{
   display: flex; 
   justify-content: center; 
   align-items: center;
