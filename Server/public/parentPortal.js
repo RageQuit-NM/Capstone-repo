@@ -7,9 +7,10 @@ document.getElementById("choose_cellNum_submit").addEventListener("click", setCe
 document.getElementById("first_cellNum_submit").addEventListener("click", sendCode);
 document.getElementById("code_submit").addEventListener("click", submitCode);
 
-delCookie();
+//delCookie();
 console.log("cookie: " + document.cookie);
-//setCookie("cellNum", "5551231234", "code", "ZDQu");
+setCookie("cellNum", "5551231234", "code", "ZDQu");
+console.log("cookie: " + document.cookie);
 //
 function sendCode(){
   var cellNum = document.getElementById("firstCellNum").value;
