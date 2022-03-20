@@ -75,11 +75,11 @@ async function submitCode(){
   var code = document.getElementById("codeInput").value;
   var cellNum = getCookie("cellNum");
 
-  document.getElementById("codeFeedback").innerHTML += "You sumbitted " + code;
+  // document.getElementById("codeFeedback").innerHTML += "You sumbitted " + code;
   document.getElementById("test").innerHTML += "  Trying to set cookie = cellNum:" +cellNum + " code:"+ code;
   setCookie("cellNum", cellNum, "code", code);
-  document.getElementById("codeFeedback").innerHTML += "which is " + getCookie("code");
-  document.getElementById("codeFeedback").innerHTML += "Your cookie is " + document.cookie;
+  // document.getElementById("codeFeedback").innerHTML += "which is " + getCookie("code");
+  // document.getElementById("codeFeedback").innerHTML += "Your cookie is " + document.cookie;
 
   verifyCode()
 }
@@ -111,7 +111,7 @@ function verifyCode(){
         buildPageData();
         return true;
       }else{
-        document.getElementById("codeFeedback").innerHTML += "Incorrect code.";
+        // document.getElementById("codeFeedback").innerHTML += "Incorrect code.";
         console.log("INVAILD_CODE " + document.cookie);
         setCookie("cellNum", cellNum); 
         return false;
