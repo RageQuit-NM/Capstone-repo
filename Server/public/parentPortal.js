@@ -2,7 +2,7 @@ var remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
 
 //listener for parent preference submission
 document.getElementById("parent_control_submit").addEventListener("click", parentFormHandler);
-document.getElementById("choose_cellNum_submit").addEventListener("click", setCellNum);
+// document.getElementById("choose_cellNum_submit").addEventListener("click", setCellNum);
 
 document.getElementById("first_cellNum_submit").addEventListener("click", sendCode);
 document.getElementById("code_submit").addEventListener("click", submitCode);
