@@ -38,6 +38,10 @@
   color: #24343D;
 }
 
+.clear-border {
+  border-width: 0px;
+}
+
 #parent_control_submit{
   color: #81BADB;
   background-color: #24343D;
