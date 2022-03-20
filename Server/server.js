@@ -2,11 +2,8 @@ var path = require('path');
 var childProcess = require('child_process');
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
-const fs = require('fs');
-
+var fs = require('fs');
 var express = require('express');  
-var https = require('https');
-var http = require('http');
 var app = express();  
 
 var options = {
@@ -14,15 +11,18 @@ var options = {
   cert: fs.readFileSync('client-cert.pem')
 };
 
-const { json } = require('body-parser');
-const { kill } = require('process');
-const { time } = require('console');
+// const { json } = require('body-parser');
+// const { kill } = require('process');
+// const { time } = require('console');
 
 app.use(express.json());//So JSON data can be parsed from HTTP URL
 app.use(express.static(__dirname+'/public'));//to know where the website assets live
 
-http.createServer(app).listen(5000);             //HTTP service
-console.log('Node.js HTTP web server at port 5000 is running..');
+// var http = require('http');
+// http.createServer(app).listen(5000);             //HTTP service
+// console.log('Node.js HTTP web server at port 5000 is running..');
+
+var https = require('https');
 https.createServer(options, app).listen(5001);  //HTTPS service
 console.log('Node.js HTTPS web server at port 5001 is running..');
 
