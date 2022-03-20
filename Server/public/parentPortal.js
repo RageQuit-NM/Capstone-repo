@@ -27,15 +27,26 @@ function showInit(){
 async function checkIfVerified(){
   if(getCookie("cellNum") == null || getCookie("cellNum") == ""){
     console.log("cellNum not set");
+
+    console.log("checkIfVerified not verified")
+  showInit();
     return false;
   }
   if(getCookie("code") == null || getCookie("code") == ""){
     console.log("code not set");
+
+    console.log("checkIfVerified not verified")
+  showInit();
     return false;
   }
   if(await verifyCode()){
+    console.log("checkIfVerified building page")
+    buildPageData();
     return true;
   }else{
+
+    console.log("checkIfVerified not verified")
+  showInit();
     return false;
   }
 }
