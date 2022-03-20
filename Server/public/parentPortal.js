@@ -11,8 +11,10 @@ document.getElementById("code_submit").addEventListener("click", submitCode);
 createToolTips();
 
 if(checkIfVerified()){
+  console.log("checkIfVerified building page")
   buildPageData();
 }else{
+  console.log("checkIfVerified not verified")
   showInit();
 }
 
