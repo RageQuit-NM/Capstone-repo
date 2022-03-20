@@ -92,6 +92,7 @@ app.post('/verify-code', async function(req, res){
   var query = {cellNum: req.body["cellNum"], code: req.body["code"]};
   var collection = "codes";
 
+  console.log("querying to verify: " + JSON.stringify(query));
   var result;
   //console.log("searching for: " + JSON.stringify(query));
   try {
@@ -237,22 +238,22 @@ app.post('/update-settings', async function(req, res){
     return;
   }
 
-    var query = {cellNum: req.body["cellNum"]};
-    var newVals = { $set: req.body };
-    var options = { upsert: true };
+  var query = {cellNum: req.body["cellNum"]};
+  var newVals = { $set: req.body };
+  var options = { upsert: true };
 
-    MongoClient.connect(url, function(err, db) {
+  MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
+      var database = db.db("growing_gamers");
+      database.collection("user_data").updateOne(query, newVals, options, function(err, res) {
         if (err) throw err;
-        var database = db.db("growing_gamers");
-        database.collection("user_data").updateOne(query, newVals, options, function(err, res) {
-          if (err) throw err;
-          console.log("settings updated: " + JSON.stringify(res));
-          db.close();
-        });
+        console.log("settings updated: " + JSON.stringify(res));
+        db.close();
       });
+    });
 
-    res.send('settings succesfully updated');
-    console.log("---");
+  res.send('settings succesfully updated');
+  console.log("---");
 });
 
 
