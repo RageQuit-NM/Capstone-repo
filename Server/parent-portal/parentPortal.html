@@ -20,12 +20,12 @@
     <div class="invalid-feedback" id="firstCellFeedback"></div>
   </div> -->
 
-  <div class="d-grid header-div">
+  <!-- <div class="d-grid header-div">
     <div class="form-label h4">Enter Verification Code:</div>
     <input type="text" class="form-control" id="codeInput" name="codeInput"><br/>
     <button type="button" id="code_submit" class="btn btn-block top-spacer"><p class="display-5">Submit</p></button>
     <div class="invalid-feedback" id="codeFeedback"></div>
-  </div>
+  </div> -->
 
 
   <!-- -------------------------------- Header ------------------------------- -->
@@ -37,9 +37,30 @@
       <div class="d-grid header-div">
         <div class="form-label h4" id="cellInputText">Enter Cell Number:</div>
         <input type="text" class="form-control" id="cellNum" name="cellNum"><br/>
-        <button type="button" id="cellNum_submit" class="btn btn-block top-spacer"><p class="display-5">Submit</p></button>
+        <button type="button" id="cellNum_submit" class="btn btn-block top-spacer" data-toggle="modal" data-target="#codeModal"><p class="display-5">Submit</p></button>
         <div class="invalid-feedback" id="firstCellFeedback"></div>
+
+        <div class="modal fade" id="codeModal" role="dialog">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Enter Confirmation Code:</h4>
+              </div>
+              <div class="modal-body">
+                <input type="text" class="form-control" id="codeInput" name="codeInput"><br/>
+                <div class="invalid-feedback" id="codeFeedback"></div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="code_submit" data-dismiss="modal" >Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
+
+      
     </div>
   </header>
 

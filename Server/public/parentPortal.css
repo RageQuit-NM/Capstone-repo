@@ -52,18 +52,12 @@
 #cellNum_submit{
   color: #24343D;
   background-color: #456475;
-  /* border: #81BADB;
-  border-style: solid;
-  border-width: 1px; */
   outline: #456475;
 }
 
 #cellNum_submit:hover{
   color: #24343D;
   background-color: #81BADB;
-  /* border: #81BADB;
-  border-style: solid;
-  border-width: 1px; */
   outline: #24343D;
   box-shadow: none;
 }
