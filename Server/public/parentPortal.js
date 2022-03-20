@@ -84,6 +84,8 @@ async function submitCode(){
 
   if (await verifyCode()){
     //Initalize the parent portal
+    console.log("submitCode() building page")
+    buildPageData();
   }
 }
 
