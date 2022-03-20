@@ -54,13 +54,13 @@
   box-shadow: none;
 }
 
-#cellNum_submit, .code_submit{
+#cellNum_submit, #code_submit{
   color: #24343D;
   background-color: #456475;
   outline: #456475;
 }
 
-#cellNum_submit:hover, .code_submit:hover{
+#cellNum_submit:hover, #code_submit:hover{
   color: #24343D;
   background-color: #81BADB;
   outline: #24343D;
