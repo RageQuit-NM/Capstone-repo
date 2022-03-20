@@ -82,11 +82,7 @@ async function submitCode(){
   document.getElementById("codeFeedback").innerHTML += "which is " + getCookie("code");
   document.getElementById("codeFeedback").innerHTML += "Your cookie is " + document.cookie;
 
-  if (await verifyCode()){
-    //Initalize the parent portal
-    console.log("submitCode() building page")
-    buildPageData();
-  }
+  verifyCode()
 }
 
 
@@ -112,6 +108,8 @@ function verifyCode(){
       if(response == "VAILD_CODE"){
         setCookie("cellNum", cellNum, "code", code);
         console.log("VAILD_CODE");
+        console.log("verifyCode() building page")
+        buildPageData();
         return true;
       }else{
         document.getElementById("codeFeedback").innerHTML += "Incorrect code.";
