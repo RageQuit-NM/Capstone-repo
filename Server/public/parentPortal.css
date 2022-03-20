@@ -38,8 +38,8 @@
   color: #24343D;
 }
 
-.modal .modal-body p {
-  margin: 0;
+.modal-footer {
+  margin: 0px;
 }
 
 #parent_control_submit{
