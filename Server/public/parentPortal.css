@@ -40,6 +40,7 @@
 
 .clear-border {
   border-width: 0px;
+  background-color: none;
 }
 
 #parent_control_submit{
