@@ -34,7 +34,6 @@
   margin-top: 2%;
 }
 
-
 .dark-text {
   color: #24343D;
 }
@@ -58,7 +57,6 @@
   color: #24343D;
   background-color: #456475;
   outline: #456475;
-  display: block;
 }
 
 #cellNum_submit:hover, #code_submit:hover{
