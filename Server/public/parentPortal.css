@@ -35,7 +35,7 @@
 }
 
 
-.modal-header {
+.modal-content {
   color: #24343D;
 }
 
@@ -54,13 +54,13 @@
   box-shadow: none;
 }
 
-#cellNum_submit{
+#cellNum_submit, .codeSubmit{
   color: #24343D;
   background-color: #456475;
   outline: #456475;
 }
 
-#cellNum_submit:hover{
+#cellNum_submit:hover, .codeSubmit:hover{
   color: #24343D;
   background-color: #81BADB;
   outline: #24343D;
