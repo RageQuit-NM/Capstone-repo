@@ -41,6 +41,7 @@
 .clear-border {
   border-width: 0px;
   background-color: none;
+  border-radius: 10%;
 }
 
 #parent_control_submit{
