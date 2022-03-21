@@ -103,12 +103,17 @@ app.post('/verify-code', async function(req, res){
   if(result == null){
     res.send("INVAILD_CODE");
     console.log('A user attempted to verify code with an invalid code. Cell: ' + req.body["cellNum"] + " and code " + req.body["code"]);
-    console.log("---");
   }else{
-    res.send("VAILD_CODE");
-    console.log('A code was verified');
-    console.log("---");
+    var currentDate = new Date().toLocaleString('en-CA', {hour12:false});
+    if (currentDate > result[expirationDate]){
+      res.send("INVAILD_CODE_EXPIRED");
+      console.log('Code not verified. Expired');
+    }else{
+      res.send("VAILD_CODE");
+      console.log('A code was verified');
+    }
   }
+  console.log("---");
 });
 
 
