@@ -280,6 +280,7 @@ app.post('/upload-game-data', function(req, res){
 app.post('/get-message', async function(req, res){
   //1. get the cell number from the http request______________________________________
   var query = { cellNum: req.body["cellNum"] };
+  console.log("/get-message for " + req.body["cellNum"]);
   // console.log("The query is: " + JSON.stringify(query));
 
   //2. collect players last day games ordered by most recent___________________________________
@@ -287,7 +288,7 @@ app.post('/get-message', async function(req, res){
   var sortCriteria = { timeStamp: -1 };//sort by descending date and time
   var latestGameDate;
   try {
-    console.log("Query is: " + JSON.stringify(query));
+    console.log("Query for latest game date is: " + JSON.stringify(query));
     latestGameDate = await sort(query, sortCriteria, "player_records", "growing_gamers", 1);
     console.log("Response is: " + JSON.stringify(latestGameDate));
   } catch (error){
