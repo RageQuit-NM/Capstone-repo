@@ -13,21 +13,19 @@
 </head>
 
 <body class="body">
-  <div id="security">
-    <div class="d-grid header-div" id="securityCell">
-      <div class="form-label h4">Enter Cell Number:</div>
-      <input type="text" class="form-control" id="firstCellNum" name="firstCellNum"><br/>
-      <button type="button" id="first_cellNum_submit" class="btn btn-block top-spacer"><p class="display-5">Submit</p></button>
-      <div class="invalid-feedback" id="firstCellFeedback"></div>
-    </div>
+  <!-- <div class="d-grid header-div">
+    <div class="form-label h4">Enter Cell Number:</div>
+    <input type="text" class="form-control" id="firstCellNum" name="firstCellNum"><br/>
+    <button type="button" id="first_cellNum_submit" class="btn btn-block top-spacer"><p class="display-5">Submit</p></button>
+    <div class="invalid-feedback" id="firstCellFeedback"></div>
+  </div> -->
 
-    <div class="d-grid header-div" id="securityCode">
-      <div class="form-label h4">Enter Verification Code:</div>
-      <input type="text" class="form-control" id="codeInput" name="codeInput"><br/>
-      <button type="button" id="code_submit" class="btn btn-block top-spacer"><p class="display-5">Submit</p></button>
-      <div class="invalid-feedback" id="codeFeedback"></div>
-    </div>
-  </div>
+  <!-- <div class="d-grid header-div">
+    <div class="form-label h4">Enter Verification Code:</div>
+    <input type="text" class="form-control" id="codeInput" name="codeInput"><br/>
+    <button type="button" id="code_submit" class="btn btn-block top-spacer"><p class="display-5">Submit</p></button>
+    <div class="invalid-feedback" id="codeFeedback"></div>
+  </div> -->
 
 
   <!-- -------------------------------- Header ------------------------------- -->
@@ -39,14 +37,38 @@
       <div class="d-grid header-div">
         <div class="form-label h4" id="cellInputText">Enter Cell Number:</div>
         <input type="text" class="form-control" id="cellNum" name="cellNum"><br/>
-        <button type="button" id="choose_cellNum_submit" class="btn btn-block top-spacer"><p class="display-5">Submit</p></button>
-        <div class="invalid-feedback" id="cellChangeFeedback"></div>
+        <button type="button" id="cellNum_submit" class="btn btn-block top-spacer" data-bs-toggle="modal" data-bs-target="#codeModal" data-bs-backdrop="static" data-bs-keyboard="false"><p class="display-5">Submit</p></button>
+        <div class="invalid-feedback" id="firstCellFeedback"></div>
+
+        <div class="modal fade" id="codeModal" data-bs-backdrop="static" data-bs-keyboard="false">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header dark-text">
+                <h4 class="modal-title">Enter Cell Confirmation Code: </h4><br/>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body header-container">
+                <input type="text" class="form-control" id="codeInput" name="codeInput"><br/>
+                <div class="d-grid">
+                  <button type="button" class="btn btn-block" id="code_submit" data-bs-dismiss="modal"><div class="h4">Submit</div></button><br/>
+                </div>
+              </div>
+              <div class="modal-footer dark-text" id="codeModalFooter">
+                Exit and resubmit if code is not received in 30 seconds.
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
+
+      
     </div>
   </header>
 
   <!-- --------------------------------- Main -------------------------------- -->
   <main id="main">
+
       <div class="container mt-3">
         <p class="display-1">Settings</p>
         <form id="parent_control_form">
@@ -95,7 +117,7 @@
             <label class="form-check-label h4">Monthly</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="hidden" id="codeVerify" name="codeVerify"></input>
+            <input class="form-check-input" type="hidden" id="codeVerify" name="codeVerify">
           </div>
           <br/>
         </form>
@@ -109,9 +131,6 @@
           <p id="test_response" style="color:white"></p>
         </div>
       </div>
-
-
-
 
       <div class="container-fluid mt-3 stats-container">
         <div class="container mt-3">
@@ -132,6 +151,7 @@
               <div class="progress"><div class="progress-bar bg-warning" id="kdRatioBar"></div></div>
             </div>
           </div><br/><br/><br/>
+          
           <div class="row">
             <div class="column h1" data-bs-toggle="tooltip" data-bs-placement="left" title="Quality of habits based on how often the rules are respected.">Habits</div> 
           </div>
@@ -160,8 +180,10 @@
               <div class="progress"><div class="progress-bar bg-success" id="dailyPlayTimeBar">2hrs</div></div>
             </div>
           </div>
+
         </div>
       </div>
+
   </main>
 </body>
 

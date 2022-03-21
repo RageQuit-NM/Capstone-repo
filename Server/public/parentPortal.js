@@ -2,9 +2,8 @@ var remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
 
 //listener for parent preference submission
 document.getElementById("parent_control_submit").addEventListener("click", parentFormHandler);
-document.getElementById("choose_cellNum_submit").addEventListener("click", setCellNum);
 
-document.getElementById("first_cellNum_submit").addEventListener("click", sendCode);
+document.getElementById("cellNum_submit").addEventListener("click", sendCode);
 document.getElementById("code_submit").addEventListener("click", submitCode);
 
 //Functions to run at the start of every page load
@@ -52,7 +51,7 @@ async function checkIfVerified(){
 
 //
 function sendCode(){
-  var cellNum = document.getElementById("firstCellNum").value;
+  var cellNum = document.getElementById("cellNum").value;
   setCookie("cellNum", cellNum);
   var sendData = {cellNum:cellNum};
 
@@ -75,7 +74,12 @@ function sendCode(){
 async function submitCode(){
   var code = document.getElementById("codeInput").value;
   var cellNum = getCookie("cellNum");
+
+  // document.getElementById("codeFeedback").innerHTML += "You sumbitted " + code;
+  document.getElementById("test").innerHTML += "  Trying to set cookie = cellNum:" +cellNum + " code:"+ code;
   setCookie("cellNum", cellNum, "code", code);
+  // document.getElementById("codeFeedback").innerHTML += "which is " + getCookie("code");
+  // document.getElementById("codeFeedback").innerHTML += "Your cookie is " + document.cookie;
 
   verifyCode()
 }
@@ -107,7 +111,7 @@ function verifyCode(){
         buildPageData();
         return true;
       }else{
-        document.getElementById("codeFeedback").innerHTML += "Incorrect code.";
+        // document.getElementById("codeFeedback").innerHTML += "Incorrect code.";
         console.log("INVAILD_CODE " + document.cookie);
         setCookie("cellNum", cellNum); 
         return false;
@@ -137,13 +141,6 @@ function buildPageData(){
       var response = (this.responseText); // we get the returned data
       buildPreferences(response);
     }
-
-
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
     let serverAction = "get-stats";
     let remoteServer = "https://" +  remoteAddress + ":5001/" + serverAction;
     var xmlHttp = new XMLHttpRequest();
@@ -160,16 +157,9 @@ function buildPageData(){
         buildStats(response);
       }
     }
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
-//*************************************************************************************************************** */
     // end of state change: it can be after some time (async)
   };
 }
-
-
 
 
 //Re loads all tooltips to reflect current relevant properties, must run this for a change to be applied
@@ -392,16 +382,11 @@ function isFormValid(){
   return true;
 }
 
-// function setCellNum(){
-//   var cellNum = document.getElementById("cellNum").value
-//   setCookie("cellNum", cellNum);
-//   location.reload();
-// }
 
 //Collect data from parent preferences and ...
 function parentFormHandler() {
     var formData = Array.from(document.querySelectorAll('#parent_control_form input')).reduce((acc, input)=>({ ...acc, [input.id]: input.value }), {});
-    formData["cellNum"] = document.getElementById("cellNum").value;
+    formData["cellNum"] = getCookie("cellNum");
     formData["code"] = getCookie("code");
 
     if(!isFormValid()){

@@ -34,6 +34,18 @@
   margin-top: 2%;
 }
 
+.dark-text {
+  color: #24343D;
+}
+
+#codeModalFooter,  #codeModalFooter p{
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  margin: 0px;
+  padding: 2px;
+}
+
 #parent_control_submit{
   color: #81BADB;
   background-color: #24343D;
@@ -49,21 +61,15 @@
   box-shadow: none;
 }
 
-#choose_cellNum_submit{
+#cellNum_submit, #code_submit{
   color: #24343D;
   background-color: #456475;
-  /* border: #81BADB;
-  border-style: solid;
-  border-width: 1px; */
   outline: #456475;
 }
 
-#choose_cellNum_submit:hover{
+#cellNum_submit:hover, #code_submit:hover{
   color: #24343D;
   background-color: #81BADB;
-  /* border: #81BADB;
-  border-style: solid;
-  border-width: 1px; */
   outline: #24343D;
   box-shadow: none;
 }
