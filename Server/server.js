@@ -102,11 +102,11 @@ app.post('/verify-code', async function(req, res){
   }
   if(result == null){
     res.send("INVAILD_CODE");
-    console.log('A user attempte to verify code with an invalid code. Cell: ' + req.body["cellNum"] + " and code " + req.body["code"]);
+    console.log('A user attempted to verify code with an invalid code. Cell: ' + req.body["cellNum"] + " and code " + req.body["code"]);
     console.log("---");
   }else{
     res.send("VAILD_CODE");
-    console.log('Access to parent portal granted to a verified user');
+    console.log('A code was verified');
     console.log("---");
   }
 });

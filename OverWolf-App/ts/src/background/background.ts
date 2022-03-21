@@ -32,6 +32,14 @@ class BackgroundController {
     overwolf.extensions.onAppLaunchTriggered.addListener(
       e => this.onAppLaunchTriggered(e)
     );
+
+    var attributes = document.getElementById('attributes');
+    var observer = new MutationObserver(function(){
+        if(attributes.getAttribute('firstCellCheck') == 'true'){
+          BackgroundController.instance().sendMessageToLauncher();
+        }
+    });
+    observer.observe(attributes, { attributes: true, childList: true });
   };
 
 
@@ -59,7 +67,7 @@ class BackgroundController {
       : kWindowNames.launcher;
     this._windows[currWindowName].restore();
 
-    this.sendMessageToLauncher();
+    //this.sendMessageToLauncher();
   }
 
   public async checkCellNum(){
@@ -74,44 +82,27 @@ class BackgroundController {
   //----------------------------------------------------------implement all messages for kid----------------||
   //Updates primary_message on bus
   private async sendMessageToLauncher(){
-    //console.log("sendMessageToLauncher(). Primary is: " +  document.getElementById("primary_message").innerHTML);
-    // let messageID = "welcomeback";
-    // if(this.hasGameRun){
-    //   document.getElementById("test_message2").innerHTML += "game has run..."
-    //   messageID = "homework"; //if the player did not have a positive or negative KD deafault to homework
+    if(document.getElementById("attributes").getAttribute('firstCellCheck') != 'true'){
+      let cellNumString = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
-    //   let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
-    //   if (fileData == null){
-    //     document.getElementById("test_message2").innerHTML += "No data stored in game_data.json. This should never occur.";
-    //     return;
-    //   }
-    //   let killDeath = JSON.parse(fileData);
-    //   if(killDeath["kills"] > killDeath["deaths"]){
-    //     messageID = "doinggreat"; //positiveKD
-    //   }
-    //   if(killDeath["deaths"] > killDeath["kills"]){
-    //     messageID = "takebreak";  //negativeKD
-    //   }
-    // }
-    let cellNumString = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      let serverAction = "get-message";
+      let remoteServer = "https://" +  this.remoteAddress + ":5001/" + serverAction;
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("POST", remoteServer, true);
+      xmlHttp.setRequestHeader('Content-Type', 'application/json');
+      xmlHttp.send(cellNumString);
+      console.log("sending: " + cellNumString + " to " + remoteServer);
 
-    let serverAction = "get-message";
-    let remoteServer = "https://" +  this.remoteAddress + ":5001/" + serverAction;
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", remoteServer, true);
-    xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    xmlHttp.send(cellNumString);
-    console.log("sending: " + cellNumString + " to " + remoteServer);
-
-    xmlHttp.onreadystatechange = function () {
-      if (this.readyState != 4) return;
-      if (this.status == 200) {
-        var parsed = JSON.parse(this.responseText);
-        console.log(this.responseText);
-        document.getElementById("primary_message").innerHTML = parsed["body"];
-        document.getElementById("dismiss_message").innerHTML = parsed["dismissButtonMesage"];
-      }
-    };
+      xmlHttp.onreadystatechange = function () {
+        if (this.readyState != 4) return;
+        if (this.status == 200) {
+          var parsed = JSON.parse(this.responseText);
+          console.log(this.responseText);
+          document.getElementById("primary_message").innerHTML = parsed["body"];
+          document.getElementById("dismiss_message").innerHTML = parsed["dismissButtonMesage"];
+        }
+      };
+    }
   }
 
 
