@@ -35,7 +35,7 @@ class BackgroundController {
 
     var attributes = document.getElementById('attributes');
     var observer = new MutationObserver(function(){
-        if(attributes.getAttribute('firstCellCheck') == 'true'){
+        if(attributes.getAttribute('cellNumSet') == 'true'){
           BackgroundController.instance().sendMessageToLauncher();
         }
     });
@@ -57,8 +57,7 @@ class BackgroundController {
   public async run() {
     if(document.getElementById("attributes").getAttribute('firstCellCheck') != 'true'){
       document.getElementById("attributes").setAttribute('firstCellCheck', 'true');
-      document.getElementById("isCellNumSet").innerHTML = await BackgroundController.instance().checkCellNum();
-     // console.log("isCellNumSet: " +  document.getElementById("isCellNumSet").innerHTML);
+      document.getElementById("attributes").setAttribute('cellNumSet', await BackgroundController.instance().checkCellNum());
     }
 
     this._gameListener.start();
@@ -82,7 +81,8 @@ class BackgroundController {
   //----------------------------------------------------------implement all messages for kid----------------||
   //Updates primary_message on bus
   private async sendMessageToLauncher(){
-    if(document.getElementById("attributes").getAttribute('firstCellCheck') == 'true'){
+    if(document.getElementById("attributes").getAttribute('cellNumSet') == "true"){
+      console.log("sending message with cellNumSet=" + document.getElementById("attributes").getAttribute('cellNumSet'));
       let cellNumString = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
       let serverAction = "get-message";

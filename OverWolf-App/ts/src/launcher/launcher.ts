@@ -16,7 +16,7 @@ class Launcher extends AppWindow {
         document.getElementById("submitCellNum").addEventListener("click", this.submitCellNum);
         document.getElementById("submitCode").addEventListener("click", this.submitCode);
 
-        if(overwolf.windows.getMainWindow().document.getElementById("isCellNumSet").innerHTML == "false"){
+        if(overwolf.windows.getMainWindow().document.getElementById('attributes').getAttribute('cellNumSet') != "true"){
           document.getElementById("main").style.display = "none";
           document.getElementById("initalization").style.display = "inline";
         }else{
@@ -115,7 +115,7 @@ class Launcher extends AppWindow {
           if(response == "VAILD_CODE"){
             let userCellNum = {cellNum:cellNum};
             await Launcher.instance().writeFile(JSON.stringify(userCellNum), `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
-
+            overwolf.windows.getMainWindow().document.getElementById('attributes').setAttribute('cellNumSet', "true");
             let serverAction = "insert-cellNum";
             let remoteServer = "https://" +  Launcher.instance().remoteAddress + ":5001/" + serverAction;
             var xmlHttp = new XMLHttpRequest();
