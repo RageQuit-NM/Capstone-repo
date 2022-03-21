@@ -105,7 +105,7 @@ app.post('/verify-code', async function(req, res){
     console.log('A user attempted to verify code with an invalid code. Cell: ' + req.body["cellNum"] + " and code " + req.body["code"]);
   }else{
     var currentDate = new Date().toLocaleString('en-CA', {hour12:false});
-    if (currentDate > result[expirationDate]){
+    if (currentDate > result["expirationDate"]){
       res.send("INVAILD_CODE_EXPIRED");
       console.log('Code not verified. Expired');
     }else{
