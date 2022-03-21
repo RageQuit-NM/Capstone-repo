@@ -67,7 +67,7 @@ class BackgroundController {
       : kWindowNames.launcher;
     this._windows[currWindowName].restore();
 
-    //this.sendMessageToLauncher();
+    this.sendMessageToLauncher();
   }
 
   public async checkCellNum(){
@@ -82,7 +82,7 @@ class BackgroundController {
   //----------------------------------------------------------implement all messages for kid----------------||
   //Updates primary_message on bus
   private async sendMessageToLauncher(){
-    if(document.getElementById("attributes").getAttribute('firstCellCheck') != 'true'){
+    if(document.getElementById("attributes").getAttribute('firstCellCheck') == 'true'){
       let cellNumString = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
       let serverAction = "get-message";
@@ -98,8 +98,9 @@ class BackgroundController {
         if (this.status == 200) {
           var parsed = JSON.parse(this.responseText);
           console.log(this.responseText);
+          console.log(parsed["dismissButtonMessage"]);
           document.getElementById("primary_message").innerHTML = parsed["body"];
-          document.getElementById("dismiss_message").innerHTML = parsed["dismissButtonMesage"];
+          document.getElementById("dismiss_message").innerHTML = parsed["dismissButtonMessage"];
         }
       };
     }
