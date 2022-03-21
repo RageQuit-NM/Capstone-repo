@@ -23,7 +23,7 @@ class Launcher extends AppWindow {
           document.getElementById("initalization").style.display = "none";
 
           Launcher.instance().setContent();
-          setInterval(Launcher.instance().setContent, 1000*60);
+          setInterval(Launcher.instance().setContent, 1000*2);
 
           //Launcher.instance().collectPreferences();
           //setInterval(Launcher.instance().checkBedtime, 1000*2);
@@ -128,7 +128,7 @@ class Launcher extends AppWindow {
             document.getElementById("initalization").style.display = "none";
 
             Launcher.instance().setContent();
-            setInterval(Launcher.instance().setContent, 1000*60);
+            setInterval(Launcher.instance().setContent, 1000*2);
             Launcher.instance().displayCellNum();
 
             console.log("VAILD_CODE");
