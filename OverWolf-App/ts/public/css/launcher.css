@@ -16,6 +16,10 @@ body {
   font-size: 52px;
   color: #81BADB;
   margin-top: 35px;
+  word-wrap: break-word;
+  padding-left: 15%;
+  padding-right: 15%;
+  padding-top: 5%;
 }
 
 .content {
@@ -47,14 +51,61 @@ body {
   font-style: normal;
   font-weight: normal;
   font-size: 22px;
-  color: #81BADB;
   display: inline-block;
   flex: 1 1 20%;
   margin-top: 1.75%;
+
+  color: #81BADB;
+  cursor: pointer;
+  padding: 6px;
+  padding-right: 14px;
+  padding-left: 14px;
+  border-radius: 7px;
+  background: #24343D;
+  border: 2px solid #81BADB;
 }
 
-a {
+.dismissButton:hover {
+  color: #24343D;
+  background: #81BADB;
+}
+
+.testMessage {
+  word-wrap: break-word; 
+  display: inherit; 
+  /* inherit; none; */
+}
+
+.initalization {
+  display: none; 
+  /* inherit; none; */
+}
+
+.urgentText {
+  color: #F47174;
+}
+
+.textInput {
+  margin: 3%;
+
+  font-family: "Roboto Mono", sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 22px;
+  display: inline-block;
+}
+
+.headerText {
   color: #456475;
   text-decoration: none;
   padding: 1%;
+}
+
+.invalid-feedback{
+  color: red;
+
+}
+
+#parent_portal_link:hover {
+  color: #81BADB;
 }

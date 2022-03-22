@@ -38,7 +38,9 @@
         "http://ec2-3-96-220-139.ca-central-1.compute.amazonaws.com",
         "http://*.compute.amazonaws.com",
         "http://*.*",
-        "https://*.*"
+        "https://*.*",
+        "https://ec2-35-183-27-150.ca-central-1.compute.amazonaws.com",
+        "https://*.compute.amazonaws.com"
       ]
     },
     "force_browser": "user",

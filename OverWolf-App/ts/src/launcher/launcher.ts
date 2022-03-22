@@ -3,32 +3,44 @@ import { kWindowNames } from "../consts";
 
 class Launcher extends AppWindow {
     private static _instance: Launcher;
-    //private _gameEventsListener: OWGamesEvents;
-    private mainWindowObject: Window;
-    private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
-    public bedTime: string;
-  
+    private remoteAddress: string = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com"; //Move to the parent class, all app windows need this remote address
+    public parentPreferenes;  //timeLimitRule bedTimeRule gameLimitRule
+
     private constructor() {
       super(kWindowNames.launcher);
-      //this.remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
-      //Constructor inexplicably runs 3 times, make it so only 1 listener is set for each element. This seems to run when the dismiss button is hit too
-      if (document.getElementById("smiley").getAttribute('listener') != 'true') {
-        document.getElementById("smiley").setAttribute('listener', 'true');
+      //Constructor runs multiple times, makes it so it only runs once.
+      if(overwolf.windows.getMainWindow().document.getElementById("attributes").getAttribute('listener') != 'true'){
+        overwolf.windows.getMainWindow().document.getElementById("attributes").setAttribute('listener', 'true');
+       
+        (document.getElementById("parent_portal_link") as HTMLAnchorElement).href="https://" + this.remoteAddress + ":5001/parentPortal";
+        document.getElementById("submitCellNum").addEventListener("click", this.submitCellNum);
 
-        //Adds event listeners
-        // document.getElementById("smiley").addEventListener("click", this.clickSmiley);
-        // document.getElementById("straight").addEventListener("click", this.clickSmiley);
-        // document.getElementById("sad").addEventListener("click", this.clickSmiley);
-        // document.getElementById("parentPortalButton").addEventListener("click", this.parentPortalOpen); 
-        document.getElementById("message_send").addEventListener("click", this.twilio);
+        if(overwolf.windows.getMainWindow().document.getElementById("isCellNumSet").innerHTML == "false"){
+          document.getElementById("main").style.display = "none";
+          document.getElementById("initalization").style.display = "inline";
+        }else{
+          document.getElementById("initalization").style.display = "none";
 
-        this.collectPreferences();
+          Launcher.instance().setContent();
+          setInterval(Launcher.instance().setContent, 1000*60);
+
+          //Launcher.instance().collectPreferences();
+          //setInterval(Launcher.instance().checkBedtime, 1000*2);
+          //setInterval(Launcher.instance().collectPreferences, 1000*2);
+
+          Launcher.instance().displayCellNum();
+        }
       }
-      //Hide these
-      document.getElementById("smilies").style.display = "none";
-      document.getElementById("smiley_title").style.display = "none";
-   }
-  
+    }
+
+    public async displayCellNum(){
+      let fileData = await Launcher.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      fileData = JSON.parse(fileData);
+      document.getElementById("cellDisplay").innerHTML = fileData["cellNum"].substring(0, 3) + "-" + fileData["cellNum"].substring(3, 6) + "-" + fileData["cellNum"].substring(6);
+    }
+    
+
+    //Singleton design pattern
     public static instance() {
       if (!this._instance) {
         this._instance = new Launcher();
@@ -36,128 +48,119 @@ class Launcher extends AppWindow {
       return this._instance;
     }
     
-    //collect all messages from bus to be shown on the launcher page
+
+    //Called once to build the class
     public async run() {
-      this.setContent();
-      
-      //this.parentPortalOpen();
-      //this.parentPortalClose();
-      setInterval(this.checkBedtime, 1000*10);
-      setInterval(this.collectPreferences, 1000*5);
+      //Launcher.instance().updateparentalInfo();
+      Launcher.instance().collectPreferences();
     }
 
-    public async checkBedtime(){
-      if(Launcher.instance().bedTime != null){
-        let date = new Date();
-        let hours = date.getHours();
-        let minutes = date.getMinutes();
-        let hoursString = (hours as unknown as string), minutesString = (minutes as unknown as string);
-        if(hours < 10){
-          hoursString = "0" + (hours as unknown as string);
-        }
-        if(minutes < 10){
-          minutesString = "0" + (minutes as unknown as string);
-        }
-        let localBedTime = hoursString + ":" + minutesString;
-        document.getElementById("test_message").innerHTML = "betime is: " + Launcher.instance().bedTime + "and current time is: " + date.toLocaleTimeString();
-        if(Launcher.instance().bedTime > localBedTime){
-          document.getElementById("test_message3").innerHTML = "It is not your bedtime yet. " + Launcher.instance().bedTime + " > " + localBedTime;
-        }else{
-          document.getElementById("test_message3").innerHTML = "It is bedtime, time to stop playing."  + Launcher.instance().bedTime + " !> " + localBedTime;
-          //Launcher.instance().sendBedtimeMessage();
-        }
-        
+    // private async updateparentalInfo(){
+    //   await Launcher.instance().collectPreferences();
+    //   let currentTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12:false});
+    //   document.getElementById("test_message").innerHTML += currentTime + " vs. "; //+ Launcher.instance().parentPreferenes["bedTimeRule"] +" ";
+    //   document.getElementById("test_message2").innerHTML +=Launcher.instance().parentPreferenes;
+    //   let timeLeft;
+    // }
+
+    //Writes the cellNum ino cell_number.json. Then sends the cellNum to remote. Then completes intialization and sets the launcher page back to normal functionality.
+    public async submitCellNum(){
+      var regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+      let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
+      if(!regex.test(myData["cellNum"])){
+        document.getElementById("cellInputFeedback").innerHTML = "Invalid cellphone # format!";
+        return;
       }
-      //document.getElementById("test_message").innerHTML += "bedtime null";
-    }
 
-    private sendBedtimeMessage(){
-      let messageData = {cellNum: "69"};
-      let serverAction = "bedtime-message";  //
-      let remoteServer = "http://" +  this.remoteAddress + ":5000/" + serverAction;
+      await Launcher.instance().writeFile(JSON.stringify(myData), `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+
+      let serverAction = "insert-cellNum";
+      let remoteServer = "https://" +  Launcher.instance().remoteAddress + ":5001/" + serverAction;
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open("POST", remoteServer, true);
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
-      xmlHttp.send(JSON.stringify(messageData));
-  
-      xmlHttp.onreadystatechange = function () {
-        if (this.readyState != 4) return;
-        if (this.status == 200) {
-          var response = (this.responseText); // we get the returned data
-          //document.getElementById("test_message").innerHTML = "reponse from /upload-game-data = " + response;
-          //console.log("reponse from /send-message1 = " + response);
-        }
-        // end of state change: it can be after some time (async)
-      };
+      xmlHttp.send(JSON.stringify(myData));
+
+      // xmlHttp.onreadystatechange = function () {
+      //   if (this.readyState != 4) return;
+      //   if (this.status == 200) {
+      //     var parsed = JSON.parse(this.responseText);
+      //     document.getElementById("test_message2").innerHTML += " insert-cellNum response = " + parsed;
+      //   }
+      // };
+
+      document.getElementById("main").style.display = "inherit";
+      document.getElementById("cellDisplay").style.display = "inherit";
+      document.getElementById("initalization").style.display = "none";
+
+      Launcher.instance().setContent();
+      setInterval(Launcher.instance().setContent, 1000*60);
+
+      //Launcher.instance().collectPreferences();
+      //setInterval(Launcher.instance().checkBedtime, 1000*2);
+      //setInterval(Launcher.instance().collectPreferences, 1000*2);
+
+      Launcher.instance().displayCellNum();
     }
 
 
-    //Sets all message content from the bus
+    private async sendBedtimeMessage(){
+      let messageData = await Launcher.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      let serverAction = "bedtime-message";
+      let remoteServer = "https://" +  this.remoteAddress + ":5001/" + serverAction;
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("POST", remoteServer, true);
+      xmlHttp.setRequestHeader('Content-Type', 'application/json');
+      xmlHttp.send(messageData);
+      // xmlHttp.onreadystatechange = function(){
+      //   if (this.readyState != 4) return; //---------What is response code '4'?--------------------------------------------||
+      //   if (this.status == 200) {
+      //     var response = (this.responseText); // we get the returned data
+      //   }
+      // };
+    }
+
+
+    //Initially set all messages from bus(background.html)
     public setContent(){
-      this.mainWindowObject = overwolf.windows.getMainWindow(); //Gets the HTML Object of the main window for messaging
+      let mainWindowObject = overwolf.windows.getMainWindow(); //Gets the HTML Object of the main window for messaging
+      document.getElementById("primary_message").innerHTML = mainWindowObject.document.getElementById("primary_message").innerHTML;
+      if(document.getElementById("primary_message").innerHTML.indexOf("localTime") != -1){
+        let time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        let collection = document.getElementsByClassName("localTime");
+        for (let i = 0; i < collection.length; i++) {
+          collection[i].innerHTML = time;
+        }
+      }
 
-      let primary_message: string = this.mainWindowObject.document.getElementById("primary_message").innerHTML; //collect the primary_message
-      document.getElementById("primary_message").innerHTML = primary_message;                                   //Update HTML document
-      let time_message: string = this.mainWindowObject.document.getElementById("time_message").innerHTML;
-      document.getElementById("time_played").innerHTML = time_message;
-      let test_message: string = this.mainWindowObject.document.getElementById("test_message").innerHTML;
-      document.getElementById("test_message").innerHTML = test_message;
-      let currentGameSessionLength: string = this.mainWindowObject.document.getElementById("currentGameSessionLength").innerHTML;
-      document.getElementById("currentGameSessionLength").innerHTML = currentGameSessionLength;
+      document.getElementById("minimizeButton").innerHTML = mainWindowObject.document.getElementById("dismiss_message").innerHTML;
+
+      if(document.getElementById("test_message").innerHTML.indexOf(mainWindowObject.document.getElementById("test_message").innerHTML) == -1){
+        document.getElementById("test_message").innerHTML += mainWindowObject.document.getElementById("test_message").innerHTML;
+      }
+      if(document.getElementById("test_message2").innerHTML.indexOf(mainWindowObject.document.getElementById("test_message2").innerHTML) == -1){
+        document.getElementById("test_message2").innerHTML += mainWindowObject.document.getElementById("test_message2").innerHTML;
+      }
+      if(document.getElementById("test_message3").innerHTML.indexOf(mainWindowObject.document.getElementById("test_message3").innerHTML) == -1){
+        document.getElementById("test_message3").innerHTML += mainWindowObject.document.getElementById("test_message3").innerHTML;
+      }
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // public parentPortalOpen(){
-    //   document.getElementById("parentPortalItems").classList.toggle("show");
-    // }
 
-    //Closes the parent portal, updates locally stored settings, updates remote settings
-    // public parentPortalClose(){
-    //   window.onclick = async function(event) {
-    //     if (!event.target.matches('.parentdd')) {
-    //       var elements = document.getElementsByClassName("parentPortalItems");
-    //       var i;
-    //       for (i = 0; i < elements.length; i++) {
-    //         var openDropdown = elements[i];
-    //         if (openDropdown.classList.contains('show')) {
-    //           openDropdown.classList.remove('show');
-    //         }
-    //       }
-    //     let preferencesData = await Launcher.instance().readFileData(`${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
-    //     let preferences = JSON.parse(preferencesData);
-    //     preferences["cellNum"] = 69;
-    //     preferences["timeLimitRule"] = (document.getElementById("timeLimitRule") as HTMLInputElement).value;
-    //     preferences["bedTimeRule"] = (document.getElementById("bedTimeRule") as HTMLInputElement).value;
-    //     preferences["gameLimitRule"] = (document.getElementById("gameLimitRule") as HTMLInputElement).value;
-    //     (document.getElementById("timeLimitToggle") as HTMLFormElement).checked ? preferences["timeLimitToggle"] = true : preferences["timeLimitToggle"] = false;
-    //     (document.getElementById("bedTimeToggle") as HTMLFormElement).checked ? preferences["bedTimeToggle"] = true : preferences["bedTimeToggle"] = false;
-    //     (document.getElementById("gameLimitToggle") as HTMLFormElement).checked ? preferences["gameLimitToggle"] = true : preferences["gameLimitToggle"] = false;
-    //     (document.getElementById("dailyDigestToggle") as HTMLFormElement).checked ? preferences["dailyDigestToggle"] = true : preferences["dailyDigestToggle"] = false;
-    //     (document.getElementById("weeklyDigestToggle") as HTMLFormElement).checked ? preferences["weeklyDigestToggle"] = true : preferences["weeklyDigestToggle"] = false;
-    //     (document.getElementById("monthyDigestToggle") as HTMLFormElement).checked ? preferences["monthyDigestToggle"] = true : preferences["monthyDigestToggle"] = false;
-    //     Launcher.instance().writeFile(JSON.stringify(preferences), `${overwolf.io.paths.documents}\\GitHub\\Capstone-repo\\Overwolf-App\\ts\\src\\parentPreferences.json`);
-        
-    //     //Update remote server
-    //     // let serverAction = "update-settings";
-    //     // let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
-    //     // var xmlHttp = new XMLHttpRequest();
-    //     // xmlHttp.open("POST", remoteServer, true);
-    //     // xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    //     // xmlHttp.send(JSON.stringify(preferences));
-
-    //     //document.getElementById("test_message").innerHTML = "Message sent(/update-settings): " + JSON.stringify(preferences);  //For debugging
-    //     //document.getElementById("test_message").innerHTML = "bedLimitRule: " + JSON.stringify(preferences["bedTimeRule"]);  //For debugging
-    //     }
-    //   }
-    // }
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Collect parental preferences at an interval
     private async collectPreferences(){
-      var sendData = {cellNum:"0"};
-      sendData["cellNum"] = "69";
+      //document.getElementById("test_message3").innerHTML += "Collecting preferneces" + new Date();
+      let result = await Launcher.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      if(result == null){
+        if (document.getElementById("test_message2").innerHTML.indexOf("cell_number.json does not exist") == -1){
+          document.getElementById("test_message2").innerHTML += "cell_number.json does not exist";
+        }
+        return
+      }
+      var sendData = {cellNum:JSON.parse(result)["cellNum"]};
 
-      //let remoteAddress = "ec2-35-183-27-150.ca-central-1.compute.amazonaws.com";
       let serverAction = "get-settings";
-      let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
+      let remoteServer = "https://" +  Launcher.instance().remoteAddress + ":5001/" + serverAction;
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open("POST", remoteServer, true);
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
@@ -166,45 +169,101 @@ class Launcher extends AppWindow {
       xmlHttp.onreadystatechange = function () {
         if (this.readyState != 4) return;
         if (this.status == 200) {
-          var response = (this.responseText); // we get the returned data
-          var parsed = JSON.parse(response);
-          //document.getElementById("test_message").innerHTML += "Your bedtime is: " + parsed["bedTimeRule"];
-          Launcher.instance().bedTime = parsed["bedTimeRule"];
-          //document.getElementById("test_message").innerHTML += "its set to: " + Launcher.instance().bedTime;
+          var parsed = JSON.parse(this.responseText);
+          Launcher.instance().parentPreferenes = parsed;
+          //document.getElementById("test_message2").innerHTML += JSON.stringify(Launcher.instance().parentPreferenes);
+          let currentTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12:false});
+          document.getElementById("test_message").innerHTML += currentTime + " vs. " + Launcher.instance().parentPreferenes["bedTimeRule"];
+          let hoursLeft = parseInt(Launcher.instance().parentPreferenes["bedTimeRule"]) - parseInt(currentTime);
+          let minutesLeft = parseInt(Launcher.instance().parentPreferenes["bedTimeRule"].substring(Launcher.instance().parentPreferenes["bedTimeRule"].indexOf(":")+1)) - parseInt(currentTime.substring(currentTime.indexOf(":")+1));
+          document.getElementById("test_message2").innerHTML += "Hours left " + hoursLeft + "minutes elft " + minutesLeft;
+          
+          if (minutesLeft < 0){
+            hoursLeft -= 1;
+            minutesLeft += 60;
+          }
+          let timeLeft = "Time left: " + hoursLeft + ":" + minutesLeft;
+          document.getElementById("test_message3").innerHTML = timeLeft;
         }
-        // end of state change: it can be after some time (async)
+        return;
       };
     }
 
-  //Testing function for remote server connections
-  private async twilio(){
-    let serverAction = "test-sms";  //test-sms
-    let remoteServer = "http://" +  Launcher.instance().remoteAddress + ":5000/" + serverAction;
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", remoteServer, true ); // false for synchronous request
-    xmlHttp.send( null );
+    //Check if bedtime rule is violated on an interval, display appropriate message, notify parent.
+    // public async checkBedtime(){
+    //   if(Launcher.instance().parentPreferenes == null){
+    //     if (document.getElementById("test_message2").innerHTML.indexOf("ParentPrefecnes is not set") == -1){
+    //       document.getElementById("test_message2").innerHTML += "ParentPrefecnes is not set";
+    //     }
+    //     return;
+    //   }
+    //   if(Launcher.instance().parentPreferenes["bedTimeRule"] != null){
+    //     let date = new Date();
+    //     let hours = date.getHours();
+    //     let minutes = date.getMinutes();
+    //     let bedtimeHours = parseInt(Launcher.instance().parentPreferenes["bedTimeRule"]);
+    //     let bedtimeMinutes = parseInt(Launcher.instance().parentPreferenes["bedTimeRule"].substring(3, 5))
 
-    xmlHttp.onreadystatechange = function () {
-      if (this.readyState != 4) return;
-      if (this.status == 200) {
-        var response = (this.responseText); // we get the returned data
-        document.getElementById("test_message").innerHTML = "reponse = " + response;
-      }
-      // end of state change: it can be after some time (async)
-    };
-  }
+    //     let hourDiff = bedtimeHours - hours;
+    //     let minuteDiff = bedtimeMinutes - minutes;
+    //     let diff = (hourDiff*60) + minuteDiff;
 
-  private async readFileData(file_path:string){
-    const result = await new Promise(resolve => {
-      overwolf.io.readFileContents(
-        file_path,
-        overwolf.io.enums.eEncoding.UTF8,
-        resolve
-      );
-    }); //returns result["success"] + ", " + result["content"] + ", " +  result["error"]
-    //console.log("readFileData()", result["success"] + ", " + result["content"] + ", " +  result["error"]);
-    return result["content"];
-  }
+    //     let AmPm = "am";
+    //     if (hours == 12){
+    //       AmPm = "pm";
+    //     }
+    //     if(hours > 12){
+    //       hours -= 12;
+    //       AmPm = "pm";
+    //     }
+    //     let hoursString: string = hours.toString();
+    //     let minutesString: string = minutes.toString();
+    //     if(minutesString.length == 1){
+    //       minutesString = "0" + minutesString;
+    //     }
+    //     let localTime = hoursString + ":" + minutesString + AmPm;
+
+    //     let myMessage = "";
+    //     let mainWindowObject = overwolf.windows.getMainWindow();
+    //     if(diff < 60 && diff >=45){
+    //       myMessage = "You have time for about 2 more games.";
+    //     }else if(diff < 45 && diff >=20){
+    //       myMessage = "You have time for one last game.";
+    //     }else if(diff < 20 && diff >=5){
+    //       myMessage = "You dont have enough time to play a game before bedtime."; //Playing a game will put you past your bedtime?
+    //     }else if(diff < 5 && diff >=-5){
+    //       myMessage = "Its time to stop playing and say good night.";
+    //       if(diff<0){
+    //         myMessage += " You are" + -diff + " minutes past your bedtime";
+    //       }
+    //     }
+    //     document.getElementById("secondary_message").innerHTML = myMessage;   //send the secondary message
+        
+    //     if(diff < -5){  //it is past your betime.
+    //       document.getElementById("primary_message").innerHTML = "It is <span class='urgentText'>past your bedtime</span>, time to stop playing. <br/><br/>The time is: <span class='urgentText'>"  + localTime + " </span>";
+    //       document.getElementById("minimizeButton").innerHTML = "See You Tomorrow";
+    //       if (mainWindowObject.document.getElementById("attributes").getAttribute('bedTimeMessage') != 'true') {
+    //         mainWindowObject.document.getElementById("attributes").setAttribute('bedTimeMessage', 'true');
+    //         //Launcher.instance().sendBedtimeMessage(); //<--------------------------------- sending bedtime text message
+    //       }
+    //     }else{  //It is not past your bedtime
+    //       document.getElementById("minimizeButton").innerHTML = "Back to Game";//-----------staticly sets it to "back to game"
+    //       Launcher.instance().setContent();
+    //     }
+    //   }
+    // }
+
+  
+    private async readFileData(file_path:string){
+      const result = await new Promise(resolve => {
+        overwolf.io.readFileContents(
+          file_path,
+          overwolf.io.enums.eEncoding.UTF8,
+          resolve
+        );
+      });
+      return result["content"];
+    }
 
     //Writes data into a file specified in file_path, returns the result
     private async writeFile(data:string, file_path:string){
@@ -217,16 +276,7 @@ class Launcher extends AppWindow {
           r => r.success ? resolve(r) : reject(r)
         );
       });
-      //console.log('writeFile()', result);
       return result;
     }
-
-    // private async clickSmiley(){
-    //   document.getElementById("smilies").style.display = "none";
-    //   document.getElementById("smiley_title").style.display = "none";
-    //   document.getElementById("content").style.display = "inherit";
-    //   document.getElementById("broad_message").style.display = "inherit";
-    //   Launcher.instance().setContent();     //?? idk it should be this.setContent() but that doesnt work so we access it from the Launcher class
-    // }
 }  
 Launcher.instance().run();
