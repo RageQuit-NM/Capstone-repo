@@ -8,7 +8,9 @@ var schedule = require('node-schedule');
 var app = express();  
 
 var dailyDigestJob = schedule.scheduleJob('* 21 * * *', function(){
+  console.log("Running daily digest job");
   dailyDigest();
+  console.log("---");
 });
 
 var options = {
