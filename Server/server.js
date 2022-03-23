@@ -695,7 +695,7 @@ async function dailyDigest(){
 }
 
 //Function to test digest distribution
-app.post('/test-daily-digest', async function(req, res){
+app.get('/test-daily-digest', async function(req, res){
   console.log("Running daily digest generator");
   var run = await dailyDigest();
   console.log("---");
