@@ -671,7 +671,7 @@ async function dailyDigest(){
     } else {
       body = body + "Wins: " + wins + "\n";
       body = body + "Games Played: " + gamesPlayed + "\n";
-      body = body + "Time Played: " + playTime + "\n";
+      body = body + "Time Played: " + timePlayed + "\n";
       body = body + "Time Stopped: " + timeStopped+ "\n";
       if(violations != null){//TEST THIS PARTXXXXXXXXXXXXXXXXXXXXXXXXXXX
         body = body + "Rule Violations: " + "\n";
