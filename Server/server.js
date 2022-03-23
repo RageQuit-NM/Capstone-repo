@@ -4,35 +4,24 @@ var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 var fs = require('fs');
 var express = require('express');  
+var schedule = require('node-schedule');
 var app = express();  
+
+var dailyDigestJob = schedule.scheduleJob('* 21 * * *', function(){
+  dailyDigest();
+});
 
 var options = {
   key: fs.readFileSync('client-key.pem'),
   cert: fs.readFileSync('client-cert.pem')
 };
 
-// const { json } = require('body-parser');
-// const { kill } = require('process');
-// const { time } = require('console');
-
 app.use(express.json());//So JSON data can be parsed from HTTP URL
 app.use(express.static(__dirname+'/public'));//to know where the website assets live
-
-// var http = require('http');
-// http.createServer(app).listen(5000);             //HTTP service
-// console.log('Node.js HTTP web server at port 5000 is running..');
 
 var https = require('https');
 https.createServer(options, app).listen(5001);  //HTTPS service
 console.log('Node.js HTTPS web server at port 5001 is running..');
-
-//httpServer.listen(5000);
-//httpsServer.listen(5001);
-
-//listen for requests on port 5000
-// app.listen(5000, function(){
-//   console.log('Node.js web server at port 5000 is running..');
-// }); 
 
 
 //********************************************GET Requests*************************************************
