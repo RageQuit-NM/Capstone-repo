@@ -4,10 +4,10 @@ var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 var fs = require('fs');
 var express = require('express');  
-var schedule = require('node-schedule');
 var app = express();  
 
-var dailyDigestJob = schedule.scheduleJob('* 21 * * *', function(){
+var schedule = require('node-schedule');
+var dailyDigestJob = schedule.scheduleJob('* * 21 * * *', function(){
   console.log("Running daily digest job");
   dailyDigest();
   console.log("---");
