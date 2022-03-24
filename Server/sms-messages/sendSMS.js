@@ -10,9 +10,9 @@ process.on("message", function (message) {
     var body = message["body"];
 
     client.messages.create({
-     body: body + " " + cellNum,
+     body: body,
      from: '+13069850604',
-     to: '+13066202479'
+     to: '+1' + cellNum
    })
     .then(message => console.log(message.sid));
 
