@@ -365,7 +365,7 @@ app.post('/get-message', async function(req, res){
   else {query = { messageID: "welcomeback" }; }
  
   res.send(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
-  console.log("Overwolf message sent" + query);
+  console.log("Overwolf message sent" + JSON.stringify(query));
 
   console.log("---");
   return;

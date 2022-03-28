@@ -84,10 +84,10 @@ class BackgroundController {
   private async sendMessageToLauncher(){
     if(document.getElementById("attributes").getAttribute('cellNumSet') == "true"){
       console.log("sending message with cellNumSet=" + document.getElementById("attributes").getAttribute('cellNumSet'));
-      let cellNumString = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+      let cellNumString = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
 
       let serverAction = "get-message";
-      let remoteServer = "https://" +  this.remoteAddress + ":5001/" + serverAction;
+      let remoteServer = "https://" +  BackgroundController.instance().remoteAddress + ":5001/" + serverAction;
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open("POST", remoteServer, true);
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
@@ -111,14 +111,14 @@ class BackgroundController {
   //Called when a games ends. Sends all data in game_data.json, along with a cellnum and a timeStamp to /upload-game-data
   private async sendGameInfoToRemote(){
     //console.log("Sending Game info to remote");
-    let fileData = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
+    let fileData = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
     if (fileData == null){
       document.getElementById("test_message").innerHTML += "Couldnt collect info from game_data.json (sendGameInfoToRemote)";
       return;
     }
     let gameData = JSON.parse(fileData);
 
-    let result = await this.readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+    let result = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
     if(result == null){
       console.log("setParentPrefences(); cell num not set");
       return;
