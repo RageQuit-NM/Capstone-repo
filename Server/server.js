@@ -530,6 +530,7 @@ async function logViolation(cellNum, violation, timeStamp) {
 
 //Send a rule violation sms to parent
 async function ruleSMS(cellNum, body, rule) {
+  var query = { cellNum: cellNum};
   var parentPreferences = await findOne(query, "user_data");
   if(parentPreferences[rule] == "true"){
     sendSMS(cellNum, body);

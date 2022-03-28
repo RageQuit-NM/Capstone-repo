@@ -37,7 +37,9 @@ class BackgroundController {
     var observer = new MutationObserver(function(){
         if(attributes.getAttribute('cellNumSet') == 'true'){
           BackgroundController.instance().sendMessageToLauncher();
-          BackgroundController.instance().messageInterval = setInterval(BackgroundController.instance().sendMessageToLauncher, 1000*5);
+          if (BackgroundController.instance().messageInterval == null){
+            BackgroundController.instance().messageInterval = setInterval(BackgroundController.instance().sendMessageToLauncher, 1000*5);
+          }
         }
     });
     observer.observe(attributes, { attributes: true, childList: true });
