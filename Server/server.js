@@ -6,33 +6,24 @@ var fs = require('fs');
 var express = require('express');  
 var app = express();  
 
+var schedule = require('node-schedule');
+var dailyDigestJob = schedule.scheduleJob('* * 21 * * *', function(){
+  console.log("Running daily digest job");
+  dailyDigest();
+  console.log("---");
+});
+
 var options = {
   key: fs.readFileSync('client-key.pem'),
   cert: fs.readFileSync('client-cert.pem')
 };
 
-// const { json } = require('body-parser');
-// const { kill } = require('process');
-// const { time } = require('console');
-
 app.use(express.json());//So JSON data can be parsed from HTTP URL
 app.use(express.static(__dirname+'/public'));//to know where the website assets live
-
-// var http = require('http');
-// http.createServer(app).listen(5000);             //HTTP service
-// console.log('Node.js HTTP web server at port 5000 is running..');
 
 var https = require('https');
 https.createServer(options, app).listen(5001);  //HTTPS service
 console.log('Node.js HTTPS web server at port 5001 is running..');
-
-//httpServer.listen(5000);
-//httpsServer.listen(5001);
-
-//listen for requests on port 5000
-// app.listen(5000, function(){
-//   console.log('Node.js web server at port 5000 is running..');
-// }); 
 
 
 //********************************************GET Requests*************************************************
@@ -536,17 +527,25 @@ async function logViolation(cellNum, violation, timeStamp) {
 
 //Send a rule violation sms to parent
 async function ruleSMS(cellNum, body, rule) {
-  var query = {cellNum: cellNum};
   var parentPreferences = await findOne(query, "user_data");
-  var message = { cellNum: cellNum, body: body};
-
   if(parentPreferences[rule] == "true"){
-    var smsScript = childProcess.fork('./sms-messages/sendSMS.js');
-    smsScript.send(message);
-    console.log("ruleSMS sent: " + JSON.stringify(message));
+    sendSMS(cellNum, body);
+    console.log("ruleSMS sent");
   }else{
     console.log("ruleSMS not sent: " + rule + " " + parentPreferences[rule]);
   }
+  console.log("---");
+}
+
+
+//Send an sms
+async function sendSMS(cellNum, body) {
+  var query = {cellNum: cellNum};
+  var message = { cellNum: cellNum, body: body};
+  var smsScript = childProcess.fork('./sms-messages/sendSMS.js');
+  smsScript.send(message);
+
+  console.log("SMS sent: " + JSON.stringify(message));
   console.log("---");
 }
 
@@ -609,11 +608,12 @@ async function dailyDigest(){
   var cellNum;    //cellNum of current subscriber
   var wins;       //number of wins of current subscriber
   var gamesPlayed;//number of games played
+  var winLossRatio;//Win/loss ratio
   var timePlayed; //time played today
   var timeStopped;//timestamp of last game
   var games;      //total number of games played today
   var violations; //list of violations incurred today by user
-  var body;        //Final message to be sent out (The final digest)
+  var body;       //Final message to be sent out (The final digest)
 
   for (i in dailyDigestSubscribers) {
     cellNum=dailyDigestSubscribers[i]["cellNum"];
@@ -632,9 +632,17 @@ async function dailyDigest(){
     }
     console.log("games are: " + JSON.stringify(games));
     
-    //Get win/loss ratio________________________________________________________________________
+    //Get wins_________________________________________________________________________________
     wins = await sumBools("win", games);
     console.log("Wins is: " + wins);
+
+    //Games Played_____________________________________________________________________________
+    gamesPlayed = games.length;
+    console.log("Games played is: " + gamesPlayed);
+
+    //Get win/loss ratio_______________________________________________________________________
+    winLossRatio = ratio(wins, gamesPlayed);
+    console.log("KDR is: " + winLossRatio);
 
     //Rule violations___________________________________________________________________________
     query = { cellNum: cellNum, timeStamp: new RegExp(date.toString()), violation: { $ne:null } };
@@ -648,10 +656,6 @@ async function dailyDigest(){
       console.log("ERROR: NULL RESULT");
     }
     console.log("Violations are: " + JSON.stringify(violations));
-     
-    //Games Played_____________________________________________________________________________
-    gamesPlayed = games.length;
-    console.log("Games played is: " + gamesPlayed);
 
     //Play Time (minutes)______________________________________________________________________
     timePlayed = await sumField("game_time", games);
@@ -671,9 +675,19 @@ async function dailyDigest(){
     if(gamesPlayed == 0 || gamesPlayed == null) {
       body = body + "No Activity Today.";
     } else {
-
-
+      body = body + "Wins: " + wins + "\n";
+      body = body + "Games Played: " + gamesPlayed + "\n";
+      body = body + "Time Played: " + timePlayed + "\n";
+      body = body + "Time Stopped: " + timeStopped+ "\n";
+      if(violations != null){//TEST THIS PARTXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        body = body + "Rule Violations: " + "\n";
+        for (i in violations) {
+          body = body + i + ". " + violations[i]["violation"] + "\n";
+        }
+      }
+      body = body + "Remember to encourage them, let them know they're awesome!";
     }
+    await sendSMS(cellNum, body);
   }
 }
 
