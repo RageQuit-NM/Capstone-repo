@@ -290,7 +290,7 @@ app.post('/get-message', async function(req, res){
   } catch (error){
     console.log(error);
   }
-  if(latestGameDate == null || typeof latestGameDate == 'undefined' || latestGameDate[0] == null){//If there are no games found, return default message
+  if(latestGameDate != null || typeof latestGameDate != 'undefined' || latestGameDate[0] != null){//If there are no games found, return default message
     // console.log("ERROR: NULL RESULT " + typeof latestGameDate);
     // query = { messageID: "welcomeback" };
     // console.log(JSON.stringify(query));
