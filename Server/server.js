@@ -294,8 +294,8 @@ app.post('/get-message', async function(req, res){
     console.log("ERROR: NULL RESULT " + typeof latestGameDate);
     query = { messageID: "welcomeback" };
     console.log(JSON.stringify(query));
-    console.log(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
-    res.send(JSON.stringify(findOne(query, "app_messages", "growing_gamers")));
+    console.log(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
+    res.send(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
 
     console.log("---");
     return;
