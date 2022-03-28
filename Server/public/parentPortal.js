@@ -15,7 +15,7 @@ checkIfVerified();
 
 function showInit(){
   //dislay the First enter cell number field
-  // hide the rest of the page
+  //hide the rest of the page
 }
 
 
@@ -435,11 +435,12 @@ function checkCookie() {
 //Set the cookie with an expiration date of t + 1 year
 function setCookie(paramName, value, paramName2="", value2="") {
   //Create expiration date
-  var expiration_date = new Date();
-  expiration_date.setFullYear(expiration_date.getFullYear() + 1);
+  //var expiration_date = new Date();
+  //expiration_date.setFullYear(expiration_date.getFullYear() + 1);
+  //document.cookie = params + "; path=/; expires=" + expiration_date.toUTCString();
   //Create/update cookie
   params = "values=" + JSON.stringify({"cellNum":value, "code":value2});
-  document.cookie = params + "; path=/; expires=" + expiration_date.toUTCString();
+  document.cookie = params + "; path=/;";
   console.log("Set to: " + document.cookie);
 
 }

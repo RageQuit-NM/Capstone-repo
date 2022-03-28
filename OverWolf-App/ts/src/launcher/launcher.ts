@@ -14,15 +14,16 @@ class Launcher extends AppWindow {
        
         (document.getElementById("parent_portal_link") as HTMLAnchorElement).href="https://" + this.remoteAddress + ":5001/parentPortal";
         document.getElementById("submitCellNum").addEventListener("click", this.submitCellNum);
+        document.getElementById("submitCode").addEventListener("click", this.submitCode);
 
-        if(overwolf.windows.getMainWindow().document.getElementById("isCellNumSet").innerHTML == "false"){
+        if(overwolf.windows.getMainWindow().document.getElementById('attributes').getAttribute('cellNumSet') != "true"){
           document.getElementById("main").style.display = "none";
           document.getElementById("initalization").style.display = "inline";
         }else{
           document.getElementById("initalization").style.display = "none";
 
           Launcher.instance().setContent();
-          setInterval(Launcher.instance().setContent, 1000*60);
+          setInterval(Launcher.instance().setContent, 1000*2);
 
           //Launcher.instance().collectPreferences();
           //setInterval(Launcher.instance().checkBedtime, 1000*2);
@@ -63,24 +64,83 @@ class Launcher extends AppWindow {
     //   let timeLeft;
     // }
 
-    //Writes the cellNum ino cell_number.json. Then sends the cellNum to remote. Then completes intialization and sets the launcher page back to normal functionality.
     public async submitCellNum(){
+      var cellNum = (document.getElementById("cellInput") as HTMLInputElement).value;
+      var sendData = {cellNum:cellNum};
+
       var regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-      let myData = {cellNum: (document.getElementById("cellInput") as HTMLInputElement).value}
-      if(!regex.test(myData["cellNum"])){
+      if(!regex.test(cellNum)){
         document.getElementById("cellInputFeedback").innerHTML = "Invalid cellphone # format!";
         return;
       }
-
-      await Launcher.instance().writeFile(JSON.stringify(myData), `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
-
-      let serverAction = "insert-cellNum";
+    
+      let serverAction = "send-code";
       let remoteServer = "https://" +  Launcher.instance().remoteAddress + ":5001/" + serverAction;
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.open("POST", remoteServer, true);
       xmlHttp.setRequestHeader('Content-Type', 'application/json');
-      xmlHttp.send(JSON.stringify(myData));
+      xmlHttp.send(JSON.stringify(sendData));
+    
+      xmlHttp.onreadystatechange = function () {
+        if (this.readyState != 4) return;
+        if (this.status == 200) {
+          var response = (this.responseText); // we get the returned data
+          //Open up the verify code option
+        }
+      };
+    }
 
+
+
+    //Writes the cellNum ino cell_number.json. Then sends the cellNum to remote. Then completes intialization and sets the launcher page back to normal functionality.
+    public async submitCode(){
+      var code = (document.getElementById("codeInput") as HTMLInputElement).value;
+      var cellNum = (document.getElementById("cellInput") as HTMLInputElement).value;
+      var sendData = {cellNum:cellNum, code:code};
+      console.log("Checking if valid: " + JSON.stringify(sendData));
+    
+      let serverActionVerify = "verify-code";
+      let remoteServerVerify = "https://" +  Launcher.instance().remoteAddress + ":5001/" + serverActionVerify;
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("POST", remoteServerVerify, true);
+      xmlHttp.setRequestHeader('Content-Type', 'application/json');
+      xmlHttp.send(JSON.stringify(sendData));
+    
+      xmlHttp.onreadystatechange = async function () {
+        if (this.readyState != 4) return;
+        if (this.status == 200) {
+          var response = (this.responseText); // we get the returned data
+          document.getElementById("test_message").innerHTML += response;
+  
+          if(response == "VAILD_CODE"){
+            let userCellNum = {cellNum:cellNum};
+            await Launcher.instance().writeFile(JSON.stringify(userCellNum), `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
+            overwolf.windows.getMainWindow().document.getElementById('attributes').setAttribute('cellNumSet', "true");
+            let serverAction = "insert-cellNum";
+            let remoteServer = "https://" +  Launcher.instance().remoteAddress + ":5001/" + serverAction;
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("POST", remoteServer, true);
+            xmlHttp.setRequestHeader('Content-Type', 'application/json');
+            xmlHttp.send(JSON.stringify(userCellNum));
+
+            document.getElementById("main").style.display = "inherit";
+            document.getElementById("cellDisplay").style.display = "inherit";
+            document.getElementById("initalization").style.display = "none";
+
+            Launcher.instance().setContent();
+            setInterval(Launcher.instance().setContent, 1000*2);
+            Launcher.instance().displayCellNum();
+
+            console.log("VAILD_CODE");
+            console.log("verifyCode() building page")
+            return true;
+          }else{
+            document.getElementById("codeInputFeedback").innerHTML += "Incorrect code."; 
+            return false;
+          }
+        }
+      };
+    
       // xmlHttp.onreadystatechange = function () {
       //   if (this.readyState != 4) return;
       //   if (this.status == 200) {
@@ -89,18 +149,6 @@ class Launcher extends AppWindow {
       //   }
       // };
 
-      document.getElementById("main").style.display = "inherit";
-      document.getElementById("cellDisplay").style.display = "inherit";
-      document.getElementById("initalization").style.display = "none";
-
-      Launcher.instance().setContent();
-      setInterval(Launcher.instance().setContent, 1000*60);
-
-      //Launcher.instance().collectPreferences();
-      //setInterval(Launcher.instance().checkBedtime, 1000*2);
-      //setInterval(Launcher.instance().collectPreferences, 1000*2);
-
-      Launcher.instance().displayCellNum();
     }
 
 
