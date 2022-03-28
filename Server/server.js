@@ -291,57 +291,58 @@ app.post('/get-message', async function(req, res){
     console.log(error);
   }
   if(latestGameDate == null || typeof latestGameDate == 'undefined' || latestGameDate[0] == null){//If there are no games found, return default message
-    console.log("ERROR: NULL RESULT " + typeof latestGameDate);
-    query = { messageID: "welcomeback" };
-    console.log(JSON.stringify(query));
-    console.log(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
-    res.send(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
+    // console.log("ERROR: NULL RESULT " + typeof latestGameDate);
+    // query = { messageID: "welcomeback" };
+    // console.log(JSON.stringify(query));
+    // //console.log(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
+    // res.send(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
 
-    console.log("---");
-    return;
-  }
-  console.log("Single Element List: " + JSON.stringify(latestGameDate));
-  latestGameDate = latestGameDate[0]["timeStamp"].substring(0, latestGameDate[0]["timeStamp"].indexOf(","));
-  console.log("Latest Game Date is: " + latestGameDate);
-  //find all games played on the most recent date
-  query = { cellNum: req.body["cellNum"], timeStamp: new RegExp(latestGameDate) };
-  console.log("query is: " +  JSON.stringify(query));
-  var games;
-  try {
-    games = await sort(query, sortCriteria, "player_records", "growing_gamers");
-  } catch (error){
-    console.log(error);
-  }
-  if(games == null){
-    console.log("ERROR: NULL RESULT");
-  }
-  // console.log("Sorted List: " + JSON.stringify(games));
-
-
-  //3. Check if the bedtime rule is violated__________________________________________
-  query = { cellNum: req.body["cellNum"] };
-  var rules = await findOne(query, "user_data", "growing_gamers");
-  // console.log("The rules are: \n" + JSON.stringify(rules));
-  var bedTimeViolation = await isBedTimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+1).trim());
-  console.log("BedTime Violation Status: " + bedTimeViolation);
-  // console.log("cellNum is: " + query["cellNum"]);
-  if(bedTimeViolation == "VIOLATION") { await logViolation(query["cellNum"], "bedTimeViolation", games[0]["timeStamp"]); }
-
+    // console.log("---");
+    // return;
   
-  //4. Check if playTime rule is violated_____________________________________________
-  var playTime = await sumField("game_time", games);
-  var playTimeViolation = await isPlayTimeViolated(parseInt(rules["timeLimitRule"])*60, playTime)
-  console.log("PlayTime Violation Status: " + playTimeViolation);
+    console.log("Single Element List: " + JSON.stringify(latestGameDate));
+    latestGameDate = latestGameDate[0]["timeStamp"].substring(0, latestGameDate[0]["timeStamp"].indexOf(","));
+    console.log("Latest Game Date is: " + latestGameDate);
+    //find all games played on the most recent date
+    query = { cellNum: req.body["cellNum"], timeStamp: new RegExp(latestGameDate) };
+    console.log("query is: " +  JSON.stringify(query));
+    var games;
+    try {
+      games = await sort(query, sortCriteria, "player_records", "growing_gamers");
+    } catch (error){
+      console.log(error);
+    }
+    if(games == null){
+      console.log("ERROR: NULL RESULT");
+    }
+    // console.log("Sorted List: " + JSON.stringify(games));
 
 
-  //5. Check if gameLimit rule is violated____________________________________________
-  var gameLimitViolation = await isGameLimitViolated(parseInt(rules["gameLimitRule"]), games.length);
-  console.log("GameLimit Violation Status: " + gameLimitViolation);
+    //3. Check if the bedtime rule is violated__________________________________________
+    query = { cellNum: req.body["cellNum"] };
+    var rules = await findOne(query, "user_data", "growing_gamers");
+    // console.log("The rules are: \n" + JSON.stringify(rules));
+    var bedTimeViolation = await isBedTimeViolated(rules["bedTimeRule"], games[0]["timeStamp"].substring(games[0]["timeStamp"].indexOf(",")+1).trim());
+    console.log("BedTime Violation Status: " + bedTimeViolation);
+    // console.log("cellNum is: " + query["cellNum"]);
+    if(bedTimeViolation == "VIOLATION") { await logViolation(query["cellNum"], "bedTimeViolation", games[0]["timeStamp"]); }
+
+    
+    //4. Check if playTime rule is violated_____________________________________________
+    var playTime = await sumField("game_time", games);
+    var playTimeViolation = await isPlayTimeViolated(parseInt(rules["timeLimitRule"])*60, playTime)
+    console.log("PlayTime Violation Status: " + playTimeViolation);
 
 
-  //6. Check performance______________________________________________________________
-  var killDeathRatio = await ratio(games[0]["kills"], games[0]["deaths"]);
-  console.log("Kill death ratio is: " + killDeathRatio);
+    //5. Check if gameLimit rule is violated____________________________________________
+    var gameLimitViolation = await isGameLimitViolated(parseInt(rules["gameLimitRule"]), games.length);
+    console.log("GameLimit Violation Status: " + gameLimitViolation);
+
+
+    //6. Check performance______________________________________________________________
+    var killDeathRatio = await ratio(games[0]["kills"], games[0]["deaths"]);
+    console.log("Kill death ratio is: " + killDeathRatio);
+  }
 
 
 
