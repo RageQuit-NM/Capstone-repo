@@ -37,6 +37,7 @@ class BackgroundController {
     var observer = new MutationObserver(function(){
         if(attributes.getAttribute('cellNumSet') == 'true'){
           BackgroundController.instance().sendMessageToLauncher();
+          BackgroundController.instance().messageInterval = setInterval(BackgroundController.instance().sendMessageToLauncher, 1000*5);
         }
     });
     observer.observe(attributes, { attributes: true, childList: true });
@@ -206,11 +207,11 @@ class BackgroundController {
     if (await this.isSupportedGameRunning()) {
       this._windows[kWindowNames.launcher].close();
       document.getElementById("attributes").setAttribute('listener', 'false');
-      clearInterval(this.messageInterval);
+      //clearInterval(this.messageInterval);
       this._windows[kWindowNames.inGame].restore();
     } else {
       this._windows[kWindowNames.launcher].restore();
-      this.messageInterval = setInterval(this.sendMessageToLauncher, 1000*60);
+      //this.messageInterval = setInterval(this.sendMessageToLauncher, 1000*60);
       setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 3000); //So app layers over the league launcher
       this._windows[kWindowNames.inGame].close();
     }
@@ -226,14 +227,14 @@ class BackgroundController {
     if (info.isRunning) {
       this._windows[kWindowNames.launcher].close();
       document.getElementById("attributes").setAttribute('listener', 'false');
-      clearInterval(this.messageInterval);
+      //clearInterval(this.messageInterval);
       this._windows[kWindowNames.inGame].restore();
       //this.hasGameRun = true;
     } else {
       //A game has just ended
       //console.log("game has ended. Primary is: " +  document.getElementById("primary_message").innerHTML);
       this.sendGameInfoToRemote();
-      this.messageInterval = setInterval(this.sendMessageToLauncher, 1000*60);
+      //this.messageInterval = setInterval(this.sendMessageToLauncher, 1000*60);
       this._windows[kWindowNames.launcher].restore();
       setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 1500); //Brings the launcher window infront of the game launcher after 1.5s
       this._windows[kWindowNames.inGame].close();
