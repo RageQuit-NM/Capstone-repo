@@ -67,6 +67,15 @@ class InGame extends AppWindow {
     if(e.events[0]["name"] == 'death'){
       this.updateData("deaths", null);
     }
+    if(e.events[0]["name"] == 'death'){
+      this.updateData("deaths", null);
+    }
+    if(e.events[0]["name"] == 'victory'){
+      this.updateData("victory", null);
+    }
+    if(e.events[0]["name"] == 'defeat'){
+      this.updateData("defeat", null);
+    }
   }
 
 
@@ -86,6 +95,12 @@ class InGame extends AppWindow {
     }
     if(dataField == "time"){
       jsonData["game_time"] = time;
+    }
+    if(dataField == "victory"){
+      jsonData["victory"] = true;
+    }
+    if(dataField == "defeat"){
+      jsonData["defeat"] = true;
     }
 
     let stringified = JSON.stringify(jsonData);
