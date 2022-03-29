@@ -447,13 +447,13 @@ async function updateOne(query, newVals, options, collectionSelected="player_rec
       return;
     }
 
-    console.log("Query is: " + JSON.stringify(query));
-    console.log("Options are: " + JSON.stringify(options));
+    //console.log("Query is: " + JSON.stringify(query));
+    //console.log("Options are: " + JSON.stringify(options));
     try {
       const db = client.db(database);
       let collection = db.collection(collectionSelected);
       let result = await collection.updateOne(query, newVals, options);
-      console.log("returning: " + JSON.stringify(result));
+      //console.log("returning: " + JSON.stringify(result));
       return result;
     } catch (err) {
       console.log(err);
