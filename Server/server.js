@@ -541,6 +541,7 @@ async function ruleSMS(cellNum, body, rule) {
   var ruleString = "";
 
   var SMSInfo = await findOne(query, "SMSInfo");
+  console.log("SMSInfo " + SMSInfo);
   if(SMSInfo["sentDay"] != null){
     var currentDate = new Date();
     var currentDay = currentDate.getDate()
