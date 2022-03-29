@@ -537,47 +537,48 @@ async function ruleSMS(cellNum, body, rule) {
   var query = { cellNum: cellNum};
   var parentPreferences = await findOne(query, "user_data");
 
-  var singleSendSMS = true;
+  var toSendSMS = true;
   var ruleString = "";
 
   var SMSInfo = await findOne(query, "SMSInfo");
-  console.log("SmsInfo: " + SMSInfo);
+  //console.log("SmsInfo: " + SMSInfo);
   if(SMSInfo != null){
-    console.log("In here");
+    //console.log("In here");
     var currentDate = new Date();
     var currentDay = currentDate.getDate()
-    console.log("full check is: " + ((parentPreferences[rule] != "true") || ((SMSInfo["sentDay"] == currentDay) && (SMSInfo["rule"].indexOf(rule) == -1))));
+    //console.log("full check is: " + ((parentPreferences[rule] != "true") || ((SMSInfo["sentDay"] == currentDay) && (SMSInfo["rule"].indexOf(rule) == -1))));
     
-    
+    //Check if toggle is set
     if (parentPreferences[rule] != "true"){
-      console.log("Not sending. Something not set. parePreferece toggle for " + rule + ": " + (parentPreferences[rule] != "true") + ". SMSInfo['sentDay'] == currentDay: " + SMSInfo["sentDay"] == currentDay + ". SMSInfo['rule'].indexOf(rule) != -1: " + SMSInfo["rule"].indexOf(rule) != -1);
-      singleSendSMS = false;
-    }
-    if(SMSInfo["sentDay"] == currentDay){
-      console.log("it is same day as send day");
-      if(SMSInfo["rule"].indexOf(rule) != -1){
-      console.log("found the rule in rule");
-      singleSendSMS = false;
-      }
+      //console.log("Not sending. Something not set. parePreferece toggle for " + rule + ": " + (parentPreferences[rule] != "true") + ". SMSInfo['sentDay'] == currentDay: " + SMSInfo["sentDay"] == currentDay + ". SMSInfo['rule'].indexOf(rule) != -1: " + SMSInfo["rule"].indexOf(rule) != -1);
+      toSendSMS = false;
     }
 
-    if(singleSendSMS){
-      if (SMSInfo["sentDay"] < currentDay){
-        ruleString = rule;
-      }else{
-        ruleString = SMSInfo["rule"] + ", " + rule;
+    //Check if this text has been sent today already
+    if(SMSInfo["sentDay"] == currentDay){
+      //console.log("it is same day as send day");
+      if(SMSInfo["rule"].indexOf(rule) != -1){
+        //console.log("found the rule in rule");
+        toSendSMS = false;
       }
     }
   }else{
+    //if no entry in SMSInfo exists
     ruleString = rule;
   }
-  console.log("/");
-  console.log("rule is set to " + SMSInfo["rule"])
-  console.log("INFO. parePreferece toggle for " + rule + ": " + parentPreferences[rule] + ". SMSInfo['sentDay'] == currentDay: " + (SMSInfo["sentDay"] == currentDay) + ". SMSInfo['rule'].indexOf(rule) != -1: " + (SMSInfo["rule"].indexOf(rule) != -1) + " ///////////////////////////////////////////////////////////");
-  console.log("/");
-  if(singleSendSMS){
+  // console.log("/");
+  // console.log("rule is set to " + SMSInfo["rule"])
+  // console.log("INFO. parePreferece toggle for " + rule + ": " + parentPreferences[rule] + ". SMSInfo['sentDay'] == currentDay: " + (SMSInfo["sentDay"] == currentDay) + ". SMSInfo['rule'].indexOf(rule) != -1: " + (SMSInfo["rule"].indexOf(rule) != -1) + " ///////////////////////////////////////////////////////////");
+  // console.log("/");
+  if(toSendSMS){
     sendSMS(cellNum, body);
     console.log("ruleSMS sent");
+
+    if (SMSInfo["sentDay"] < currentDay){
+      ruleString = rule;
+    }else{
+      ruleString = SMSInfo["rule"] + ", " + rule;
+    }
 
     var sentDate = new Date();
     sentDay = sentDate.getDate();
