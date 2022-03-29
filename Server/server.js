@@ -289,7 +289,7 @@ app.post('/get-message', async function(req, res){
   } catch (error){
     console.log(error);
   }
-  
+
   //latestGameDate != null || typeof latestGameDate != 'undefined'
   if(latestGameDate[0] == null){console.log("No games found for account");}
   if(latestGameDate[0] != null){//If there are no games found, return default message
@@ -352,7 +352,7 @@ app.post('/get-message', async function(req, res){
     query = { messageID: "gamelimitviolated" }; 
     await ruleSMS(req.body["cellNum"], "Your child has violated their game limit.", "gameLimitToggle");
   }
-  else if(killDeathRatio > 1) { query = { messageID: "doinggreat" }; }
+  else if(killDeathRatio >= 1) { query = { messageID: "doinggreat" }; }
   else if(killDeathRatio < 0.5) { query = { messageID: "takebreak" }; }
   else {query = { messageID: "welcomeback" }; }
  
