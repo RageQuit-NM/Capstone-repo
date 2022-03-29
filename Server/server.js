@@ -558,10 +558,15 @@ async function ruleSMS(cellNum, body, rule) {
   }else{
     ruleString = rule;
   }
+  console.log();
   console.log("INFO. parePreferece toggle for " + rule + ": " + parentPreferences[rule] + ". SMSInfo['sentDay'] == currentDay: " + SMSInfo["sentDay"] == currentDay + ". SMSInfo['rule'].indexOf(rule) != -1: " + SMSInfo["rule"].indexOf(rule) != -1 + " ///////////////////////////////////////////////////////////");
+  console.log();
   if(singleSendSMS){
     sendSMS(cellNum, body);
     console.log("ruleSMS sent");
+    console.log();
+    console.log("INFO. parePreferece toggle for " + rule + ": " + parentPreferences[rule] + ". SMSInfo['sentDay'] == currentDay: " + SMSInfo["sentDay"] == currentDay + ". SMSInfo['rule'].indexOf(rule) != -1: " + SMSInfo["rule"].indexOf(rule) != -1 + " ///////////////////////////////////////////////////////////");
+    console.log();
 
     var sentDate = new Date();
     sentDay = sentDate.getDate();
