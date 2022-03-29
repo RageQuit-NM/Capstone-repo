@@ -542,10 +542,11 @@ async function ruleSMS(cellNum, body, rule) {
 
   var SMSInfo = await findOne(query, "SMSInfo");
   console.log("SMSInfo " + SMSInfo);
-  if(SMSInfo["sentDay"] != null){
+  if(SMSInfo != null){
     var currentDate = new Date();
     var currentDay = currentDate.getDate()
     if (parentPreferences[rule] != "true" && SMSInfo["sentDay"] == currentDay && SMSInfo["rule"].indexOf(rule) != -1){
+      console.log("Not sending. Something not set. parePreferece toggle for " + rule + ": " + parentPreferences[rule] + ". SMSInfo['sentDay'] == currentDay: " + SMSInfo["sentDay"] == currentDay + ". SMSInfo['rule'].indexOf(rule) != -1: " + SMSInfo["rule"].indexOf(rule) != -1);
       singleSendSMS = false;
     }else{
       if (SMSInfo["sentDay"] < currentDay){
