@@ -528,13 +528,40 @@ async function logViolation(cellNum, violation, timeStamp) {
   }
 }
 
+
+
+
 //Send a rule violation sms to parent
+//Checks SMSInfo to see if a text for that rule has already been sent today. updates the SMSInfo if a sms is sent
 async function ruleSMS(cellNum, body, rule) {
   var query = { cellNum: cellNum};
   var parentPreferences = await findOne(query, "user_data");
-  if(parentPreferences[rule] == "true"){
+
+  var singleSendSMS = true;
+  var ruleString = "";
+
+  var SMSInfo = await findOne(query, "SMSInfo");
+  var currentDate = new Date();
+  var currentDay = currentDate.getDate()
+  if (SMSInfo["sentDay"] = currentDay){
+    singleSendSMS = false;
+  }else{
+    ruleString += ", " + rule;
+  }
+  if (SMSInfo["rule"].indexOf(rule) != -1){
+    singleSendSMS = false;
+  }
+  if(parentPreferences[rule] == "true" && singleSendSMS){
     sendSMS(cellNum, body);
     console.log("ruleSMS sent");
+
+    var sentDate = new Date();
+    sentDay = sentDate.getDate();
+    var insertion = {cellNum: cellNum, rule: ruleString, sentDay: sentDay};
+    var newVals = { $set: insertion };  //i do this right???
+    var options = { upsert: true };
+    var collection = "SMSInfo";
+    await updateOne(query, newVals, options, collection);
   }else{
     console.log("ruleSMS not sent: " + rule + " " + parentPreferences[rule]);
   }
