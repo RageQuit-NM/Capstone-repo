@@ -277,7 +277,6 @@ app.post('/get-message', async function(req, res){
   //1. get the cell number from the http request______________________________________
   var query = { cellNum: req.body["cellNum"] };
   console.log("/get-message for " + req.body["cellNum"]);
-  // console.log("The query is: " + JSON.stringify(query));
 
   //2. collect players last day games ordered by most recent___________________________________
   //Find date of most recent game
@@ -290,17 +289,10 @@ app.post('/get-message', async function(req, res){
   } catch (error){
     console.log(error);
   }
-  //latestGameDate != null || typeof latestGameDate != 'undefined'
-  if(latestGameDate[0] != null){//If there are no games found, return default message
-    // console.log("ERROR: NULL RESULT " + typeof latestGameDate);
-    // query = { messageID: "welcomeback" };
-    // console.log(JSON.stringify(query));
-    // //console.log(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
-    // res.send(JSON.stringify(await findOne(query, "app_messages", "growing_gamers")));
-
-    // console.log("---");
-    // return;
   
+  //latestGameDate != null || typeof latestGameDate != 'undefined'
+  if(latestGameDate[0] == null){console.log("No games found for account");}
+  if(latestGameDate[0] != null){//If there are no games found, return default message
     console.log("Single Element List: " + JSON.stringify(latestGameDate));
     latestGameDate = latestGameDate[0]["timeStamp"].substring(0, latestGameDate[0]["timeStamp"].indexOf(","));
     console.log("Latest Game Date is: " + latestGameDate);
@@ -541,24 +533,17 @@ async function ruleSMS(cellNum, body, rule) {
   var ruleString = "";
 
   var SMSInfo = await findOne(query, "SMSInfo");
-  //console.log("SmsInfo: " + SMSInfo);
   if(SMSInfo != null){
-    //console.log("In here");
     var currentDate = new Date();
     var currentDay = currentDate.getDate()
-    //console.log("full check is: " + ((parentPreferences[rule] != "true") || ((SMSInfo["sentDay"] == currentDay) && (SMSInfo["rule"].indexOf(rule) == -1))));
-    
     //Check if toggle is set
     if (parentPreferences[rule] != "true"){
-      //console.log("Not sending. Something not set. parePreferece toggle for " + rule + ": " + (parentPreferences[rule] != "true") + ". SMSInfo['sentDay'] == currentDay: " + SMSInfo["sentDay"] == currentDay + ". SMSInfo['rule'].indexOf(rule) != -1: " + SMSInfo["rule"].indexOf(rule) != -1);
       toSendSMS = false;
     }
 
     //Check if this text has been sent today already
     if(SMSInfo["sentDay"] == currentDay){
-      //console.log("it is same day as send day");
       if(SMSInfo["rule"].indexOf(rule) != -1){
-        //console.log("found the rule in rule");
         toSendSMS = false;
       }
     }
@@ -566,10 +551,6 @@ async function ruleSMS(cellNum, body, rule) {
     //if no entry in SMSInfo exists
     ruleString = rule;
   }
-  // console.log("/");
-  // console.log("rule is set to " + SMSInfo["rule"])
-  // console.log("INFO. parePreferece toggle for " + rule + ": " + parentPreferences[rule] + ". SMSInfo['sentDay'] == currentDay: " + (SMSInfo["sentDay"] == currentDay) + ". SMSInfo['rule'].indexOf(rule) != -1: " + (SMSInfo["rule"].indexOf(rule) != -1) + " ///////////////////////////////////////////////////////////");
-  // console.log("/");
   if(toSendSMS){
     sendSMS(cellNum, body);
     console.log("ruleSMS sent");
