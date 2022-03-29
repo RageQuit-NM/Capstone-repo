@@ -541,24 +541,28 @@ async function ruleSMS(cellNum, body, rule) {
   var ruleString = "";
 
   var SMSInfo = await findOne(query, "SMSInfo");
-  var currentDate = new Date();
-  var currentDay = currentDate.getDate()
-  if (SMSInfo["sentDay"] = currentDay){
-    singleSendSMS = false;
-  }else{
-    ruleString += ", " + rule;
+  if(SMSInfo["sentDay"] != null){
+    var currentDate = new Date();
+    var currentDay = currentDate.getDate()
+    if (SMSInfo["sentDay"] == currentDay && SMSInfo["rule"].indexOf(rule) != -1){
+        singleSendSMS = false;
+    }
   }
-  if (SMSInfo["rule"].indexOf(rule) != -1){
-    singleSendSMS = false;
-  }
+
   if(parentPreferences[rule] == "true" && singleSendSMS){
     sendSMS(cellNum, body);
     console.log("ruleSMS sent");
 
+    if (SMSInfo["sentDay"] < currentDay){
+      ruleString = rule;
+    }else{
+      ruleString = SMSInfo["rule"] + ", " + rule;
+    }
+
     var sentDate = new Date();
     sentDay = sentDate.getDate();
     var insertion = {cellNum: cellNum, rule: ruleString, sentDay: sentDay};
-    var newVals = { $set: insertion };  //i do this right???
+    var newVals = { $set: insertion }; 
     var options = { upsert: true };
     var collection = "SMSInfo";
     await updateOne(query, newVals, options, collection);
