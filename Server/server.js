@@ -543,8 +543,10 @@ async function ruleSMS(cellNum, body, rule) {
   var SMSInfo = await findOne(query, "SMSInfo");
   console.log("SmsInfo: " + SMSInfo);
   if(SMSInfo != null){
+    console.log("In here");
     var currentDate = new Date();
     var currentDay = currentDate.getDate()
+    console.log("full check is: " + (parentPreferences[rule] != "true" || (SMSInfo["sentDay"] == currentDay && SMSInfo["rule"].indexOf(rule) == -1)));
     if (parentPreferences[rule] != "true" || (SMSInfo["sentDay"] == currentDay && SMSInfo["rule"].indexOf(rule) == -1)){
       console.log("Not sending. Something not set. parePreferece toggle for " + rule + ": " + (parentPreferences[rule] != "true") + ". SMSInfo['sentDay'] == currentDay: " + SMSInfo["sentDay"] == currentDay + ". SMSInfo['rule'].indexOf(rule) != -1: " + SMSInfo["rule"].indexOf(rule) != -1);
       singleSendSMS = false;
@@ -559,6 +561,7 @@ async function ruleSMS(cellNum, body, rule) {
     ruleString = rule;
   }
   console.log("/");
+  console.log("rule is set to " + SMSInfo["rule"])
   console.log("INFO. parePreferece toggle for " + rule + ": " + parentPreferences[rule] + ". SMSInfo['sentDay'] == currentDay: " + (SMSInfo["sentDay"] == currentDay) + ". SMSInfo['rule'].indexOf(rule) != -1: " + (SMSInfo["rule"].indexOf(rule) != -1) + " ///////////////////////////////////////////////////////////");
   console.log("/");
   if(singleSendSMS){
