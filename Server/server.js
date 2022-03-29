@@ -546,7 +546,7 @@ async function ruleSMS(cellNum, body, rule) {
     console.log("In here");
     var currentDate = new Date();
     var currentDay = currentDate.getDate()
-    console.log("full check is: " + (parentPreferences[rule] != "true" || (SMSInfo["sentDay"] == currentDay && SMSInfo["rule"].indexOf(rule) == -1)));
+    console.log("full check is: " + ((parentPreferences[rule] != "true") || ((SMSInfo["sentDay"] == currentDay) && (SMSInfo["rule"].indexOf(rule) == -1))));
     if (parentPreferences[rule] != "true" || (SMSInfo["sentDay"] == currentDay && SMSInfo["rule"].indexOf(rule) == -1)){
       console.log("Not sending. Something not set. parePreferece toggle for " + rule + ": " + (parentPreferences[rule] != "true") + ". SMSInfo['sentDay'] == currentDay: " + SMSInfo["sentDay"] == currentDay + ". SMSInfo['rule'].indexOf(rule) != -1: " + SMSInfo["rule"].indexOf(rule) != -1);
       singleSendSMS = false;
