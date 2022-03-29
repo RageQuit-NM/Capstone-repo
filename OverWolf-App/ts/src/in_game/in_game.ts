@@ -104,7 +104,7 @@ class InGame extends AppWindow {
     }
 
     let stringified = JSON.stringify(jsonData);
-    this.writeFile(stringified, `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
+    await this.writeFile(stringified, `${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\game_data.json`);
     //document.getElementById("death_message").innerHTML = jsonData["deaths"]; //For debugging
   }
 
