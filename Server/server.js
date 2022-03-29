@@ -623,7 +623,7 @@ async function ratio(num, denom) {
   if (denom > 0) {
     ratio = num/denom;
     if (ratio > 9) { ratio = 9; }
-  } else { ratio = 0; }
+  } else { ratio = num; }
   return ratio;
 }
 
