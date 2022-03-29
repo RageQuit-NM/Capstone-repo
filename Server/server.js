@@ -544,20 +544,22 @@ async function ruleSMS(cellNum, body, rule) {
   if(SMSInfo["sentDay"] != null){
     var currentDate = new Date();
     var currentDay = currentDate.getDate()
-    if (SMSInfo["sentDay"] == currentDay && SMSInfo["rule"].indexOf(rule) != -1){
-        singleSendSMS = false;
+    if (parentPreferences[rule] != "true" && SMSInfo["sentDay"] == currentDay && SMSInfo["rule"].indexOf(rule) != -1){
+      singleSendSMS = false;
+    }else{
+      if (SMSInfo["sentDay"] < currentDay){
+        ruleString = rule;
+      }else{
+        ruleString = SMSInfo["rule"] + ", " + rule;
+      }
     }
+  }else{
+    ruleString = rule;
   }
 
-  if(parentPreferences[rule] == "true" && singleSendSMS){
+  if(singleSendSMS){
     sendSMS(cellNum, body);
     console.log("ruleSMS sent");
-
-    if (SMSInfo["sentDay"] < currentDay){
-      ruleString = rule;
-    }else{
-      ruleString = SMSInfo["rule"] + ", " + rule;
-    }
 
     var sentDate = new Date();
     sentDay = sentDate.getDate();
