@@ -9,7 +9,7 @@ var app = express();
 var schedule = require('node-schedule');
 var dailyDigestJob = schedule.scheduleJob('* * 21 * * *', function(){
   console.log("Running daily digest job");
-  dailyDigest();
+  //dailyDigest();
   console.log("---");
 });
 
