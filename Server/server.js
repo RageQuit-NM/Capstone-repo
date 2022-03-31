@@ -7,7 +7,7 @@ var express = require('express');
 var app = express();  
 
 var schedule = require('node-schedule');
-var dailyDigestJob = schedule.scheduleJob('* * 21 * * *', function(){
+var dailyDigestJob = schedule.scheduleJob('00 00 21 * * *', function(){
   console.log("Running daily digest job");
   //dailyDigest();
   console.log("---");
