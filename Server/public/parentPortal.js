@@ -236,7 +236,7 @@ async function getKillDeathRatio(statistics) {
 }
 
 
-async function getBedTimeViolations(statistics)
+async function getBedTimeViolations(statistics){}
 
 
 
