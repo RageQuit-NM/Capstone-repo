@@ -280,7 +280,6 @@ app.post('/get-message', async function(req, res){
 
   var date = new Date().toLocaleString('en-CA', {hour12:false}); //todays date YYYY-MM-DD
   date = date.substring(0,10);
-  console.log("date is: " + date);
 
   //2. collect players last day games ordered by most recent___________________________________
   //Find date of most recent game
@@ -296,7 +295,7 @@ app.post('/get-message', async function(req, res){
 
   //latestGameDate != null || typeof latestGameDate != 'undefined'
   if(latestGameDate[0] == null){console.log("No games found for account");}
-  if(latestGameDate[0] != null && latestGameDate[0] == date){//If there are no games found, return default message
+  if(latestGameDate[0] != null){//If there are no games found, return default message
     console.log("Single Element List: " + JSON.stringify(latestGameDate));
     latestGameDate = latestGameDate[0]["timeStamp"].substring(0, latestGameDate[0]["timeStamp"].indexOf(","));
     console.log("Latest Game Date is: " + latestGameDate);
