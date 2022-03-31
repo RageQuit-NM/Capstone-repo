@@ -242,6 +242,9 @@ async function getKillDeathRatio(statistics) {
 }
 
 
+async function getBedTimeViolations(statistics){}
+
+
 
 
 function buildStats(statistics) {
@@ -273,7 +276,7 @@ function buildStats(statistics) {
         document.getElementById("wlRatioBar").classList.add("bg-danger");
         document.getElementById("wlRatioBar").style.width = "10%";
       }
-      document.getElementById("wlRatioBar").innerHTML = winLossRatio.toString() + " wins/loss";
+      // document.getElementById("wlRatioBar").innerHTML = winLossRatio.toString() + " wins/loss";
       document.getElementById("wlRatioBarColumn").title = winLossRatio.toString() + " wins/loss";
       createToolTips();
     }
@@ -305,11 +308,15 @@ function buildStats(statistics) {
         document.getElementById("kdRatioBar").classList.add("bg-danger");
         document.getElementById("kdRatioBar").style.width = "10%";
       }
-      document.getElementById("kdRatioBar").innerHTML = killDeathRatio.toString() + " kills/death";
+      // document.getElementById("kdRatioBar").innerHTML = killDeathRatio.toString() + " kills/death";
       document.getElementById("kdRatioBarColumn").title = killDeathRatio.toString() + " kills/death";
       createToolTips();
     }
   );
+
+
+
+
 }
 
 

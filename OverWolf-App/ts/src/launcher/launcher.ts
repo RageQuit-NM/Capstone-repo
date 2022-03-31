@@ -18,16 +18,14 @@ class Launcher extends AppWindow {
 
         if(overwolf.windows.getMainWindow().document.getElementById('attributes').getAttribute('cellNumSet') != "true"){
           document.getElementById("main").style.display = "none";
-          document.getElementById("initalization").style.display = "inline";
+          document.getElementById("codeDiv").style.display = "none";
+          //document.getElementById("initalization").style.display = "inline";
+          document.getElementById("cellDiv").style.display = "inline";
         }else{
-          document.getElementById("initalization").style.display = "none";
+          document.getElementById("initialization").style.display = "none";
 
           Launcher.instance().setContent();
           setInterval(Launcher.instance().setContent, 1000*2);
-
-          //Launcher.instance().collectPreferences();
-          //setInterval(Launcher.instance().checkBedtime, 1000*2);
-          //setInterval(Launcher.instance().collectPreferences, 1000*2);
 
           Launcher.instance().displayCellNum();
         }
@@ -85,7 +83,8 @@ class Launcher extends AppWindow {
         if (this.readyState != 4) return;
         if (this.status == 200) {
           var response = (this.responseText); // we get the returned data
-          //Open up the verify code option
+          document.getElementById("cellDiv").style.display = "none";
+          document.getElementById("codeDiv").style.display = "inline";
         }
       };
     }
@@ -125,7 +124,7 @@ class Launcher extends AppWindow {
 
             document.getElementById("main").style.display = "inherit";
             document.getElementById("cellDisplay").style.display = "inherit";
-            document.getElementById("initalization").style.display = "none";
+            document.getElementById("initialization").style.display = "none";
 
             Launcher.instance().setContent();
             setInterval(Launcher.instance().setContent, 1000*2);
