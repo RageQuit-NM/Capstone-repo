@@ -20,18 +20,24 @@ function showInit(){
 
 
 async function checkIfVerified(){
+  if(document.cookie == null || document.cookie == ""){
+    console.log("cellNum not set");
+    console.log("checkIfVerified not verified");
+    showInit();
+    return false;
+  }
   if(getCookie("cellNum") == null || getCookie("cellNum") == ""){
     console.log("cellNum not set");
 
     console.log("checkIfVerified not verified")
-  showInit();
+    showInit();
     return false;
   }
   if(getCookie("code") == null || getCookie("code") == ""){
     console.log("code not set");
 
     console.log("checkIfVerified not verified")
-  showInit();
+    showInit();
     return false;
   }
   if(await verifyCode()){
