@@ -557,16 +557,20 @@ async function ruleSMS(cellNum, body, rule) {
     }
   }else{
     //if no entry in SMSInfo exists
-    ruleString = rule;
+    //ruleString = rule;
   }
   if(toSendSMS){
     sendSMS(cellNum, body);
     console.log("ruleSMS sent");
 
-    if (SMSInfo["sentDay"] < currentDay){
-      ruleString = rule;
+    if(SMSInfo != null){
+      if (SMSInfo["sentDay"] < currentDay){
+        ruleString = rule;
+      }else{
+        ruleString = SMSInfo["rule"] + ", " + rule;
+      }
     }else{
-      ruleString = SMSInfo["rule"] + ", " + rule;
+      ruleString = rule;
     }
 
     var sentDate = new Date();
