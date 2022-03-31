@@ -7,7 +7,7 @@ var express = require('express');
 var app = express();  
 
 var schedule = require('node-schedule');
-var dailyDigestJob = schedule.scheduleJob('* * 21 * * *', function(){
+var dailyDigestJob = schedule.scheduleJob('00 00 21 * * *', function(){
   console.log("Running daily digest job");
   //dailyDigest();
   console.log("---");
@@ -325,11 +325,13 @@ app.post('/get-message', async function(req, res){
     var playTime = await sumField("game_time", games);
     var playTimeViolation = await isPlayTimeViolated(parseInt(rules["timeLimitRule"])*60, playTime)
     console.log("PlayTime Violation Status: " + playTimeViolation);
+    if(playTimeViolation == "VIOLATION") { await logViolation(query["cellNum"], "playTimeViolation", games[0]["timeStamp"]); }
 
 
     //5. Check if gameLimit rule is violated____________________________________________
     var gameLimitViolation = await isGameLimitViolated(parseInt(rules["gameLimitRule"]), games.length);
     console.log("GameLimit Violation Status: " + gameLimitViolation);
+    if(gameLimitViolation == "VIOLATION") { await logViolation(query["cellNum"], "gameLimitViolation", games[0]["timeStamp"]); }
 
 
     //6. Check performance______________________________________________________________
