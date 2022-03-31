@@ -351,7 +351,7 @@ app.post('/get-message', async function(req, res){
   if(bedTimeViolation == "VIOLATION") { 
     query = { messageID: "bedtimeviolated" };
     await ruleSMS(req.body["cellNum"], "Your child has violated their bedtime.", "bedTimeToggle");
- }
+  }
   else if(playTimeViolation == "VIOLATION") { 
     query = { messageID: "playtimeviolated" }; 
     await ruleSMS(req.body["cellNum"], "Your child has violated their play time limit.", "timeLimitToggle");
@@ -585,7 +585,6 @@ async function ruleSMS(cellNum, body, rule) {
 
 //Send an sms
 async function sendSMS(cellNum, body) {
-  var query = {cellNum: cellNum};
   var message = { cellNum: cellNum, body: body};
   var smsScript = childProcess.fork('./sms-messages/sendSMS.js');
   smsScript.send(message);
