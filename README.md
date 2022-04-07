@@ -17,6 +17,8 @@ Vlog 4 - https://youtu.be/V21yHw97Agg
 
 Vlog 5 - https://youtu.be/vbdcQwtIN7U
 
+Commercial - https://youtu.be/IgxRJGT3z3U
+
 **Background:**
 
 Toxicity in online environments is nothing new. It is common for players under the guise of online-anonymity to unload their anger and discontent onto anyone who has the misfortune of being queued into their lobby. The negative emotions experienced by those around them lead to negative thoughts about the game, these thoughts in turn lead to more negative emotions etc. etc.. The players who are subject to toxicity are likely to express their new-found negative emotions much like the original perpetrator,  and so the problem spirals out of control. The game environment becomes tense as players fear the potential cascade of negativity they might incur when they queue into a new lobby. As the in-game experience deteriorates the negativity spills over to the surrounding community, players are at war with each other. They call each other varying slurs and insult each other's mothers. Once the community is tainted and the game has a poor reputation it is difficult to recuperate.
