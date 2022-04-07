@@ -2,8 +2,8 @@
 ENSE400/477 Capstone Project
 
 **Team members:**
-Shane - co-founder
-Bryden - co-founder
+Shane Toma, Bryden Trakalo
+
 
 **Vlogs:**
 
