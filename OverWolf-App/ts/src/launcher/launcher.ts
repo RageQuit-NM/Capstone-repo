@@ -54,14 +54,6 @@ class Launcher extends AppWindow {
       Launcher.instance().collectPreferences();
     }
 
-    // private async updateparentalInfo(){
-    //   await Launcher.instance().collectPreferences();
-    //   let currentTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12:false});
-    //   document.getElementById("test_message").innerHTML += currentTime + " vs. "; //+ Launcher.instance().parentPreferenes["bedTimeRule"] +" ";
-    //   document.getElementById("test_message2").innerHTML +=Launcher.instance().parentPreferenes;
-    //   let timeLeft;
-    // }
-
     public async submitCellNum(){
       var cellNum = (document.getElementById("cellInput") as HTMLInputElement).value;
       var sendData = {cellNum:cellNum};
@@ -218,88 +210,22 @@ class Launcher extends AppWindow {
         if (this.status == 200) {
           var parsed = JSON.parse(this.responseText);
           Launcher.instance().parentPreferenes = parsed;
-          //document.getElementById("test_message2").innerHTML += JSON.stringify(Launcher.instance().parentPreferenes);
           let currentTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12:false});
-          document.getElementById("test_message").innerHTML += currentTime + " vs. " + Launcher.instance().parentPreferenes["bedTimeRule"];
+          //document.getElementById("test_message").innerHTML += currentTime + " vs. " + Launcher.instance().parentPreferenes["bedTimeRule"];
           let hoursLeft = parseInt(Launcher.instance().parentPreferenes["bedTimeRule"]) - parseInt(currentTime);
           let minutesLeft = parseInt(Launcher.instance().parentPreferenes["bedTimeRule"].substring(Launcher.instance().parentPreferenes["bedTimeRule"].indexOf(":")+1)) - parseInt(currentTime.substring(currentTime.indexOf(":")+1));
-          document.getElementById("test_message2").innerHTML += "Hours left " + hoursLeft + "minutes elft " + minutesLeft;
+          //document.getElementById("test_message2").innerHTML += "Hours left " + hoursLeft + "minutes elft " + minutesLeft;
           
           if (minutesLeft < 0){
             hoursLeft -= 1;
             minutesLeft += 60;
           }
           let timeLeft = "Time left: " + hoursLeft + ":" + minutesLeft;
-          document.getElementById("test_message3").innerHTML = timeLeft;
+          //document.getElementById("test_message3").innerHTML = timeLeft;
         }
         return;
       };
     }
-
-    //Check if bedtime rule is violated on an interval, display appropriate message, notify parent.
-    // public async checkBedtime(){
-    //   if(Launcher.instance().parentPreferenes == null){
-    //     if (document.getElementById("test_message2").innerHTML.indexOf("ParentPrefecnes is not set") == -1){
-    //       document.getElementById("test_message2").innerHTML += "ParentPrefecnes is not set";
-    //     }
-    //     return;
-    //   }
-    //   if(Launcher.instance().parentPreferenes["bedTimeRule"] != null){
-    //     let date = new Date();
-    //     let hours = date.getHours();
-    //     let minutes = date.getMinutes();
-    //     let bedtimeHours = parseInt(Launcher.instance().parentPreferenes["bedTimeRule"]);
-    //     let bedtimeMinutes = parseInt(Launcher.instance().parentPreferenes["bedTimeRule"].substring(3, 5))
-
-    //     let hourDiff = bedtimeHours - hours;
-    //     let minuteDiff = bedtimeMinutes - minutes;
-    //     let diff = (hourDiff*60) + minuteDiff;
-
-    //     let AmPm = "am";
-    //     if (hours == 12){
-    //       AmPm = "pm";
-    //     }
-    //     if(hours > 12){
-    //       hours -= 12;
-    //       AmPm = "pm";
-    //     }
-    //     let hoursString: string = hours.toString();
-    //     let minutesString: string = minutes.toString();
-    //     if(minutesString.length == 1){
-    //       minutesString = "0" + minutesString;
-    //     }
-    //     let localTime = hoursString + ":" + minutesString + AmPm;
-
-    //     let myMessage = "";
-    //     let mainWindowObject = overwolf.windows.getMainWindow();
-    //     if(diff < 60 && diff >=45){
-    //       myMessage = "You have time for about 2 more games.";
-    //     }else if(diff < 45 && diff >=20){
-    //       myMessage = "You have time for one last game.";
-    //     }else if(diff < 20 && diff >=5){
-    //       myMessage = "You dont have enough time to play a game before bedtime."; //Playing a game will put you past your bedtime?
-    //     }else if(diff < 5 && diff >=-5){
-    //       myMessage = "Its time to stop playing and say good night.";
-    //       if(diff<0){
-    //         myMessage += " You are" + -diff + " minutes past your bedtime";
-    //       }
-    //     }
-    //     document.getElementById("secondary_message").innerHTML = myMessage;   //send the secondary message
-        
-    //     if(diff < -5){  //it is past your betime.
-    //       document.getElementById("primary_message").innerHTML = "It is <span class='urgentText'>past your bedtime</span>, time to stop playing. <br/><br/>The time is: <span class='urgentText'>"  + localTime + " </span>";
-    //       document.getElementById("minimizeButton").innerHTML = "See You Tomorrow";
-    //       if (mainWindowObject.document.getElementById("attributes").getAttribute('bedTimeMessage') != 'true') {
-    //         mainWindowObject.document.getElementById("attributes").setAttribute('bedTimeMessage', 'true');
-    //         //Launcher.instance().sendBedtimeMessage(); //<--------------------------------- sending bedtime text message
-    //       }
-    //     }else{  //It is not past your bedtime
-    //       document.getElementById("minimizeButton").innerHTML = "Back to Game";//-----------staticly sets it to "back to game"
-    //       Launcher.instance().setContent();
-    //     }
-    //   }
-    // }
-
   
     private async readFileData(file_path:string){
       const result = await new Promise(resolve => {
