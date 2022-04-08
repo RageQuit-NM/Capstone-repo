@@ -74,4 +74,16 @@
   box-shadow: none;
 }
 
+#test{
+  display: none; 
+}
+
+#test2{
+  display: none; 
+}
+
+#test_response{
+  display: none; 
+}
+
 /* #81BADB #456475 #24343D */
