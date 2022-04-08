@@ -137,53 +137,6 @@ class BackgroundController {
     xmlHttp.open("POST", remoteServer, true);
     xmlHttp.setRequestHeader('Content-Type', 'application/json');
     xmlHttp.send(JSON.stringify(gameData));
-
-    //var sendData = {cellNum:JSON.parse(result)["cellNum"]};
-    // let serverActionPreferences = "get-settings";
-    // let remoteServerPreferences = "http://" +  this.remoteAddress + ":5000/" + serverActionPreferences;
-    // var xmlHttp = new XMLHttpRequest();
-    // xmlHttp.open("POST", remoteServerPreferences, true);
-    // xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    // xmlHttp.send(JSON.stringify(sendData));
-
-    // xmlHttp.onreadystatechange = async function () {
-    //   if (this.readyState != 4) return;
-    //   if (this.status == 200) {
-    //     var parsed = JSON.parse(this.responseText);
-    //     BackgroundController.instance().parentPreferenes = parsed;
-    //     console.log(JSON.stringify(parsed));
-
-    //     let cellNumUnparsed = await BackgroundController.instance().readFileData(`${overwolf.io.paths.localAppData}\\Overwolf\\RageQuit.NM\\cell_number.json`);
-    //     let cellNum = JSON.parse(cellNumUnparsed)["cellNum"];
-    //     gameData["cellNum"] = cellNum;
-    //     gameData["timeStamp"] = new Date().toLocaleString('en-CA', {hour12:false});
-
-    //     if(BackgroundController.instance().parentPreferenes["bedTimeRule"] == null){
-    //       gameData["bedTimeViolated"] = false; //No bedtime set
-    //     }else{
-    //       let date = new Date();
-    //       let hours = date.getHours();
-    //       let minutes = date.getMinutes();
-    //       let bedtimeHours = parseInt(BackgroundController.instance().parentPreferenes["bedTimeRule"]);
-    //       let bedtimeMinutes = parseInt(BackgroundController.instance().parentPreferenes["bedTimeRule"].substring(3, 5))
-
-    //       let hourDiff = bedtimeHours - hours;
-    //       let minuteDiff = bedtimeMinutes - minutes;
-    //       let diff = (hourDiff*60) + minuteDiff;
-
-
-    //       let bedTimeViolated:boolean;
-    //       (diff < -5) ? bedTimeViolated = true : bedTimeViolated = false;
-    //       gameData["bedTimeViolated"] = bedTimeViolated;
-    //     }
-    //     let serverAction = "upload-game-data";  //
-    //     let remoteServer = "http://" +  BackgroundController.instance().remoteAddress + ":5000/" + serverAction;
-    //     var xmlHttp = new XMLHttpRequest();
-    //     xmlHttp.open("POST", remoteServer, true);
-    //     xmlHttp.setRequestHeader('Content-Type', 'application/json');
-    //     xmlHttp.send(JSON.stringify(gameData));
-    //   }
-    // };
   }
 
 
@@ -214,7 +167,7 @@ class BackgroundController {
     } else {
       this._windows[kWindowNames.launcher].restore();
       //this.messageInterval = setInterval(this.sendMessageToLauncher, 1000*60);
-      setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 3000); //So app layers over the league launcher
+      setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 6000); //So app layers over the league launcher
       this._windows[kWindowNames.inGame].close();
     }
   }
