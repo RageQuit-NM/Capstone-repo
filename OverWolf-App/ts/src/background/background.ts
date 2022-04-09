@@ -167,7 +167,8 @@ class BackgroundController {
     } else {
       this._windows[kWindowNames.launcher].restore();
       //this.messageInterval = setInterval(this.sendMessageToLauncher, 1000*60);
-      setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 6000); //So app layers over the league launcher
+      setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 10000); //So app layers over the league launcher
+      setTimeout(() => overwolf.windows.bringToFront(kWindowNames.launcher, true, (result) => {}), 12000);
       this._windows[kWindowNames.inGame].close();
     }
   }
